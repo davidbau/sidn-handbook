@@ -22,9 +22,17 @@ rel="stylesheet">
 <!-- Mathjax -->
 <script sid="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" integrity="sha512-6FaAxxHuKuzaGHWnV00ftWqP3luSBRSopnNAA2RvQH1fOfnF/A1wOfiUWF7cLIOFcfb1dEhXwo5VG3DAisocRw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+<!-- Auto Table of Contents -->
+<link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css"
+/>
+<script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script>
+
 </head>
 
-<body>
+<body data-spy="scroll" data-target="#toc">
 <nav class="navbar navbar-dark bg-dark">
 <div class="container-fluid">
 <ul class="navbar-nav mr-auto">
@@ -42,7 +50,7 @@ rel="stylesheet">
 
 <div class="container">
 <main>
-<h1 class="mt-5">Three Appraches to Interpretable ML: a History</h1>
+<nav id="toc" data-toggle="toc"></nav><h1 class="mt-5">Three Appraches to Interpretable ML: a History</h1>
 
 
 <p>
