@@ -27,8 +27,12 @@ rel="stylesheet">
   <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="navbar-brand" href="/">Structure and Intrepretation of Deep Networks</a>
         <a class="nav-link" href="{pathname}">{title}</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="navbar-brand" href="/">Structure and Intrepretation of Deep Networks</a>
       </li>
     </ul>
   </div>
