@@ -13,7 +13,8 @@ In this chapter, we briefly take a moment to retrace some of the history of
 interpretable machine learning that precedes the current generative AI moment.
 
 <h2>The Problem of Interpretability</h2>
-The problem of interpretability dates to the earliest days of computing:
+
+<p>The problem of interpretability dates to the earliest days of computing:
 <a href="https://papers.baulab.info/papers/also/Turing-1950.pdf"
 >his 1950 essay on machine intelligence</a>, Alan Turing wrote about
 the challenge of machine learning interpretability:
@@ -25,13 +26,13 @@ although he may still be able to some extent to predict his pupil's behavior.
 (<a href="https://papers.baulab.info/papers/also/Turing-1950.pdf">p. 458</a>)
 </blockquote>
 
-Turing recognized that, Ada Lovelace's prediction that a computer could
+<p>Turing recognized that, Ada Lovelace's prediction that a computer could
 only ever "do whatever we know how to order it to perform" was false.
 Although just a dream in 1950, he knew that the success of machine learning
 would someday lead to computers that could perform tasks that their
 makers would not understand.
 
-The lack of interpretability was one reason for the slow uptake of
+<p>The lack of interpretability was one reason for the slow uptake of
 machine learning methods in early decades of computer science.  For
 example, Marvin Minsky was fond of explaining that machine learning
 offered <a href="https://arxiv.org/abs/2007.10928"
@@ -46,17 +47,17 @@ symbolic AI that was made of fully human interpretable LISP programs.
 
 <h2>Machine Learning Models Made Interpretable By Design</h2>
 
-By the time Machine Learning was making a resurgence in the 1980s,
+<p>By the time Machine Learning was making a resurgence in the 1980s,
 neural networks were considered "uninterpretable." But it was possible
 to train models that were easier to understand and those classes
 of models were considered <em>interpretable machine learning</em>.
 
-Here I will point out two of the main approaches to interpretable
+<p>Here we will point out two of the main approaches to interpretable
 ML from this era.
 
 <h3>Decision Trees</h3>
 
-A decision tree is a classification algorithm consisting of a series
+<p>A decision tree is a classification algorithm consisting of a series
 of decision steps. Typically, at each step, a single variable is
 examined, and a choice between next steps is taken depending on
 a threshold value for the variable.  Decision trees
@@ -67,9 +68,9 @@ the standard high-speed emergency room decision tree called START.
 It is designed to be simple enough for EMTs to memorize and apply
 in seconds to triage the most serious emergency cases.
 
-<img src="/images/start-decision-tree.jpg" style="max-width:30%; width:300px;" class="mx-auto">
+<img src="/images/start-decision-tree.jpg" style="max-width:30%; width:300px;" class="mx-auto d-block">
 
-The most popular decision tree learning algorithm is called CART
+<p>The most popular decision tree learning algorithm is called CART
 (<a href="https://www.taylorfrancis.com/books/mono/10.1201/9781315139470/classification-regression-trees-leo-breiman-jerome-friedman-olshen-charles-stone">Brieman, et al, 1984</a>), and it works
 by constructing a decision tree with a simple greedy heuristic.
 <ul>
@@ -91,7 +92,7 @@ you can see the effect concretely in
 >this colab notebook, by <a href="https://github.com/ageron/">Aur&eacute;lien Geron</a>,
 which illustrates how to use Scikit-learn to run the standard CART decision tree algorithm.
 
-<img src="/images/decision-scatter.png" style="max-width:30%; width:300px;" class="mx-auto">
+<img src="/images/decision-scatter.png" style="max-width:30%; width:300px;" class="mx-auto d-block">
 
 CART decision trees are not optimal; there can be more economical
 sets of choices that lead to higher accuracy classifiers than the choices
