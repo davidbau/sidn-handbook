@@ -1,0 +1,214 @@
+/* From https://github.com/Vestride/fancy-index/blob/main/style.css
+
+Stylesheet and javascript designed to be used with the following
+Apache FancyIndexing directives.
+
+    <Directory ...>
+        ServerSignature off
+        IndexOptions IgnoreCase FancyIndexing HTMLTable SuppressRules
+        IndexOptions FoldersFirst VersionSort NameWidth=* DescriptionWidth=*
+        IndexOptions XHTML IconHeight=16 IconWidth=16
+        IndexStyleSheet "/apache-index.css"
+        IndexHeadInsert "<meta charset=\"utf-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\"><script src=\"//baulab.info/apache-index.js\"></script>"
+    </Directory>
+
+The MIT License (MIT)
+
+Copyright (c) 2014 Glen Cheney
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+*/
+
+:root {
+  --color-bg: white;
+  --color-text: #222;
+  --color-table-bg: white;
+  --color-table-bg--head: #efefef;
+  --color-table-bg--even: whitesmoke;
+  --color-table-text: #000;
+  --color-link-text: #3498db;
+  --color-link-text--visited: #8e44ad;
+  --color-search-text: #8e44ad;
+  --color-search-bg: white;
+  --color-search-border: rgba(0, 0, 0, .15);
+  --color-search-border--focus: #8e44ad;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #222222;
+    --color-text: #bbb;
+    --color-table-bg: #222222;
+    --color-table-bg--head: #181818;
+    --color-table-bg--even: #333;
+    --color-table-text: #ccc;
+    --color-link-text: #3096d5;
+    --color-link-text--visited: #9e4ebf;
+    --color-search-text: #9e4ebf;
+    --color-search-bg: #181818;
+    --color-search-border: rgba(255, 255, 255, .15);
+    --color-search-border--focus: #9e4ebf;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-weight: 300;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+}
+
+h1 {
+  font-size: 1.9em;
+  font-variant: small-caps;
+  float: left;
+  margin: 0 0 0.3rem 0;
+}
+
+address {
+  float: right;
+  margin: 0.67rem;
+}
+
+
+table {
+  width: 100%;
+  background: var(--color-table-bg);
+  border: 0;
+  table-layout: auto;
+}
+
+table thead {
+  background: var(--color-table-bg--head);
+}
+
+table tr th,
+table tr td {
+  padding: 0.5625rem 0.625rem;
+  font-size: 1.0rem;
+  color: var(--color-table-text);
+  text-align: left;
+  line-height: 1.125rem;
+}
+
+table thead tr th {
+  padding: 0.5rem 0.625rem 0.625rem;
+  font-weight: bold;
+}
+
+table tr:nth-child(even) {
+  background: var(--color-table-bg--even);
+}
+
+a {
+  text-decoration: none;
+  color: var(--color-link-text);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:visited {
+  color: var(--color-link-text--visited);
+}
+
+.indexhead a:visited {
+  color: var(--color-link-text);
+}
+
+.img-wrap {
+  vertical-align: middle;
+  display: inline-block;
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+}
+
+.img-wrap img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: contain;
+}
+
+.img-wrap + a {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.hidden {
+  display: none;
+}
+
+#page-header, #indextitle {
+  margin: 0.67rem 0.625rem 0.67rem 0.625rem;
+}
+
+#apache-index-search {
+  display: block;
+  float: right;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.3rem;
+  font-size: 1rem;
+  line-height: 1.25;
+  color: var(--color-search-text);
+  background-color: var(--color-search-bg);
+  background-image: none;
+  background-clip: padding-box;
+  border: 1px solid var(--color-search-border);
+  border-radius: 0.25rem;
+  -webkit-appearance: textfield;
+}
+
+#apache-index-search:focus {
+  border-color: var(--color-search-border--focus);
+  outline: 0;
+}
+
+#apache-index-search::placeholder {
+  color: silver;
+}
+
+/* Hide extra columns so they don't squash file names */
+@media (max-width: 600px) {
+  table tr td, table tr th, table thead tr th {
+    padding: 0;
+  }
+
+  .indexcollastmod, .indexcoldesc, .indexcolsize {
+    display: none;
+  }
+
+  h1 {
+    float: none;
+  }
+  #apache-index-search {
+    float: none;
+  }
+}
+
+@media (max-width: 400px) {
+  h1 {
+    font-size: 1.375em;
+  }
+}
