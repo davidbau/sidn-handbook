@@ -1,4 +1,5 @@
 def header(title):
+    global pathname
     return f"""\
 <!doctype html>
 <html lang="en">
@@ -26,7 +27,7 @@ rel="stylesheet">
  <div class="container-fluid">
   <a class="navbar-brand" href="/">Structure and Intrepretation of Deep Networks</a>
   <ul class="navbar-nav ms-auto">
-  <li class="nav-item">{title}</li>
+  <li class="nav-item"><a href="navbar-link" href="{pathname}">{title}</a></li>
   </ul>
  </div>
 </nav>
