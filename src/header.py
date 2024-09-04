@@ -24,10 +24,8 @@ rel="stylesheet">
 <link rel="stylesheet" href="/css/style.css">
 
 <!-- Mathjax -->
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.1/es5/tex-mml-chtml.js"></script>
-<!--
-<script id="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/mml-chtml.min.js" integrity="sha512-4JUXEJCjFmGygcGTR/doRQ1Kw7uEYn+kBpiGWyVBzUQHtFSPQNm08E/lqo2/XJqiWKKV0nTpv1q8bHPPDL4n4Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
--->
+<script sid="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" integrity="sha512-6FaAxxHuKuzaGHWnV00ftWqP3luSBRSopnNAA2RvQH1fOfnF/A1wOfiUWF7cLIOFcfb1dEhXwo5VG3DAisocRw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 </head>
 
 <body>
