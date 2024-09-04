@@ -1,5 +1,6 @@
-def header(title):
+def header(title, autotitle=True):
     global pathname
+    heading = '<h1 class="mt-5">{title}</h1>' if autotitle else ''
     return f"""\
 <!doctype html>
 <html lang="en">
@@ -40,4 +41,5 @@ rel="stylesheet">
 
 <div class="container">
 <main>
+{heading}
 """
