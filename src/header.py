@@ -23,6 +23,10 @@ rel="stylesheet">
 <!-- Custom CSS Imports -->
 <link rel="stylesheet" href="/css/style.css">
 
+<!-- Mathjax -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/mml-chtml.min.js" integrity="sha512-4JUXEJCjFmGygcGTR/doRQ1Kw7uEYn+kBpiGWyVBzUQHtFSPQNm08E/lqo2/XJqiWKKV0nTpv1q8bHPPDL4n4Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
 <body>
 <nav class="navbar navbar-dark bg-dark">
 <div class="container-fluid">

@@ -47,6 +47,7 @@ import os
 import shutil
 import sys
 import argparse
+import re
 
 # Function to load Python modules from the current directory into the script's namespace
 def load_modules(src_dir):
@@ -65,10 +66,21 @@ def load_modules(src_dir):
 def escape_triple_quotes(template):
     return template.replace('"""', '\\"\\"\\"')
 
+# Function to escape {} inside Latex / mathjax-looking \[ eqs \] and \( eqs \)
+def escape_latex_braces(text):
+    for start, end, pattern in [('\\[', '\\]', r'(?s)\\\[(.*?)\\\]'),
+                                ('\\(', '\\)', r'(?s)\\\((.*?)\\\)')]:
+        runs = re.split(pattern, text)
+        for i in range(1, len(runs), 2):
+           runs[i] = start + runs[i].replace('{', '{{').replace('}', '}}') + end
+        text = ''.join(runs)
+    return text
+
 # Function to expand HTML templates using the loaded namespace
 def expand_template(template, namespace, pathname):
     namespace['pathname'] = pathname
     escaped_template = escape_triple_quotes(template)
+    escaped_template = escape_latex_braces(template)
     try:
         # Evaluate the template as an f-string within the namespace
         return eval(f'f"""{escaped_template}"""', namespace)
