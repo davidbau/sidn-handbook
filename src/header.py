@@ -22,11 +22,12 @@ rel="stylesheet">
 <link rel="stylesheet" href="/css/style.css">
 
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
  <div class="container-fluid">
-  <a class="navbar-brand" href="/Structure and Intrepretation of Deep Networks</a>
+  <a class="navbar-brand" href="/">Structure and Intrepretation of Deep Networks</a>
   <ul class="navbar-nav ms-auto">
   <li class="nav-item">{title}</li>
+  </ul>
  </div>
 </nav>
 """
