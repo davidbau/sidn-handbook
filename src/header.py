@@ -23,12 +23,14 @@ rel="stylesheet">
 <link rel="stylesheet" href="/css/style.css">
 
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
- <div class="container-fluid">
-  <a class="navbar-brand" href="/">Structure and Intrepretation of Deep Networks</a>
-  <ul class="navbar-nav ms-auto">
-  <li class="nav-item"><a href="navbar-link" href="{pathname}">{title}</a></li>
-  </ul>
- </div>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+  <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="navbar-brand" href="/">Structure and Intrepretation of Deep Networks</a>
+        <a class="nav-link" href="{pathname}">{title}</a>
+      </li>
+    </ul>
+  </div>
 </nav>
 """
