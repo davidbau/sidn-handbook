@@ -24,15 +24,20 @@ rel="stylesheet">
 
 <body>
 <nav class="navbar navbar-dark bg-dark">
-  <ul class="navbar-nav mr-auto">
-    <li class="nav-item active">
-      <a class="nav-link" href="{pathname}">{title}</a>
-    </li>
-  </ul>
-  <ul class="navbar-nav ml-auto">
-    <li class="nav-item">
-      <a class="navbar-brand" href="/">Structure and Intrepretation of Deep Networks</a>
-    </li>
-  </ul>
+<div class="container-fluid">
+<ul class="navbar-nav mr-auto">
+ <li class="nav-item active">
+  <a class="nav-link" href="{pathname}">{title}</a>
+ </li>
+</ul>
+<ul class="navbar-nav ml-auto">
+ <li class="nav-item">
+  <a class="navbar-brand" href="/">Structure and Intrepretation of Deep Networks</a>
+ </li>
+</ul>
+</div>
 </nav>
+
+<div class="container">
+<main>
 """
