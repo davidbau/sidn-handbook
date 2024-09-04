@@ -90,12 +90,16 @@ methods such as
 >Rosenblatt's neural network methods</a>, towards "good old fashioined"
 symbolic AI that was made of fully human interpretable LISP programs.
 
-<h2>Machine Learning Models Made Interpretable By Design</h2>
+<p>But then, by the 1980s, machine learning was becoming both
+practical and useful. How to deal with the problem of interpretability?
 
-<p>By the time Machine Learning was making a resurgence in the 1980s,
-neural networks were considered "uninterpretable." But it was possible
-to train models that were easier to understand and those classes
-of models were considered <em>interpretable machine learning</em>.
+<p>But then, once machine learning 
+
+<h2>Solution 1: Models Interpretable By Design</h2>
+
+<p>The community's first answer to ML interpretability
+was to avoid "uninterpretable" solutions
+like neural networks and instead favor <em>interpretable machine learning</em>.
 
 <p>Here we will point out two of the main approaches to interpretable
 ML from this era.
@@ -115,10 +119,13 @@ in seconds to triage the most serious emergency cases.
 
 <img src="/images/start-decision-tree.jpg" style="max-width:30%; width:300px;" class="mx-auto d-block">
 
+<h4>Classic approach: CART trees</h4>
+
 <p>The most popular decision tree learning algorithm is called CART
 (<a href="https://www.taylorfrancis.com/books/mono/10.1201/9781315139470/classification-regression-trees-leo-breiman-jerome-friedman-olshen-charles-stone">Brieman, et al, 1984</a>), and it works
-by constructing a decision tree with a simple greedy heuristic.
-<ul>
+by constructing a decision tree with a simple greedy heuristic:
+
+<ol>
 <li>For each variable, a threshold is found that maximizes
 the "purity" of the separated training samples, where
 purity is quantified by the Gini value
@@ -129,17 +136,19 @@ purity is quantified by the Gini value
 the variable that achieves the highest highest Gini index
 at each step, with each step subdividing the choices
 until the accuracy is as high as you want
-</ul>
+</ol>
 
-The resulting decision tree boundaries look like rectilinear planes;
-you can see the effect concretely in
+<p>The resulting decision tree boundaries look like rectilinear planes.
+You can see the effect concretely in
 <a href="https://colab.research.google.com/github/ageron/handson-ml2/blob/master/06_decision_trees.ipynb"
 >this colab notebook, by <a href="https://github.com/ageron/">Aur&eacute;lien Geron</a>,
 which illustrates how to use Scikit-learn to run the standard CART decision tree algorithm.
 
 <img src="/images/decision-scatter.png" style="max-width:30%; width:300px;" class="mx-auto d-block">
 
-CART decision trees are not optimal; there can be more economical
+<h4>Current Research: Optimal Decision Trees</h4>
+
+<p>CART decision trees are not optimal; there can be more economical
 sets of choices that lead to higher accuracy classifiers than the choices
 found by this greedy approach.  Optimal decision tree algorithms remain an
 active area of research today. For example, in 2019, 
@@ -152,14 +161,46 @@ most interpretable tree out of a set of near-optimal choices.
 (<A href="https://github.com/ubc-systopia/treeFarms">Github here</a>).
 
 
+<p>Decision trees are great for human-executable decisionmaking,
+but what if we just need the decisions to be human-understandable
+without necessarily being human-executable?  Can we do better?
 
+<p>Here I'll briefly mention a second interpretable ML
+approach that is popular in industry.
 
+<h3>Generalized Additive Models</h3>
 
+<p><a href="https://projecteuclid.org/journals/statistical-science/volume-1/issue-3/Generalized-Additive-Models/10.1214/ss/1177013604.full">Generalized Additive Models</a>
+ (Hastie, et al 1986)</a>
+are a type of model that is based on the fact that any multivariate function
+can be decomposed into a sum of univariate functions of the input variables \( x_i \):
 
+\[ y = f_1(x_1) + f_2(x_2) + f_3(x_3) + \cdots \]
 
+For example, suppose you need to predict somebody's income based on the year,
+their age, and their level of education.  Rather than using a decision tree
+(which is based on discontinous decisions) or a neural network (which is hard
+to understand), you could learn univariate functions \( f_{year}(year) \),
+\( f_{age}(age) \) and \( f_{education}(education) \), that, when added up,
+make a prediction for \( y \):
 
+<img src="/images/gam-example-income.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
 
+As you can see, this kind of model is very interpretable: reading individual
+function can directly give you the intuition about how changing one variable
+will affect the output.
 
+GAMs were devised by <a href="https://www.jstor.org/stable/2288477">Breiman and Friedman</a>:
+their original 1985 paper describes the <a href="https://en.wikipedia.org/wiki/Backfitting_algorithm"
+>Backfitting algorithm</a> for finding a GAM model by beginning with a naive set of \( f_i \),
+and then iteratively improving them by distributing the residual error to each function.
+
+Typically the individual functions are constrained to be smooth splines (and sometimes
+other constraints are imposed) to avoid overfitting, and so that the reusults are more
+interpretable.
+
+<a href="">This colab notebook, by the authors of pyGAM</a> demonstrates the pyGAM
+package and the concepts of GAMs very nicely.
 
 
 </main>
