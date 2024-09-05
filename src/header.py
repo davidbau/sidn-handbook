@@ -1,8 +1,10 @@
 def header(title, autotitle=True):
     global pathname
     heading = ''
+    toc = ''
     if autotitle:
-        heading = f'<nav id="toc" data-toggle="toc"></nav><h1 class="mt-5">{title}</h1>'
+        heading = f'<h1 class="mt-5">{title}</h1>'
+        toc = f'<nav id="toc" data-toggle="toc"></nav>'
     return f"""\
 <!doctype html>
 <html lang="en">
@@ -39,7 +41,7 @@ rel="stylesheet">
 </head>
 
 <body data-spy="scroll" data-target="#toc">
-<nav class="navbar navbar-dark bg-dark">
+<nav class="navbar fixed-top navbar-dark bg-dark">
 <div class="container-fluid">
 <ul class="navbar-nav mr-auto">
  <li class="nav-item active">
@@ -55,6 +57,10 @@ rel="stylesheet">
 </nav>
 
 <div class="container">
-<main>
+<div class="row">
+<div class="col-2 position-sticky">
+{toc}
+</div>
+<main class="col-10">
 {heading}
 """

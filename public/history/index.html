@@ -33,7 +33,7 @@ rel="stylesheet">
 </head>
 
 <body data-spy="scroll" data-target="#toc">
-<nav class="navbar navbar-dark bg-dark">
+<nav class="navbar fixed-top navbar-dark bg-dark">
 <div class="container-fluid">
 <ul class="navbar-nav mr-auto">
  <li class="nav-item active">
@@ -49,8 +49,12 @@ rel="stylesheet">
 </nav>
 
 <div class="container">
-<main>
-<nav id="toc" data-toggle="toc"></nav><h1 class="mt-5">Three Appraches to Interpretable ML: a History</h1>
+<div class="row">
+<div class="col-2 position-sticky">
+<nav id="toc" data-toggle="toc"></nav>
+</div>
+<main class="col-10">
+<h1 class="mt-5">Three Appraches to Interpretable ML: a History</h1>
 
 
 <p>
@@ -254,6 +258,7 @@ us to the second main approach to interpretability.
 
 
 </main>
+</div>
 </div>
 </body>
 </html>
