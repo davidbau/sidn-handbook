@@ -40,7 +40,7 @@ rel="stylesheet">
 <div class="container-fluid">
 <ul class="navbar-nav mr-auto">
  <li class="nav-item active">
-  <a class="nav-link" href="/history/index.html">Three Approaches to Interpretable ML: a History</a>
+  <a class="nav-link" href="/history/index.html">A History of Interpretable Machine Learning</a>
  </li>
 </ul>
 <ul class="navbar-nav ml-auto">
@@ -58,27 +58,46 @@ rel="stylesheet">
 </div>
 <div class="col-2"></div>
 <main class="col-8">
-<h1 class="mt-5">Three Approaches to Interpretable ML: a History</h1>
+<h1 class="mt-5">A History of Interpretable Machine Learning</h1>
 
 
 <p>
 This course arrives in late 2024, as interest in interpretable machine learning is growing.
 Interest is being driven by remarkable gains in capabilities in large-scale generative AI,
 especially large transformer language models such as ChatGPT and text-to-image synthesis
-diffusion  models such as DallE, and the question of the moment is "how do these
-huge neural networks work?"
+diffusion  models such as DallE. The question of the moment is "how do these
+huge generative neural networks work?"
+
 <p>
-Yet the puzzle of interpretable machine learning is inherent to <em>all</em>
-machine learning, and so it has challanged computer scientists for many years.
-In this chapter, we take an abbreviated walk through of the history of
-interpretable machine learning preceding the current generative AI moment.
+Yet the puzzle of interpretability is inherent to <em>all</em>
+machine learning, and the problem has challanged computer scientists
+for many years.  In this chapter, we take a moment to trace the hundred
+years of intellectual debuate about interpretable machine learning
+that have preceding the current generative moment in AI.
 
-<h2>The Problem of Interpretability</h2>
+<h2>From Lovelace to Turing to Minksy and Wolpert</h2>
 
-<p>The problem of interpretability dates to the earliest days of computing:
+<p>
+Deeply ingrained in our conception of computer science is the
+belief that programming is about creating human-designed
+algorithms that reflect the insights and understanding of
+the programmer. This notion was famously articulated by
+Ada Lovelace, the very first programmer in history, who
+designed programs for the Babbage analytical engine.
+
+<blockquote>
+The Analytical Engine has no pretensions whatever to <b>originate</b> anything.
+It can do whatever <b>we know</b> how to order it to perform.
+</blockquote>
+
+<p>
+Yet Alan Turing disagreed that computer science would be
+inherently tethered to human knowledge. He argued that some day
+it would be possible to teach machines how to <em>learn</em> automatically.
 <a href="https://papers.baulab.info/papers/also/Turing-1950.pdf"
->his 1950 essay on machine intelligence</a>, Alan Turing wrote about
-the challenge of machine learning interpretability:
+>In his 1950 essay on machine intelligence</a>, Alan Turing
+pointed out that machine larning would immediately lead the challenge
+of machine learning interpretability:
 
 <blockquote>
 An important feature of a learning machine is that its teacher
@@ -87,38 +106,67 @@ although he may still be able to some extent to predict his pupil's behavior.
 (<a href="https://papers.baulab.info/papers/also/Turing-1950.pdf">p. 458</a>)
 </blockquote>
 
-<p>Turing recognized that, Ada Lovelace's prediction that a computer could
-only ever "do whatever we know how to order it to perform" was false.
-Although just a dream in 1950, he knew that the success of machine learning
-would someday lead to computers that could perform tasks that their
-makers would not understand.
+<p>
+The inherent human ignorance about the internals of machine-learned
+systems was one reason for the slow uptake of
+machine learning methods in early decades of computer science.
 
-<p>The lack of interpretability was one reason for the slow uptake of
-machine learning methods in early decades of computer science.  For
-example, Marvin Minsky was fond of explaining that machine learning
-offered <a href="https://arxiv.org/abs/2007.10928"
->no escape from the biases of a programmer</a>, just a way to make
-<a href="https://cse-robotics.engr.tamu.edu/dshell/cs625/koan-sussman.pdf"
->uninterpretable programs with <em>unknown</em> biases</a>. Minksy famously
-steered AI funding in the 1970s away from machine learning
-methods such as
+<p>
+For those who might believe that human ignorance is a <em>good</em>
+thing, it is important for ML scientists to be aware of the
+<a href="https://arxiv.org/abs/2007.10928">No-Free-Lunch Theorems</a>
+by Wolpert and Macready.  The NFL theorems proves that there no
+learning algorithm that generalizes well for all possible data.
+In other words, learning algorithms only succeed due to the biases
+that are reflected within the algorithm. They must be specialized to
+particular kinds of problems reflecting the needs and assumptions
+the programmer creating the learning algorithm.
+
+<p>
+This intuition about the irreducible nature of the responsibility
+of the programmer famously led Marvin Minksy to steer AI funding
+in the 1970s away from machine learning methods such as
 <a href="https://news.cornell.edu/stories/2019/09/professors-perceptron-paved-way-ai-60-years-too-soon"
 >Rosenblatt's neural network methods</a>, towards "good old fashioined"
-symbolic AI that was made of fully human interpretable LISP programs.
+symbolic AI that used LISP.  Minsky believed it was important to
+put human intention, logic, and interpretability
+front and center of the development of artificial intelligence.
 
-<p>But then, by the 1980s, machine learning was becoming both
-practical and useful. How to deal with the problem of interpretability?
+<p>Marvin Minsky is famous for the following parable about
+a his advice to a young Jerry Sussman:
 
-<p>But then, once machine learning 
+<blockquote>
+<p>In the days when Sussman was a novice, Minsky once came to him as he sat hacking at the PDP-6.
+<p>"What are you doing?", asked Minsky.
+<p>"I am training a randomly wired neural net to play Tic-Tac-Toe" Sussman replied.
+<p>"Why is the net wired randomly?", asked Minsky.
+<p>"I do not want it to have any preconceptions of how to play”, Sussman said.
+<p>Minsky then shut his eyes.
+<p>"Why do you close your eyes?", Sussman asked his teacher.
+<p>"So that the room will be empty."
+<p>At that moment, Sussman was enlightened.
+</blockquote>
+
+<p>
+Yet in the end, it proved to be Minsky, not the machine learning
+programmers, who were closing their eyes to the real challenge of
+interpretability.  By the 1980s, machine learning was becoming
+both practical and useful, leaving computer scientists with the
+unsolved puzzle of how to understand self-programmed
+machine-learned systems.
 
 <h2>Approach 1: Models Interpretable By Design (1985)</h2>
 
 <p>The community's first answer to ML interpretability
-was to avoid "uninterpretable" solutions
-like neural networks and instead favor <em>interpretable machine learning</em>.
+was to make the problem easier by avoiding "uninterpretable"
+learning algorithms like neural networks and instead favor
+<em>interpretable machine learning</em> methods.
 
-<p>Here we will point out two of the main approaches to interpretable
-ML from this era.
+<p>As an example, we will point out two of the main approaches to
+interpretable ML that date from the 1980s that are still
+widely used today: Decision Trees and Generalized Additive Models.
+Both these ideas sprang from learning algorithms devised by
+<a href="https://en.wikipedia.org/wiki/Leo_Breiman">Leo Breiman</a>.
 
 <h3>Decision Trees</h3>
 
@@ -137,14 +185,16 @@ in seconds to triage the most serious emergency cases.
 
 <h3>Classic approach: CART trees</h3>
 
-<p>The most popular decision tree learning algorithm is called CART
+<p>
+The most popular decision tree learning algorithm is called CART
 (<a href="https://www.taylorfrancis.com/books/mono/10.1201/9781315139470/classification-regression-trees-leo-breiman-jerome-friedman-olshen-charles-stone">Brieman, et al, 1984</a>), and it works
 by constructing a decision tree with a simple greedy heuristic:
 
 <ol>
-<li>For each variable, a threshold is found that maximizes
+<li>For each input variable, a threshold is found that maximizes
 the "purity" of the separated training samples, where
-purity is quantified by the Gini value
+purity is quantified by the Gini value (in which \( p_k \) denotes
+the portion of a new partition that is occupied by class \( k \)).
 
 \[ 1 - \sum_{k} p_{k}^2 \]
 
@@ -154,7 +204,8 @@ at each step, with each step subdividing the choices
 until the accuracy is as high as you want
 </ol>
 
-<p>The resulting decision tree boundaries look like rectilinear planes.
+<p>
+The resulting decision tree boundaries look like rectilinear planes.
 You can see the effect concretely in
 <a href="https://colab.research.google.com/github/ageron/handson-ml2/blob/master/06_decision_trees.ipynb"
 >this colab notebook, by <a href="https://github.com/ageron/">Aur&eacute;lien Geron</a>,
@@ -164,7 +215,8 @@ which illustrates how to use Scikit-learn to run the standard CART decision tree
 
 <h3>Current Research: Optimal Decision Trees</h3>
 
-<p>CART decision trees are not optimal; there can be more economical
+<p>
+CART decision trees are not optimal; there can be more economical
 sets of choices that lead to higher accuracy classifiers than the choices
 found by this greedy approach.  Optimal decision tree algorithms remain an
 active area of research today. For example, in 2019, 
@@ -176,26 +228,30 @@ and followup work by <a href="https://arxiv.org/abs/2209.08040"
 most interpretable tree out of a set of near-optimal choices.
 (<A href="https://github.com/ubc-systopia/treeFarms">Github here</a>).
 
-
-<p>Decision trees are great for human-executable decisionmaking,
+<p>
+Decision trees are great for human-executable decisionmaking,
 but what if we just need the decisions to be human-understandable
 without necessarily being human-executable?  Can we do better?
 
-<p>Here I'll briefly mention a second interpretable ML
+<p>
+Here I'll briefly mention a second interpretable ML
 approach that is popular in industry.
 
 <h3>Generalized Additive Models</h3>
 
-<p><a href="https://projecteuclid.org/journals/statistical-science/volume-1/issue-3/Generalized-Additive-Models/10.1214/ss/1177013604.full">Generalized Additive Models</a>
+<p>
+<a href="https://projecteuclid.org/journals/statistical-science/volume-1/issue-3/Generalized-Additive-Models/10.1214/ss/1177013604.full">Generalized Additive Models</a>
  (Hastie, et al 1986)</a>
 are a type of model that is based on the fact that any multivariate function
 can be decomposed into a sum of univariate functions of the input variables \( x_i \):
 
 \[ y = f_1(x_1) + f_2(x_2) + f_3(x_3) + \cdots \]
 
-<p>(This fact is known as the <a href="https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Arnold_representation_theorem">Kolmogorov Arnold representation theorem</a>.
+<p>
+(This fact is known as the <a href="https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Arnold_representation_theorem">Kolmogorov Arnold representation theorem</a>.
 
-<p>A sum of univariate functions like this can be very interpretable.
+<p>
+A sum of univariate functions like this can be very interpretable.
 For example, suppose you need to predict somebody's income based on the year,
 their age, and their level of education.  Rather than using a decision tree
 (which is based on discontinous decisions) or a neural network (which is hard
@@ -205,90 +261,77 @@ make a prediction for \( y \):
 
 <img src="images/gam-example-income.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
 
-<p>As you can see, this kind of model is very interpretable: reading individual
+<p>
+As you can see, this kind of model is very interpretable: reading individual
 function can directly give you the intuition about how changing one variable
 will affect the output.
 
 <h3>Classic Approach: Backfitting Splines</h3>
 
-<p>GAMs were devised by <a href="https://pdodds.w3.uvm.edu/files/papers/others/1986/hastie1986a.pdf"
+<p>
+GAMs were devised by <a href="https://pdodds.w3.uvm.edu/files/papers/others/1986/hastie1986a.pdf"
 >Hastie and Tibshirani</a> in 1986, building on a 1985 algorittm by <a href="https://www.jstor.org/stable/2288477">Breiman and Friedman</a> to compute such models.
 
-<p>The 1985 Brieman paper describes the <a href="https://en.wikipedia.org/wiki/Backfitting_algorithm"
+<p>
+The 1985 Brieman paper describes the <a href="https://en.wikipedia.org/wiki/Backfitting_algorithm"
 >Backfitting algorithm</a> for finding an additive model by beginning with a naive set of \( f_i \),
 and then iteratively improving them by distributing the residual error to each function.
 
-<p>Typically the individual functions are constrained to be smooth splines (and sometimes
+<p>
+Typically the individual functions are constrained to be smooth splines (and sometimes
 other constraints are imposed, such as convexity or monotonicitiy of the individual \( f_i \)
 components). This both helps avoid overfitting, helps ensure that the resulting model
 is more interpretable.
 
-<p><a href="https://colab.research.google.com/github/davidbau/sidn-handbook/blob/main/public/history/colab/tour_of_pygam.ipynb"
+<p>
+<a href="https://colab.research.google.com/github/davidbau/sidn-handbook/blob/main/public/history/colab/tour_of_pygam.ipynb"
 >This colab notebook, by the authors of pyGAM</a> demonstrates the pyGAM
 package, which applies backfitting and illustrates and the concepts of GAMs very nicely.
 
 <h3>Current Research: Neural Additive Models and KANs</h3>
 
-<p>Recently, <a href="https://arxiv.org/abs/2004.13912">Agrawal, et al</a>
+<p>
+Recently, <a href="https://arxiv.org/abs/2004.13912">Agrawal, et al</a>
 (on a team with Rich Caurana and Geoff Hinton) proposed <em>Neural Additive Models</em>
 which are a type of GAM that uses neural networks instead of spline-smoothed
 functions for the \( f_i \).
 
-<p>This year, <a href="https://arxiv.org/abs/2404.19756">Liu, et al</a>
+<p>
+This year, <a href="https://arxiv.org/abs/2404.19756">Liu, et al</a>
 (on a team with Max Tegmark) proposed <em>Kolmogorov-Arnold Networks</em> (KANs),
 that take the opposite tack: instead of using neural networks to create GAMs,
 they use spline-based GAMs as a drop-in for neural network MLPs, claiming
 better interpretability and good scaling.
 
-<p>In lower-dimensional settings where input variables have understandable meanings,
-both decision trees and GAMs are often used in practice to achieve debuggable,
+<p>
+In lower-dimensional settings where input variables have understandable meanings,
+both decision trees and GAMs are still used in practice to achieve debuggable,
 interpretable machine learned models. It is worth understanding both the classic
-approaches and modern research proposals around both these approaches. However,
-the field of interpretable machine learning underwent an earthquake in 2012 when
+approaches and modern research proposals around both these approaches, because
+they exemplify what it means for a learned system to be interpretable by
+humans.
+
+<p>
+However, as data volumes grew in the late 1990s with the growth of the internet
+and the digitization of society, it became clear that these early interpretable
+machine learning approaches did not scale as well as some more opaque methods.
+For example, in natural language modeling, advocates of decision trees
+(see <a href="https://www.sciencedirect.com/science/article/pii/S0167639398000181"
+>Potamianos</a>) were reporting negative results compared to ngram models.
+
+<p>
+The field of interpretable machine learning underwent an earthquake in 2012 when
 <a href="https://papers.baulab.info/papers/Krizhevsky-2012.pdf">Krizhevsky et al</a>
 published the AlexNet neural network that smashed the competitors in the ImageNet
 object classification challenge.  At that moment, the community came to the
 realization that huge performance gains could be achieved if we were willing to
-use models like neural networks that were not designed to be interperetable.
+use models like deep neural networks that have many layeers of internal
+variables that are not designed to be interperetable.
 
-<p>What do do about the interpretability of uninterpretable neural networks brings
-us to the second main approach to interpretability.
-
-<h2>Approach 2: Sensitivity Analysis (XAI, 2012)</h2>
-
-<p>In <a href="https://papers.baulab.info/papers/also/Erhan-2009.pdf">2009,
-Dumitru Erhan</a> wrote <em>Visualizing Higher-Layer Features of a Deep Network</em>,
-where he proposed analyzing the components of a neural network by identifying the
-inputs that caused them to maximize their output.  That is, writing
-\( h_{ij}( \theta, x) \) as the value of the neuron \( h_{ij} \) within a network
-with parameters \( \theta \) in response to the input \( x \), he proposed understanding
-the neuron by identifying and visualizing the maximizing input
-
-\[ x^* = \arg\max_{x \text{ s.t. } ||x|| = \rho} h_{ij}(\theta, x) \]
-
-<p>Erhan proposed maximizing input \( x^* \) can be found through
-gradient descent.
-
-<p><a href="https://arxiv.org/abs/1311.2901">Zeiler et al.</a> proposed several extensions to Erhan's
-approach using real images rather than a synthesized \( x^* \).  For example, Zeiler visulized
-the effects of occluding a small amount of input on hidden features and classifier output,
-and he obtained heatmaps that revealed that the networks are very senisitive to small
-parts of the input, for example, responding most sharply to the face of a (dog as shown in
-the b and d columents below), whie not responding much to masking in other parts of the input.
-
-<img src="images/zeiler-methods.jpg" style="max-width:80%; width:800px;" class="mx-auto d-block">
-
-<h3>Salience Maps</h3>
-
-<p>The local sensitivity of neural networks led to the development of many <em>salience map</em>
-methods for quickly estimating and visualizing this local sensitivity in a single fast
-calculation.
-
-<p>For example, the method of <em>integrated graidents</em>...
-
-
-<h3>Sanity Checks</h3>
-
+<p>
+What do do about the interpretability of deep neural networks brings
+us to the second part of the history, and the second main approach to
+interpretability.
 
 
 </main>
