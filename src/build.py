@@ -83,7 +83,7 @@ def expand_template(template, namespace, pathname):
     escaped_template = escape_latex_braces(template)
     try:
         # Evaluate the template as an f-string within the namespace
-        return eval(f'f"""{escaped_template}"""', namespace)
+        return eval(f'rf"""{escaped_template}"""', namespace)
     except (SyntaxError):
         # Return the original template if an error occurs during evaluation
         return template

@@ -260,11 +260,11 @@ us to the second main approach to interpretability.
 Dumitru Erhan</a> wrote <em>Visualizing Higher-Layer Features of a Deep Network</em>,
 where he proposed analyzing the components of a neural network by identifying the
 inputs that caused them to maximize their output.  That is, writing
-\( h_{ij}(	heta, x) \) as the value of the neuron \( h_{ij} \) within a network
-with parameters \( 	heta \) in response to the input \( x \), he proposed understanding
+\( h_{ij}( \theta, x) \) as the value of the neuron \( h_{ij} \) within a network
+with parameters \( \theta \) in response to the input \( x \), he proposed understanding
 the neuron by identifying and visualizing the maximizing input
 
-\[ x^* = rgmax_{x 	ext{wtih} ||x|| = ho} h_{ij}(	heta, x) \]
+\[ x^* = \argmax_{x \text{wtih} ||x|| = \rho} h_{ij}(\theta, x) \]
 
 <p>Erhan proposed maximizing input $x^*$ can be found through
 gradient descent.
