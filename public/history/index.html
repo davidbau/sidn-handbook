@@ -40,7 +40,7 @@ rel="stylesheet">
 <div class="container-fluid">
 <ul class="navbar-nav mr-auto">
  <li class="nav-item active">
-  <a class="nav-link" href="/history/index.html">Three Appraches to Interpretable ML: a History</a>
+  <a class="nav-link" href="/history/index.html">Three Approaches to Interpretable ML: a History</a>
  </li>
 </ul>
 <ul class="navbar-nav ml-auto">
@@ -58,7 +58,7 @@ rel="stylesheet">
 </div>
 <div class="col-2"></div>
 <main class="col-8">
-<h1 class="mt-5">Three Appraches to Interpretable ML: a History</h1>
+<h1 class="mt-5">Three Approaches to Interpretable ML: a History</h1>
 
 
 <p>
@@ -111,7 +111,7 @@ practical and useful. How to deal with the problem of interpretability?
 
 <p>But then, once machine learning 
 
-<h2>Solution 1: Models Interpretable By Design</h2>
+<h2>Approach 1: Models Interpretable By Design (1985)</h2>
 
 <p>The community's first answer to ML interpretability
 was to avoid "uninterpretable" solutions
@@ -135,7 +135,7 @@ in seconds to triage the most serious emergency cases.
 
 <img src="/images/start-decision-tree.jpg" style="max-width:30%; width:300px;" class="mx-auto d-block">
 
-<h4>Classic approach: CART trees</h4>
+<h3>Classic approach: CART trees</h3>
 
 <p>The most popular decision tree learning algorithm is called CART
 (<a href="https://www.taylorfrancis.com/books/mono/10.1201/9781315139470/classification-regression-trees-leo-breiman-jerome-friedman-olshen-charles-stone">Brieman, et al, 1984</a>), and it works
@@ -162,7 +162,7 @@ which illustrates how to use Scikit-learn to run the standard CART decision tree
 
 <img src="/images/decision-scatter.png" style="max-width:30%; width:300px;" class="mx-auto d-block">
 
-<h4>Current Research: Optimal Decision Trees</h4>
+<h3>Current Research: Optimal Decision Trees</h3>
 
 <p>CART decision trees are not optimal; there can be more economical
 sets of choices that lead to higher accuracy classifiers than the choices
@@ -209,7 +209,7 @@ make a prediction for \( y \):
 function can directly give you the intuition about how changing one variable
 will affect the output.
 
-<h4>Classic Approach: Backfitting Splines</h4>
+<h3>Classic Approach: Backfitting Splines</h3>
 
 <p>GAMs were devised by <a href="https://pdodds.w3.uvm.edu/files/papers/others/1986/hastie1986a.pdf"
 >Hastie and Tibshirani</a> in 1986, building on a 1985 algorittm by <a href="https://www.jstor.org/stable/2288477">Breiman and Friedman</a> to compute such models.
@@ -227,7 +227,7 @@ is more interpretable.
 >This colab notebook, by the authors of pyGAM</a> demonstrates the pyGAM
 package, which applies backfitting and illustrates and the concepts of GAMs very nicely.
 
-<h4>Current Research: Neural Additive Models and KANs</h4>
+<h3>Current Research: Neural Additive Models and KANs</h3>
 
 <p>Recently, <a href="https://arxiv.org/abs/2004.13912">Agrawal, et al</a>
 (on a team with Rich Caurana and Geoff Hinton) proposed <em>Neural Additive Models</em>
@@ -251,13 +251,43 @@ object classification challenge.  At that moment, the community came to the
 realization that huge performance gains could be achieved if we were willing to
 use models like neural networks that were not designed to be interperetable.
 
-<p>What do do about the interpretability of uinterpretable neural networks brings
+<p>What do do about the interpretability of uninterpretable neural networks brings
 us to the second main approach to interpretability.
 
-<h2>Approach 2: Explainable AI (Local Explanations)</h2>
+<h2>Approach 2: Sensitivity Analysis (XAI, 2012)</h2>
+
+<p>In <a href="https://papers.baulab.info/papers/also/Erhan-2009.pdf">2009,
+Dumitru Erhan</a> wrote <em>Visualizing Higher-Layer Features of a Deep Network</em>,
+where he proposed analyzing the components of a neural network by identifying the
+inputs that caused them to maximize their output.  That is, writing
+\( h_{ij}(	heta, x) \) as the value of the neuron \( h_{ij} \) within a network
+with parameters \( 	heta \) in response to the input \( x \), he proposed understanding
+the neuron by identifying and visualizing the maximizing input
+
+\[ x^* = rgmax_{x 	ext{wtih} ||x|| = ho} h_{ij}(	heta, x) \]
+
+<p>Erhan proposed maximizing input $x^*$ can be found through
+gradient descent.
+
+<p><a href="https://arxiv.org/abs/1311.2901">Zeiler et al.</a> proposed several extensions to Erhan's
+approach using real images rather than a synthesized \( x^* \).  For example, Zeiler visulized
+the effects of occluding a small amount of input on hidden features and classifier output,
+and he obtained heatmaps that revealed that the networks are very senisitive to small
+parts of the input, for example, responding most sharply to the face of a (dog as shown in
+the b and d columents below), whie not responding much to masking in other parts of the input.
+
+<img src="/images/zeiler-methods.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
+
+<h3>Salience Maps</h3>
+
+<p>The local sensitivity of neural networks led to the development of many <em>salience map</em>
+methods for quickly estimating and visualizing this local sensitivity in a single fast
+calculation.
+
+<p>For example, the method of <em>integrated graidents</em>...
 
 
-
+<h3>Sanity Checks</h3>
 
 
 
