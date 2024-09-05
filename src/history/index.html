@@ -58,16 +58,24 @@ in early decades of computer science.
 For those who might believe that removing human insight from
 machine learning is a <em>good</em> thing, it is important
 for machine learning scientists to absorb the lessons of the
-<a href="https://arxiv.org/abs/2007.10928">No-Free-Lunch Theorems</a>
+<a href="https://arxiv.org/abs/2007.10928">No-Free-Lunch Theorem</a>
 by Wolpert and Macready.
 
 <p>
-The NFL theorems prove that there no
-learning algorithm that generalizes well for all possible data.
-In other words, learning algorithms only succeed because of the
+The No Free Lunch (NFL) theorem states that all learning methods
+perform equally well (and equally badly) when averaged over
+all possible problems. In other words, there is no neutrality
+in machine learning: learning algorithms only succeed because of the
 way they are specialized to particular kinds of problems. Those
-biases should reflect the needs and assumptions the programmer
-creating the learning algorithm.
+same learning methods are guaranteed to fail on other problems.
+To be useful, the biases in machine learning should reflect the
+needs and assumptions the programmer creating the learning algorithm.
+
+<p>
+In other words: machine learning provides no refuge for
+the responsibility of the human programmer. There is no such
+thing as "learning everything;" we are stuck making decisions
+about what we want our ML systems to learn.
 
 <p>
 This intuition about the irreducible nature of the responsibility
