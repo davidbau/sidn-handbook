@@ -113,7 +113,7 @@ the internals of machine-learned systems, that blindness was
 one reason for the slow uptake of machine learning methods
 in early decades of computer science.
 
-<h3>Human Responsibility is Unavoidable</h3>
+<h3>No Free Lunch and the Role of the Programmer</h3>
 
 <p>
 For those who might believe that removing human insight from
@@ -128,21 +128,31 @@ when averaged over all possible problems.
 </blockquote>
 
 <p>
-In other words, learning algorithms only succeed because of how
-they are specialized to the "right" kinds of problems; those
+In other words, learning algorithms only succeed because
+they are tuned for particular kinds of problems; those
 same learning methods are guaranteed to fail on just as many
 other problems.
 
 <p>
+A visual constructive proof of the NFL theorem can be found
+at an old <a href="https://web.archive.org/web/20230315015432/https://mlu.red/muse/52449366310.html"
+>anonymous blog entry, here</a>.
+
+<img src="images/nfl-illustration.svg" style="max-width:50%; width:500px;" class="mx-auto d-block">
+
+<p>
 The NFL means that machine learning provides no refuge for
 the responsibility of the human programmer. There is no such
-thing as "learning everything;" humans <b>are stuck making decisions</b>
+thing as a system that can "learn everything."
+Humans <b>are stuck making decisions</b>
 about what kinds of biases we want our ML systems to have, and
 what kinds of problems we need our ML systems to solve.
 
+<h3>Human Responsibility is Unavoidable</h3>
+
 <p>
-This intuition about the irreducible nature of the responsibility
-of the programmer famously led Marvin Minksy to steer AI funding
+The irreducible nature of the responsibility of
+the programmer famously led Marvin Minksy to steer AI funding
 in the 1970s away from machine learning methods such as
 <a href="https://news.cornell.edu/stories/2019/09/professors-perceptron-paved-way-ai-60-years-too-soon"
 >Rosenblatt's neural network methods</a>, towards "good old fashioined"
@@ -168,16 +178,17 @@ a his advice to a young Jerry Sussman:
 
 <p>
 Yet in the end, it proved to be Minsky's early AI pioneers, not the
-machine learning programmers, who had closed our eyes to the difficult
+machine learning programmers, who had closed their eyes to the profound
 challenge of interpretability.  By the 1980s, machine learning was becoming
-so useful that it was becoming unavoidable.
+so useful that it could not be avoided.
 
 <p>
 Rather than retaining human insight by avoiding
 machine learning, computer scientists would need to confront
 the unsolved puzzle of how to understand self-programmed
-machine-learned systems, and under the leadership of statisticians
-and pychologists, they embarked on this journey starting about 1985.
+machine-learned systems. Beginning around 1985, under the leadership
+of statisticians and pychologists, they embarked on this journey
+with two very different approaches.
 
 <h2>Approach 1: Intrinsically Interpretable Models</h2>
 
