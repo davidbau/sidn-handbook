@@ -56,11 +56,12 @@ rel="stylesheet">
 </div>
 </nav>
 
-<div class="container">
+<div class="container mt-5">
 <div class="row">
-<div class="col-2 position-sticky">
+<div class="col-2 position-fixed pt-5">
 {toc}
 </div>
-<main class="col-10">
+<div class="col-2"></div>
+<main class="col-8">
 {heading}
 """
