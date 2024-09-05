@@ -40,7 +40,7 @@ rel="stylesheet">
 
 </head>
 
-<body data-spy="scroll" data-target="#toc">
+<body data-bs-spy="scroll" data-bs-target="#toc">
 <nav class="navbar fixed-top navbar-dark bg-dark">
 <div class="container-fluid">
 <ul class="navbar-nav mr-auto">
