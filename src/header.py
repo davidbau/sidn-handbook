@@ -44,7 +44,7 @@ rel="stylesheet">
 </head>
 
 <body data-bs-spy="scroll" data-bs-target="#toc">
-<nav class="navbar fixed-top navbar-dark bg-dark">
+<nav class="navbar navbar-dark bg-dark">
 <div class="container-fluid">
 <ul class="navbar-nav mr-auto">
  <li class="nav-item active">
@@ -59,7 +59,7 @@ rel="stylesheet">
 </div>
 </nav>
 
-<div class="container mt-5">
+<div class="container">
 <div class="row">
 <div class="col-2 position-fixed pt-5">
 {toc}
