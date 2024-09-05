@@ -36,7 +36,7 @@ be sure to properly attribute the source - give credit to the
 source in your text.
 
 **Run `make` to generate `/public/` content.**
-The concent in `/src/` is expanded through simple templates and macros
+The content in `/src/` is expanded through simple templates and macros
 to generate the public content with some built-in navigation links.
 To see any of your new content on the website, you will need to run
 the template expansion scripts and then `git add public` before
