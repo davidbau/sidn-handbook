@@ -53,7 +53,7 @@ rel="stylesheet">
 </ul>
 <ul class="navbar-nav ml-auto">
  <li class="nav-item">
-  <a class="navbar-brand" href="/">Structure and Intrepretation of Deep Networks</a>
+  <a class="navbar-brand" href="/">Structure and Interpretation of Deep Networks</a>
  </li>
 </ul>
 </div>
