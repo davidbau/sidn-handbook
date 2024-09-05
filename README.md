@@ -4,7 +4,7 @@ The Structure and Interpretation of Deep Networks Handbook
 
 [![CC BY-SA 4.0][cc-by-sa-shield]][cc-by-sa]
 
-Contact David to add your github userid so you can create your page.
+Make sure to let us know your github userid when you sign up for the class so you can be added to this reppo.
 
 This work is licensed under a
 [Creative Commons Attribution-ShareAlike 4.0 International License][cc-by-sa].
