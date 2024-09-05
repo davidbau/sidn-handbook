@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Structure and Interpretation of Deep Networks</title>
+
+<!-- Bootstrap CSS Imports -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<!-- Google Font Imports -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+rel="stylesheet">
+
+<!-- Custom CSS Imports -->
+<link rel="stylesheet" href="/css/style.css">
+
+<!-- Mathjax -->
+<script sid="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" integrity="sha512-6FaAxxHuKuzaGHWnV00ftWqP3luSBRSopnNAA2RvQH1fOfnF/A1wOfiUWF7cLIOFcfb1dEhXwo5VG3DAisocRw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha256-3gQJhtmj7YnV1fmtbVcnAV6eI4ws0Tr48bVZCThtCGQ=" crossorigin="anonymous"></script>
+
+<!-- Auto Table of Contents -->
+<link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css"
+/>
+<script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script>
+
+</head>
+
+<body data-bs-spy="scroll" data-bs-target="#toc">
+<nav class="navbar navbar-dark bg-dark">
+<div class="container-fluid">
+<ul class="navbar-nav mr-auto">
+ <li class="nav-item active">
+  <a class="nav-link" href="/salience/index.html">From Salience Maps to Mechanistic Interpretability</a>
+ </li>
+</ul>
+<ul class="navbar-nav ml-auto">
+ <li class="nav-item">
+  <a class="navbar-brand" href="/">Structure and Intrepretation of Deep Networks</a>
+ </li>
+</ul>
+</div>
+</nav>
+
+<div class="container">
+<div class="row">
+<div class="col-2 position-fixed pt-5">
+<nav id="toc" data-toggle="toc"></nav>
+</div>
+<div class="col-2"></div>
+<main class="col-8">
+<h1 class="mt-5">From Salience Maps to Mechanistic Interpretability</h1>
+
+
+<p>
+In this chapter, we pick up our story of interprtability in 2010
+and bring it forward to 2024.
+
+<p>
+In lower-dimensional settings where input variables have understandable meanings,
+both decision trees and GAMs are often used in practice to achieve debuggable,
+interpretable machine learned models. It is worth understanding both the classic
+approaches and modern research proposals around both these approaches. However,
+the field of interpretable machine learning underwent an earthquake in 2012 when
+<a href="https://papers.baulab.info/papers/Krizhevsky-2012.pdf">Krizhevsky et al</a>
+published the AlexNet neural network that smashed the competitors in the ImageNet
+object classification challenge.  At that moment, the community came to the
+realization that huge performance gains could be achieved if we were willing to
+use models like deep neural networks that were not designed to be interperetable.
+
+<p>
+What do do about the interpretability of deep neural networks brings
+us to the second main approach to interpretability.
+
+<h2>Approach 2: Sensitivity Analysis (XAI, 2012)</h2>
+
+<p>
+
+
+<p><a href="https://arxiv.org/abs/1311.2901">Zeiler et al.</a> proposed several extensions to Erhan's
+approach using real images rather than a synthesized \( x^* \).  For example, Zeiler visulized
+the effects of occluding a small amount of input on hidden features and classifier output,
+and he obtained heatmaps that revealed that the networks are very senisitive to small
+parts of the input, for example, responding most sharply to the face of a (dog as shown in
+the b and d columents below), whie not responding much to masking in other parts of the input.
+
+<img src="images/zeiler-methods.jpg" style="max-width:80%; width:800px;" class="mx-auto d-block">
+
+<h3>Salience Maps</h3>
+
+<p>The local sensitivity of neural networks led to the development of many <em>salience map</em>
+methods for quickly estimating and visualizing this local sensitivity in a single fast
+calculation.
+
+<p>For example, the method of <em>integrated graidents</em>...
+
+
+<h3>Sanity Checks</h3>
+
+<p>
+It was understood that in a <em>shallow</em> neural network
+
+<p>
+In <a href="https://papers.baulab.info/papers/also/Erhan-2009.pdf">2009,
+Dumitru Erhan</a> wrote <em>Visualizing Higher-Layer Features of a Deep Network</em>,
+where he proposed analyzing the components of a neural network by identifying the
+inputs that caused them to maximize their output.  That is, writing
+\( h_{ij}( \theta, x) \) as the value of the neuron \( h_{ij} \) within a network
+with parameters \( \theta \) in response to the input \( x \), he proposed understanding
+the neuron by identifying and visualizing the maximizing input
+
+\[ x^* = \arg\max_{x \text{ s.t. } ||x|| = \rho} h_{ij}(\theta, x) \]
+
+<p>Erhan proposed maximizing input \( x^* \) can be found through
+gradient descent.
+
+
+</main>
+</div>
+</div>
+</body>
+</html>
+

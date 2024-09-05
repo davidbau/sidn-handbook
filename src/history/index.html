@@ -58,24 +58,26 @@ in early decades of computer science.
 For those who might believe that removing human insight from
 machine learning is a <em>good</em> thing, it is important
 for machine learning scientists to absorb the lessons of the
-<a href="https://arxiv.org/abs/2007.10928">No-Free-Lunch Theorem</a>
-by Wolpert and Macready.
+<a href="https://arxiv.org/abs/2007.10928">No-Free-Lunch (NFL)
+theorem by Wolpert and Macready</a>:
+
+<blockquote class="blockquote">
+All learning methods perform equally well (and equally badly)
+when averaged over all possible problems.
+<blockquote>
 
 <p>
-The No Free Lunch (NFL) theorem states that all learning methods
-perform equally well (and equally badly) when averaged over
-all possible problems. In other words, there is no neutrality
-in machine learning: learning algorithms only succeed because of the
-way they are specialized to particular kinds of problems. Those
-same learning methods are guaranteed to fail on other problems.
-To be useful, the biases in machine learning should reflect the
-needs and assumptions the programmer creating the learning algorithm.
+In other words, learning algorithms only succeed because of how
+they are specialized to the "right" kinds of problems; those
+same learning methods are guaranteed to fail on just as many
+other problems.
 
 <p>
-In other words: machine learning provides no refuge for
+The NFL means that machine learning provides no refuge for
 the responsibility of the human programmer. There is no such
-thing as "learning everything;" we are stuck making decisions
-about what we want our ML systems to learn.
+thing as "learning everything;" humans <b>are stuck making decisions</b>
+about what kinds of biases we want our ML systems to have, and
+what kinds of problems we need our ML systems to solve.
 
 <p>
 This intuition about the irreducible nature of the responsibility
@@ -83,11 +85,12 @@ of the programmer famously led Marvin Minksy to steer AI funding
 in the 1970s away from machine learning methods such as
 <a href="https://news.cornell.edu/stories/2019/09/professors-perceptron-paved-way-ai-60-years-too-soon"
 >Rosenblatt's neural network methods</a>, towards "good old fashioined"
-symbolic AI that used LISP.  Minsky believed it was important to
-put human intention, logic, and interpretability
+<a href="https://projects.csail.mit.edu/films/aifilms/AIFilms.html"
+>symbolic AI exemplified by the LISP community</a>.  Minsky believed
+it was important to put human intention, logic, and interpretability
 front and center of the development of artificial intelligence.
 
-<p>Marvin Minsky is famous for the following parable about
+<p>Minsky is famous for the following parable about
 a his advice to a young Jerry Sussman:
 
 <blockquote class="blockquote">
@@ -103,18 +106,19 @@ a his advice to a young Jerry Sussman:
 </blockquote>
 
 <p>
-Yet in the end, it proved to be Minsky, not the machine learning
-programmers, who were closing their eyes to the real challenge of
-interpretability.  By the 1980s, machine learning was becoming
+Yet in the end, it proved to be Minsky's early AI pioneers, not the
+machine learning programmers, who had closed our eyes to the difficult
+challenge of interpretability.  By the 1980s, machine learning was becoming
 so useful that it was becoming unavoidable.
 
 <p>
 Rather than retaining human insight by avoiding
 machine learning, computer scientists would need to confront
 the unsolved puzzle of how to understand self-programmed
-machine-learned systems.
+machine-learned systems, and under the leadership of statisticians
+and pychologists, they embarked on this journey starting about 1985.
 
-<h2>Approach 1: Models Interpretable By Design (1985)</h2>
+<h2>Approach 1: Intrinsically Interpretable Models</h2>
 
 <p>The community's first answer to ML interpretability
 was to make the problem easier by dividing ML algorithms
@@ -279,18 +283,47 @@ For example, in natural language modeling, advocates of decision trees
 (see <a href="https://www.sciencedirect.com/science/article/pii/S0167639398000181"
 >Potamianos</a>) were reporting negative results compared to ngram models.
 
+<h2>Approach 2: Post-Hoc Interpretation</h2>
+
+<p>
+Opaque ML models require a different approach to interpretability.
+When <a href="https://papers.baulab.info/papers/Rumelhart-1986.pdf"
+>Rosenblatt, Hinton, and Williams</a> reopened the door
+to deep neural networks in their seminal backpropagation paper in 1986,
+they did not frame their work as "machine learning," because their
+learning algorithm was not designed to be understandable by
+programmers. Rather, they were hunting for a plausible computational
+model of the human brain, and they asked the scientific question
+of whether this model could learn reasonable algorithmic solutions
+from training data alone.
+
+<p>
+For example, they examined the weights of a model trained to classify
+symmetric versus nonsymmetric rows of pixels, and they concluded
+it was successful because it learned an understandable, correct
+algorithm that they could examine and comprehend after-the-fact.
+
+<img src="images/rumelhart-figure.jpg" style="max-width:30%; width:300px;" class="mx-auto d-block">
+
 <p>
 The field of interpretable machine learning underwent an earthquake in 2012 when
 <a href="https://papers.baulab.info/papers/Krizhevsky-2012.pdf">Krizhevsky et al</a>
 published the AlexNet neural network that smashed the competitors in the ImageNet
-object classification challenge.  At that moment, the community came to the
-realization that huge performance gains could be achieved if we were willing to
-use models like deep neural networks that have many layeers of internal
+object classification challenge.  At that moment, the industrial-strength
+machine learning community collided with the biologically-motivated
+neural network scientists, and they came to the realization that big
+performance gains could be achieved if we were willing to use models
+like deep neural networks that have many layers of internal
 variables that are not designed to be interperetable.
 
 <p>
-What do do about the interpretability of deep neural networks brings
-us to the second part of the history, and the second main approach to
-interpretability.
+Yet in the move from intrinsically interpretable machine learning do
+deep neural networks, the type of <em>post-hoc</em> interpretabilility
+methods of the psychologists became more urgent. Yet this type of
+exploratory, scientific approach to understanding computer systems
+was very foreign to the way computer scientists typically approached
+problems.  How post-hoc interpretability began to develop us to the
+second part of the history, and the second main approach to
+interpretability, in the next chapter.
 
 {footer()}
