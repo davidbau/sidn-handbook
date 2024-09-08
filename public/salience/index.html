@@ -40,7 +40,7 @@ rel="stylesheet">
 <div class="container-fluid">
 <ul class="navbar-nav mr-auto">
  <li class="nav-item active">
-  <a class="nav-link" href="/salience/index.html">From Salience Maps to Mechanistic Interpretability</a>
+  <a class="nav-link" href="/salience/index.html">Salience Maps</a>
  </li>
 </ul>
 <ul class="navbar-nav ml-auto">
@@ -58,70 +58,255 @@ rel="stylesheet">
 </div>
 <div class="col-2"></div>
 <main class="col-8">
-<h1 class="mt-5">From Salience Maps to Mechanistic Interpretability</h1>
+<h1 class="mt-5">Salience Maps</h1>
 
 
 <p>
-In this chapter, we pick up our story of interprtability in 2010
-and bring it forward to 2024.
+The field of interpretable machine learning underwent
+an earthquake in 2012 when <a href="https://papers.baulab.info/papers/Krizhevsky-2012.pdf"
+>Krizhevsky et al</a> published the AlexNet neural network that smashed the competitors
+in the ImageNet object classification challenge.
+
+<h2>A Need for Post-Hoc Interpretability</h2>
+
+<p>While deep networks like AlexNet
+perform extraordinarily well, they have the following two characteristics:
+
+<ul>
+<li>Deep neural layers define long complex computations that are hard to follow.
+<li>Input features are very small things, like pixels, that are not very meaningful on their own.
+</ul>
 
 <p>
-In lower-dimensional settings where input variables have understandable meanings,
-both decision trees and GAMs are often used in practice to achieve debuggable,
-interpretable machine learned models. It is worth understanding both the classic
-approaches and modern research proposals around both these approaches. However,
-the field of interpretable machine learning underwent an earthquake in 2012 when
-<a href="https://papers.baulab.info/papers/Krizhevsky-2012.pdf">Krizhevsky et al</a>
-published the AlexNet neural network that smashed the competitors in the ImageNet
-object classification challenge.  At that moment, the community came to the
-realization that huge performance gains could be achieved if we were willing to
-use models like deep neural networks that were not designed to be interperetable.
+This was a huge contrast from the <em>intrinsically interpretable</em> machine
+learning approaches from the <a href="/history/">previous chapter</a>, in which
+the models were designed to have two characteristics:
+<ol>
+<li>Inputs are directly connected to outputs via simple, understandable computations.
+<li>Input features are interpretable variables (like "age", "heart rate," "weight").
+</ol>
 
 <p>
-What do do about the interpretability of deep neural networks brings
-us to the second main approach to interpretability.
-
-<h2>Approach 2: Sensitivity Analysis (XAI, 2012)</h2>
-
-<p>
-
-
-<p><a href="https://arxiv.org/abs/1311.2901">Zeiler et al.</a> proposed several extensions to Erhan's
-approach using real images rather than a synthesized \( x^* \).  For example, Zeiler visulized
-the effects of occluding a small amount of input on hidden features and classifier output,
-and he obtained heatmaps that revealed that the networks are very senisitive to small
-parts of the input, for example, responding most sharply to the face of a (dog as shown in
-the b and d columents below), whie not responding much to masking in other parts of the input.
-
-<img src="images/zeiler-methods.jpg" style="max-width:80%; width:800px;" class="mx-auto d-block">
-
-<h3>Salience Maps</h3>
-
-<p>The local sensitivity of neural networks led to the development of many <em>salience map</em>
-methods for quickly estimating and visualizing this local sensitivity in a single fast
-calculation.
-
-<p>For example, the method of <em>integrated graidents</em>...
-
-
-<h3>Sanity Checks</h3>
+In other words, neural networks are not set up to be interpretable at all.
+To try to understand them we need to do some extra analysis on them
+after they are trained.  This approach is called <em>post-hoc</em> interpretability.
 
 <p>
-It was understood that in a <em>shallow</em> neural network
+Post-hoc interpretability was initially focused on two problem, corresponding
+to the two missing characteristics of interpretability:
+
+<ol>
+<li>
+<b>Sensitivity analysis</b>, or <b>salience mapping</b>, simplifies and summarizes
+a picture of the computation by identifying direct input-to-output sensitivities.
+We will discuss these methods in this chapter.
+<li>
+<b>Neuron interpretation</b> aims to find interpretable meanings for individual
+neurons on the interior of a deep network. We will discuss neuron interpretation
+in the next chapter.
+</ol>
+
+<h2>Sensitivity Analysis</h2>
 
 <p>
-In <a href="https://papers.baulab.info/papers/also/Erhan-2009.pdf">2009,
-Dumitru Erhan</a> wrote <em>Visualizing Higher-Layer Features of a Deep Network</em>,
-where he proposed analyzing the components of a neural network by identifying the
-inputs that caused them to maximize their output.  That is, writing
-\( h_{ij}( \theta, x) \) as the value of the neuron \( h_{ij} \) within a network
-with parameters \( \theta \) in response to the input \( x \), he proposed understanding
-the neuron by identifying and visualizing the maximizing input
+Soon after the AlexNet work was published,
+<a href="https://arxiv.org/abs/1311.2901">Zeiler and Fergus (2014)</a> published
+"Visualizing and Understanding Convolutional Networks," which devised several post-hoc
+interpretation techniques and applied then to AlexNet.  The simplest approach was
+also one of the most usefully interpretable: they directly performed a
+<b>sensitivity analysis</b> of the outputs of the neural network by occluding
+parts of the inputs.
 
-\[ x^* = \arg\max_{x \text{ s.t. } ||x|| = \rho} h_{ij}(\theta, x) \]
+<h3>Mapping Behavior by Scanning Occlusions</h3>
 
-<p>Erhan proposed maximizing input \( x^* \) can be found through
-gradient descent.
+<p>
+Zeiler and Fergus performed their salience analysis by brute-force modification
+of the inputs to the network: after observing the network's behavior on a
+particular image \( x \)
+they defined a set of masked images \( x_{ij} \) that are modifications of the
+original \( x \) that covered the image with a small gray square
+at location \( (i, j) \), as illustrated in their (a) input image below.
+
+<p>
+By scanning the gray square across every location in the image and plotting
+changes in the output classification, they could produce heatmaps like (d)
+that depict the reduction in output score for the target class.  The heatmaps
+revealed that in many cases, masking had very little effect in most parts of the
+image, but that had huge effects in a few particular locations.  In the example
+shown here, their visualizations revealed that the classification "Pomeranian" depended
+very strongly on the face part of the dog; "Car Wheel" was most sensitive to the big
+wheel in an image; and "Afghan Hound" was actually sensitive to the location
+of the hound.
+
+<img src="images/zeiler-fig-7.jpg" style="max-width:80%; width:800px;" class="mx-auto d-block">
+
+<p>Columns (b) and (c) of that same figure also examined the response of
+individual neurons to the image, which, as you can see, seem uncorrelated to the
+sensitivity of the output classication for the network.
+We will return to talk about these in a moment.
+
+<p>
+Simple Zeiler-style occlusion analysis is very useful and intuitive, but the approach
+has a few disadvantages:
+<ul>
+<li>Exactly how to mask the image is arbitrary: why not blurring instead of
+masking? Why not mask a circle, or an arbitrary region, rather than a square?
+<li>Measuring occlusions at every location is slow, requiring hundreds of runs
+of the neural network to to test its sensitivity to parts of a single image.
+<li>It only analyzes one image at a time rather than telling us anything
+that generalizes beyond a single image.
+</ul>
+
+<p>
+Alternate masking strategies have been investigated by several researchers:
+in particular is worth reading <a href="https://arxiv.org/abs/1910.08485">Fong, et al (2019)</a>,
+who implemented a blurring appoarch to salience mapping algorithms, and
+it is worth reading <a href="https://arxiv.org/abs/1806.07421">Petsiuk, et al (2018)</a>,
+who implemented a randomized masking search.  Both of these papers are able to
+find sensitive regions that are not just squares.  Fong implemented the
+<a href="https://github.com/facebookresearch/TorchRay">TorchRay</a> package
+which is a (slightly older) code resource that implements several salience
+methods.
+
+<h3>Gradient-based Salience Mapping</h3>
+
+<p>
+To address the speed problem with occlusion-based methods, researchers
+developed several single-pass algorithms that could just make one pass
+(or a small number of passes) over the network to produce a salience heatmap,
+instead of analyzing each patch separately. In his paper, Zeiler
+refers to his "<a href="https://www.matthewzeiler.com/mattzeiler/deconvolutionalnetworks.pdf"
+>Deconvnet</a>" approach; this was followed by a number of similar methods:
+<a href="https://arxiv.org/abs/1412.6806">Guided Backrpop by Springenerg (2014)</a>,
+<a href="https://arxiv.org/abs/1604.00825">LRP by Binder (2016)</a>,
+<a href="https://arxiv.org/abs/1704.02685">DeepLift by Shrikumar (2017)</a>,
+<a href="https://arxiv.org/abs/1706.03825">SmoothGrad by Smilkov (2017)</a>.
+These methods all exploit gradients (or quantities similar to gradients)
+that can be computed over the entire network input in a single backward pass.
+
+<p>
+The simplest gradient visualization method (maybe too simple to be credited
+to any specific researcher) is to simply construct a
+heatmap directly visualizes the gradient.  For example, suppose we
+are interested in the model's prediction of class \( k \) for
+a given input image \( x \).  Then the neural network \( f \) produces
+output \( y = f(x) \), and in particular the score for class \( k \) of
+\( y_k = f_k (x) \).  Then we can compute the following gradient:
+
+\[
+   \nabla_{x} y_k = \left. \frac{\partial y_k}{\partial x_{ij}} \right|_{i,j}
+\]
+
+<p>
+Of the gradient-based visualization methods, the most widespread is probably
+<a href="https://arxiv.org/abs/1703.01365">Integrated Gradients by Sundarajan (2017)</a>,
+which is one of our main readings.  Integrated gradients modifies the
+simple gradient visualization by <em>integrating it</em> over a path of
+images from a neutral baseline image \( x^0 \) to the target image \( x \):
+
+\[
+  \text{IntegratedGrads}_{ij\rightarrow k}(x) = \
+  (x_{ij} - x^0_{ij}) \times \int_{\alpha=0}^{1} \frac{\partial f_k(\alpha x + (1 - \alpha) x^0)}{\partial x_ij}
+\]
+
+<p>
+Typically the neutral baseline \( x' \) is taken as an all-black or all-gray image.
+Notice that if you sum all the integrated gradients over all pixels,
+you just get an ordinary line integral, which by the <a href="https://en.wikipedia.org/wiki/Gradient_theorem"
+>Fundamental Theorem of Calculus for Line Integrals</a> just adds up to the
+prediction of the network (minus the baseline prediction) \( f_k(x) - f_k(x^0) \).
+So the integrated gradient can be thought of as a principled, line-integral
+based decomposition of the network prediction into individual pixels.
+
+<p>
+Integrated gradients produces visualizations like the following figure from the paper.
+Notice how they appear to be a big improvement over visualizations produced by the
+raw gradient.
+
+<img src="images/zeiler-fig-7.jpg" style="max-width:80%; width:800px;" class="mx-auto d-block">
+
+<p>
+By decomposing a neural network into a per-pixel contributions, integrated gradients
+propose a reasonable solution to the "uninterpretable computation" problem of deep
+networks.  IG shows that there is a reasonable way to decompose any deep network
+prediction into a simple sum of contributions, with one contribution for each input pixel.
+
+<p>
+(As an aside, the game theory method of <a href="https://en.wikipedia.org/wiki/Shapley_value"
+>Shapley Values</a> is another way to attribute contributions to individual variables,
+and there is a famous paper <a href="https://arxiv.org/abs/1705.07874">SHAP, by Lundberg
+and Lee (2017)</a> that proposes using Shapley values for salience analysis.
+Because its formulation involves combinatorial explosions,
+SHAP works best for low-dimensional models rather than high-dimensional models.
+It is worth reading Sundararajan's discussion of the Shapley approach
+in his integrated gradients paper.)
+
+
+<h3>Critiques of Gradient-Based Visualizations</h3>
+
+<p>
+One famous critique of gradient-based visualizations was made by
+<a href="https://arxiv.org/abs/1810.03292">Adebayo, et al (2018)</a> in the paper
+"Sanity Checks for Saliency Maps".  In that paper, Adebayo shows that if
+gradient-based methods are used to produce visualizations of networks
+in which the top layer weights have been randomly scrambled (so that
+the networks are incapable of producing accurate classifications),
+the visualizations are nearly indistingishable from maps created from
+highly-accurate networks.
+
+<img src="images/adebayo-fig-2.jpg" style="max-width:80%; width:800px;" class="mx-auto d-block">
+
+<p>
+The pixel-level fine-grained detail of gradient-based visualizations
+suggest a kind of "overconfidence" - for example, when very crisp or very
+speckled patterns appear in a gradient-based salience map, it seems implausble
+that the dark pixels that sit between bright pixels in the heatmap
+actually have no importance, because they are probably part of the same
+overall shape that has been detected.
+
+<h3>GradCAM Feature-Based Salience Mapping</h3>
+
+<p>
+The Adebayo paper show one method, "GradCAM" that does seem to degrade immediately
+after layers are scrambled, though the GradCAM visualization is very fuzzy.
+<a href="https://arxiv.org/abs/1610.02391">Grad-CAM by Selvaraju (2019)</a>
+is simple, fast, and widely used in practice.
+
+<p>
+What makes GradCAM special is that, rather than decomposing salience down
+to pixels, GradCAM decomposes salience down to high-level features, as
+represented by a layer of internal neurons within the network.  Since each
+interior feature summarizes a region of the image rather than just a pixel,
+identifying the important features produces a fuzzy salience map. Yet as you
+can see in the following examples, a fuzzy map is often good enough to
+understand where the network is looking.
+
+<img src="images/selvaraju-fig-1.jpg" style="max-width:80%; width:800px;" class="mx-auto d-block">
+
+<p>
+The GradCAM method uses the following rule to construct a heatmap
+to visualize the sensitive regions for a prediction of class \( c \).
+At a chosen convolutional layer, they run through all the feature
+channels and compute the importance of the \( k \)th channel by
+computing the average derivative gradient:
+
+\[
+\alpha_k = \text{averagepool}_{ij} \frac{\partial y_c}{h_{ij}^k}
+\]
+
+<p>
+Then they produce a heatmap by summing featuremaps, weighted by \( \alpha_k \):
+\[
+\text{Grad-CAM}_{ij} = \sum_{k} \alpha_k h{ij}^k
+\]
+
+<p>
+Unlike integrated gradients, GradCAM does not have a simple theoretical
+justification: for example it includes applies an average-pooling rule
+on the gradient that works well in practice, but that is only justified
+by the empirical results that "it works".  But the Selvajaru paper
+does include several applications and human studies that suggest
+that the method works well in practice.
 
 
 </main>
