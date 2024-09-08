@@ -223,7 +223,7 @@ Integrated gradients produces visualizations like the following figure from the 
 Notice how they appear to be a big improvement over visualizations produced by the
 raw gradient.
 
-<img src="images/zeiler-fig-7.jpg" style="max-width:80%; width:800px;" class="mx-auto d-block">
+<img src="images/selvaraju-fig-1.jpg" style="max-width:80%; width:800px;" class="mx-auto d-block">
 
 <p>
 By decomposing a neural network into a per-pixel contributions, integrated gradients
@@ -307,6 +307,18 @@ on the gradient that works well in practice, but that is only justified
 by the empirical results that "it works".  But the Selvajaru paper
 does include several applications and human studies that suggest
 that the method works well in practice.
+
+<h3>Code Resources for Salience Mapping</h3>
+
+<p>The <a href="https://captum.ai/">Captum Library</a> from Facebook Research
+implements all the salience mapping methods we have discussed here.
+<a href="https://colab.research.google.com/github/davidbau/sidn-handbook/blob/main/public/salience/colab/captum_salience_maps.ipynb">Try this colab
+notebook to use captum to try several salience mapping methods on specific
+images</a>
+
+<p>Salience mapping methods can also be applied to NLP systems like language
+models.  See the <a href="https://github.com/inseq-team/inseq">Inseq Library</a>
+for an alternative to Captum that is geared towards this kind of sequence modeling.
 
 
 </main>
