@@ -160,23 +160,26 @@ images from a neutral baseline image \( x^0 \) to the target image \( x \):
 \]
 
 <p>
-Typically the neutral baseline \( x' \) is taken as an all-black or all-gray image.
+Typically the neutral baseline \( x^0 \) is taken as an all-black or all-gray image.
 Notice that if you sum all the integrated gradients over all pixels,
 you just get an ordinary line integral, which by the <a href="https://en.wikipedia.org/wiki/Gradient_theorem"
 >Fundamental Theorem of Calculus for Line Integrals</a> just adds up to the
-prediction of the network (minus the baseline prediction) \( f_k(x) - f_k(x^0) \).
-So the integrated gradient can be thought of as a principled, line-integral
-based decomposition of the network prediction into individual pixels.
+prediction of the network (minus the baseline prediction, which is just
+a constant) \( f_k(x) - f_k(x^0) \).
+So the integrated gradient can be thought of as a principled decomposition
+of the network prediction into contributions from individual pixels,
+based on decomposing components of the line-integral into per-pixel
+contributions.
 
 <p>
-Integrated gradients produces visualizations like the following figure from the paper.
-Notice how they appear to be a big improvement over visualizations produced by the
-raw gradient.
+The Integrated Gradients methods produces visualizations like the following
+figure from the paper.  Notice how they appear to be a big improvement over
+visualizations produced by the raw gradient.
 
 <img src="images/sundararajan-fig-2.jpg" style="max-width:80%; width:800px;" class="mx-auto d-block">
 
 <p>
-By decomposing a neural network into a per-pixel contributions, integrated gradients
+By decomposing a neural network into per-pixel contributions, integrated gradients
 propose a reasonable solution to the "uninterpretable computation" problem of deep
 networks.  IG shows that there is a reasonable way to decompose any deep network
 prediction into a simple sum of contributions, with one contribution for each input pixel.
@@ -184,8 +187,8 @@ prediction into a simple sum of contributions, with one contribution for each in
 <h3>Other Salience Approaches</h3>
 
 <p>
-There are some extremely widely-cited salience methods that you should be aware of
-that are slightly different from the approaches covered above.
+There are some very widely-cited salience methods that you should be aware of
+that take different approaches from the methods discussed above.
 
 <p>The game theory method of <a href="https://en.wikipedia.org/wiki/Shapley_value"
 >Shapley Values</a> is another way to attribute contributions to individual variables,
@@ -202,13 +205,15 @@ used in high-dimensional settings also.
 It is worth reading Sundararajan's discussion of the Shapley approach
 in his integrated gradients paper.
 
-<p><a href="https://arxiv.org/abs/1602.04938">Ribeiro et al (2016)</a> proposed
+<p>In a very well-written paper,
+<a href="https://arxiv.org/abs/1602.04938">Ribeiro et al (2016)</a> proposed
 a method called LIME that produces a salience map based on linear model that is
 trained to imitate the neural network in the local region near a specific input.
 Because LIME constructs a <em>surrogate model</em> that it visualizes instead
 of attempting to directly visualize the underlying neural network, it is a bit
 more indirect and complex than the other approaches.  The Captum library also
-implements LIME, so you can try it out.
+implements LIME, so you can try it out.  We will be looking at linear
+model probing as a method in more detail in a future chapter.
 
 <h3>Critiques of Gradient-Based Visualizations</h3>
 
