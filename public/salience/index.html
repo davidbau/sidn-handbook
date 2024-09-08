@@ -199,13 +199,13 @@ that can be computed over the entire network input in a single backward pass.
 The simplest gradient visualization method (maybe too simple to be credited
 to any specific researcher) is to simply construct a
 heatmap directly visualizes the gradient.  For example, suppose we
-are interested in the model's prediction of class \( k \) for
+are interested in the model's prediction of class \( c \) for
 a given input image \( x \).  Then the neural network \( f \) produces
-output \( y = f(x) \), and in particular the score for class \( k \) of
-\( y_k = f_k (x) \).  Then we can compute the following gradient:
+output \( y = f(x) \), and in particular the score for class \( c \) of
+\( y_c = f_c (x) \).  Then we can compute the following gradient:
 
 \[
-   \nabla_{x} y_k = \left. \frac{\partial y_k}{\partial x_{ij}} \right|_{i,j}
+   \nabla_{x} y_c = \left. \frac{\partial y_c}{\partial x_{ij}} \right|_{i,j}
 \]
 
 <p>
@@ -216,8 +216,8 @@ simple gradient visualization by <em>integrating it</em> over a path of
 images from a neutral baseline image \( x^0 \) to the target image \( x \):
 
 \[
-  \text{IntegratedGrads}_{ij\rightarrow k}(x) = \
-  (x_{ij} - x^0_{ij}) \times \int_{\alpha=0}^{1} \frac{\partial f_k(\alpha x + (1 - \alpha) x^0)}{\partial x_ij}
+  \text{IntegratedGrads}_{ij\rightarrow c}(x) = \
+  (x_{ij} - x^0_{ij}) \times \int_{\alpha=0}^{1} \frac{\partial f_c(\alpha x + (1 - \alpha) x^0)}{\partial x_ij}
 \]
 
 <p>
@@ -234,7 +234,7 @@ Integrated gradients produces visualizations like the following figure from the 
 Notice how they appear to be a big improvement over visualizations produced by the
 raw gradient.
 
-<img src="images/selvaraju-fig-1.jpg" style="max-width:80%; width:800px;" class="mx-auto d-block">
+<img src="images/sundararajan-fig-2.jpg" style="max-width:80%; width:800px;" class="mx-auto d-block">
 
 <p>
 By decomposing a neural network into a per-pixel contributions, integrated gradients
