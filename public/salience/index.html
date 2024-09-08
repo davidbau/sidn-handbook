@@ -78,7 +78,7 @@ perform extraordinarily well, they have the following two characteristics:
 </ul>
 
 <p>
-This was a huge contrast from the <em>intrinsically interpretable</em> machine
+This is a huge contrast from the <em>intrinsically interpretable</em> machine
 learning approaches from the <a href="/history/">previous chapter</a>, in which
 the models were designed to have two characteristics:
 <ol>
@@ -92,19 +92,22 @@ To try to understand them we need to do some extra analysis on them
 after they are trained.  This approach is called <em>post-hoc</em> interpretability.
 
 <p>
-Post-hoc interpretability was initially focused on two problem, corresponding
+Post-hoc interpretability initially focused on two problems corresponding
 to the two missing characteristics of interpretability:
 
 <ol>
 <li>
 <b>Sensitivity analysis</b>, or <b>salience mapping</b>, simplifies and summarizes
 a picture of the computation by identifying direct input-to-output sensitivities.
-We will discuss these methods in this chapter.
 <li>
 <b>Neuron interpretation</b> aims to find interpretable meanings for individual
 neurons on the interior of a deep network. We will discuss neuron interpretation
 in the next chapter.
 </ol>
+
+<p>
+This chapter will focus on sensitivity analysis, also known as salience mapping,
+and we will discuss neuron interpretation in a future chapter.
 
 <h2>Sensitivity Analysis</h2>
 
@@ -143,7 +146,15 @@ of the hound.
 <p>Columns (b) and (c) of that same figure also examined the response of
 individual neurons to the image, which, as you can see, seem uncorrelated to the
 sensitivity of the output classication for the network.
-We will return to talk about these in a moment.
+We will return to talk about these when discussing neurons.
+
+<p>Zeiler and Fergus's results were very surprising!  Previous to this study, it was far
+from clear that a "dog" classifier might focus on any small portion of an image,
+but the salience maps were not only legible, but they were pretty narrowly focused
+to specific parts of an image.  The sparsity of the salience maps is analogous
+to how a decision tree or a GAM draws a direct connection from inputs to
+outputs: in this case, the salience map shows you exactly which parts of the
+input are most influential to the outputs.
 
 <p>
 Simple Zeiler-style occlusion analysis is very useful and intuitive, but the approach
@@ -231,16 +242,34 @@ propose a reasonable solution to the "uninterpretable computation" problem of de
 networks.  IG shows that there is a reasonable way to decompose any deep network
 prediction into a simple sum of contributions, with one contribution for each input pixel.
 
+<h3>Other Salience Approaches</h3>
+
 <p>
-(As an aside, the game theory method of <a href="https://en.wikipedia.org/wiki/Shapley_value"
+There are some extremely widely-cited salience methods that you should be aware of
+that are slightly different from the approaches covered above.
+
+<p>The game theory method of <a href="https://en.wikipedia.org/wiki/Shapley_value"
 >Shapley Values</a> is another way to attribute contributions to individual variables,
 and there is a famous paper <a href="https://arxiv.org/abs/1705.07874">SHAP, by Lundberg
-and Lee (2017)</a> that proposes using Shapley values for salience analysis.
-Because its formulation involves combinatorial explosions,
-SHAP works best for low-dimensional models rather than high-dimensional models.
+and Lee (2017)</a> that proposes using Shapley values for salience analysis even
+in deep neural networks. Shapley values are mostly concerned with the problem of
+<em>cohorts</em>, i.e., the idea that no individual variable can be tested on its
+own, but might operate in collaboration with many other variables. So Shapley values
+devise a fair weighting scheme according to the impact of every possible cohort
+that a contributor might be in.  Since the Shapley formulation involves combinatorial
+explosions, SHAP works best for low-dimensional models wth just a few variables
+rather than high-dimensional models, but Lundberg and Lee argue that it can be
+used in high-dimensional settings also.
 It is worth reading Sundararajan's discussion of the Shapley approach
-in his integrated gradients paper.)
+in his integrated gradients paper.
 
+<p><a href="https://arxiv.org/abs/1602.04938">Ribeiro et al (2016)</a> proposed
+a method called LIME that produces a salience map based on linear model that is
+trained to imitate the neural network in the local region near a specific input.
+Because LIME constructs a <em>surrogate model</em> that it visualizes instead
+of attempting to directly visualize the underlying neural network, it is a bit
+more indirect and complex than the other approaches.  The Captum library also
+implements LIME, so you can try it out.
 
 <h3>Critiques of Gradient-Based Visualizations</h3>
 
@@ -267,8 +296,9 @@ overall shape that has been detected.
 <h3>GradCAM Feature-Based Salience Mapping</h3>
 
 <p>
-The Adebayo paper show one method, "GradCAM" that does seem to degrade immediately
-after layers are scrambled, though the GradCAM visualization is very fuzzy.
+The Adebayo paper shows one method, "GradCAM" that does seem to degrade immediately
+after layers are scrambled!  (That is a good thing for that method...
+However, note that the GradCAM visualization is very fuzzy.)
 <a href="https://arxiv.org/abs/1610.02391">Grad-CAM by Selvaraju (2019)</a>
 is simple, fast, and widely used in practice.
 
@@ -308,7 +338,7 @@ by the empirical results that "it works".  But the Selvajaru paper
 does include several applications and human studies that suggest
 that the method works well in practice.
 
-<h3>Code Resources for Salience Mapping</h3>
+<h2>Colab Notebook and other Code Resources</h2>
 
 <p>The <a href="https://captum.ai/">Captum Library</a> from Facebook Research
 implements all the salience mapping methods we have discussed here.
