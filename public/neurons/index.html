@@ -45,7 +45,7 @@ rel="stylesheet">
 </ul>
 <ul class="navbar-nav ml-auto">
  <li class="nav-item">
-  <a class="navbar-brand" href="/">Structure and Intrepretation of Deep Networks</a>
+  <a class="navbar-brand" href="/">Structure and Interpretation of Deep Networks</a>
  </li>
 </ul>
 </div>
@@ -69,20 +69,23 @@ a "dog image" by pointing out any individual pixel or even a set of pixels,
 an ideal explanation might point "there are four legs here", "there is a dark
 nose here"; "there is a floppy ear there"; "there is some curly fur there."
 -->
+<div><h5>September 12, 2024 • <em>Sheridan Feucht, David Bau</em></h5>
 
 <p>
-What are the high-level concepts that a deep network reasons about?
-Since a network is made of many layers, the inputs to each layer are
-the outputs from the previous layers, so it stands to reason that the
-individual neurons on each layer form the "meaningful" input variables
-for the subsequent layers of the network.
+By definition, deep neural networks consist of layers upon layers of <b>neuron activations</b>, 
+where the inputs to each layer are the outputs of the previous layer. When we talk about
+a particular "neuron," we are referring to a single scalar entry in the vector of activations at a given layer. 
+As this neuron will have different numerical values for different model inputs, 
+it stands to reason that the individual neurons at each layer might represent 
+"meaningful" input variables for subsequent layers of the network. 
 
 <p>
-Thus the second early line of work in understanding deep networks was
-<em>neuron interpretation</em>, in which researchers examined individual
-neurons to try to discern their meaning.
+Analyzing these values under different circumstances constitutes a second early line of work
+in interpretability, <em>neuron interpretation</em>, where researchers examined individual
+neurons to try to discern their meaning. Let's look at some of the ways people have 
+approached this problem. 
 
-<h3>Maximal-Response Visualizations of Neurons</h3>
+<h2>Prelude: Maximal-Response Visualizations of Neurons</h2>
 
 <p>
 One of the most common ways to understand the role of a neuron
@@ -92,7 +95,7 @@ is to ask the question: "what input causes this neuron to fire most strongly?"
 In <a href="https://papers.baulab.info/papers/also/Erhan-2009.pdf">2009,
 Dumitru Erhan</a> wrote <em>Visualizing Higher-Layer Features of a Deep Network</em>,
 where he proposed analyzing the components of a neural network by identifying the
-inputs that caused them to maximize their output.  That is, writing
+inputs that caused them to maximize their output. That is, writing
 \( h_{ij}( \theta, x) \) as the value of the neuron \( h_{ij} \) within a network
 with parameters \( \theta \) in response to the input \( x \), he proposed understanding
 the neuron by identifying and visualizing the maximizing input
@@ -100,10 +103,16 @@ the neuron by identifying and visualizing the maximizing input
 \[ x^* = \arg\max_{x \text{ s.t. } ||x|| = \rho} h_{ij}(\theta, x) \]
 
 <p>
-Erhan proposed maximizing input \( x^* \) can be found through
-gradient descent.  By starting with a random or arbitrary \( x \),
+Erhan proposed maximizing input \( x^* \) through
+gradient descent. By starting with a random or arbitrary \( x \),
 optimizing towards \( x^* \) could reveal an image that the
-neuron is looking for, a picture of the "concept" for \( h_{ij} \).
+neuron is looking for, a picture of the "concept" for \( h_{ij} \). When this 
+optimization was done on a network trained to complete MNIST, they found that 
+individual neurons at early layers (left) seemed to select for lines and curves in 
+particular positions, whereas late-layer neurons were activated by entire digits. 
+
+
+<img src="images/mnist_dbn_erhan.png" style="max-width:70%; width:500px;" class="mx-auto d-block">
 
 <p>
 Several modifications to the optimization algorithm were proposed by a series
@@ -112,6 +121,16 @@ many of the techniques was developed by <a href="https://distill.pub/2017/featur
 >Chris Olah (2017)</a>, and was used to visualize all the units of several
 networks at the <a href="https://microscope.openai.com/models">OpenAI Microscope</a>
 website.
+
+<h2>Network Dissection (Bau et al., 2020)</h2>
+
+This paper from David's PhD work looks at neurons in two types of vision models: 
+a CNN trained on scene classification and a GAN trained to generate scenes. 
+
+<h3>Neurons in a CNN Scene Classifier</h3>
+
+<h3>Neurons in a Generative Network</h3>
+
 
 
 </main>
