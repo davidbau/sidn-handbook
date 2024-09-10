@@ -72,20 +72,70 @@ nose here"; "there is a floppy ear there"; "there is some curly fur there."
 <div><h5>September 12, 2024 • <em>Sheridan Feucht, David Bau</em></h5>
 
 <p>
-By definition, deep neural networks consist of layers upon layers of <b>neuron activations</b>, 
-where the inputs to each layer are the outputs of the previous layer. When we talk about
-a particular "neuron," we are referring to a single scalar entry in the vector of activations at a given layer. 
-As this neuron will have different numerical values for different model inputs, 
+By definition, deep neural networks consist of layers upon layers of activations, 
+where the inputs to each layer are the outputs of the previous layer. 
+As any given neuron will have different numerical values for different model inputs, 
 it stands to reason that the individual neurons at each layer might represent 
 "meaningful" input variables for subsequent layers of the network. 
-
-<p>
-Analyzing these values under different circumstances constitutes a second early line of work
-in interpretability, <em>neuron interpretation</em>, where researchers examined individual
-neurons to try to discern their meaning. Let's look at some of the ways people have 
+Analyzing these values constitutes a second early line of work
+in interpretability, <em>neuron interpretation</em>. Let's look at some of the ways people have 
 approached this problem. 
 
-<h2>Prelude: Maximal-Response Visualizations of Neurons</h2>
+<h3>What Exactly is a Neuron?</h3>
+For feed-forward networks, a "neuron" is just a single unit in a network that takes in inputs 
+from multiple other units and outputs a scalar value (kind of like a biological neuron). 
+Let's say we have a 3x3 matrix of weights \( W^{\ell} \) in a toy deep network, as well as 
+activations from the previous layer \( a^{\ell-1} \): 
+
+\[
+W^{\ell} = 
+\begin{bmatrix}
+0.34 & -0.02 & 1.01\\
+-1.22 & -0.03 & 3.05\\
+-3.33 & -4.50 & -0.92\\
+\end{bmatrix}
+\hspace{0.5cm}
+a^{\ell-1} = \begin{bmatrix}
+0.2 \\
+0.4 \\
+0.6 \\ 
+\end{bmatrix}
+\]
+
+Normally, we calculate all of the neurons at once and apply an activation function like
+ReLU to get the next set of activations \( a_{\ell}\). 
+<!-- array([ 0.666,  1.574, -3.018]) -->
+<!-- tensor([0.6660, 1.5740, 0.0000], dtype=torch.float64) -->
+
+\[
+\text{ReLU}(W^{\ell}a^{\ell-1}) = 
+\begin{bmatrix}
+0.67 \\
+1.57 \\
+0.00 \\ 
+\end{bmatrix}
+\]
+
+But we can also focus on a single neuron, which would simply correspond to a row 
+in the weight matrix \( W^{\ell} \). 
+For example, the first neuron of \( W^{\ell} \) looks like the below equation. 
+It weights all of the values of \( a^{\ell-1} \), the neuron activations from the previous layer, 
+and applies an activation function to ultimately output its own activation.
+\[ \text{ReLU}[(0.34 * 0.2) + (-0.02 * 0.4) + (1.01 * 0.6)] = 0.666   \]
+
+For convolutional networks, the term "neuron" is a little different. The general 
+idea remains the same: a "neuron" is a unit that takes in all of the values from the previous layer
+and outputs a value of its own. However, this entry corresponds a particular <i>filter</i> in the convolutional model, 
+whose output is a feature map across the input image, not a scalar. 
+Instead of computing a weighted sum of the previous neuron activations, a filter
+convolves over all of the previous neuron activations (with a different learned kernel for each channel) 
+and sums those maps to produce its output. 
+There is a little bit of disagreement with this terminology, however—
+some researchers use the term "channel" to describe these feature 
+maps and describe specific (x,y) positions within the maps as "neurons." 
+<br><br>
+
+<h2>Maximal-Response Visualizations of Neurons</h2>
 
 <p>
 One of the most common ways to understand the role of a neuron
@@ -122,15 +172,71 @@ many of the techniques was developed by <a href="https://distill.pub/2017/featur
 networks at the <a href="https://microscope.openai.com/models">OpenAI Microscope</a>
 website.
 
-<h2>Network Dissection (Bau et al., 2020)</h2>
+<h2>Network Dissection</h2>
 
-This paper from David's PhD work looks at neurons in two types of vision models: 
+Instead of optimizing for inputs that activate a neuron strongly, we can also 
+analyze features of images that highly activate a given neuron. 
+<a href="https://www.pnas.org/doi/full/10.1073/pnas.1907375117">This paper</a> 
+from David's PhD work looks at neurons in two types of vision models: 
 a CNN trained on scene classification and a GAN trained to generate scenes. 
 
 <h3>Neurons in a CNN Scene Classifier</h3>
+First, the authors look at neurons within a VGG-16 scene classifier. They are able 
+to visualize which parts of an image are relevant to a particular filter by looking 
+at areas of the image for which the filter activates strongly (beyond its top 1% quantile level). 
+To interpret this information, they use a separate image segmentation model to 
+predict the presence of a concept \( c \) at any given position. These human-interpretable 
+concepts are matched to specific neurons by calculating the IoU between the segmentation 
+model and the sections of image that highly activate the filter. 
+
+<img src="images/person-top.png" style="max-width:70%; width:500px;" class="mx-auto d-block">
+
+Using this method, they are able to describe neurons in later convolutional layers 
+as "object detectors" that consistently fire on things like planes, heads, and fur. 
+The more interpretable these features are, the more important they are shown to be 
+for downstream scene classification; there are some interesting experiments in their 
+Figure 2 that show what happens when you zero-ablate specific units. For example, 
+removing a single unit that corresponds to "snow" decreases accuracy for the class "ski resort" 
+by 9-10%. 
+<br><br>
+
 
 <h3>Neurons in a Generative Network</h3>
 
+The authors then analyze a Progressive GAN in a similar way, by looking at the 
+regions of the generated image that filters are most active for (beyond their top 1% quantile level). 
+While the VGG-16 scene classifier had lots of "object detector" neurons, this GAN 
+has a higher proportion of "parts" neurons (like tops of chairs, bottoms of windows, etc), 
+which are concentrated near the beginning of the network. 
+In a Progressive GAN trained on church scenes, some of these neurons seemed to correspond to trees. 
+By zero-ablating twenty of these units, they were able to remove more than half of the generated 
+tree pixels from the GAN's output image. 
+
+<img src="images/tree-removal.png" style="max-width:70%; width:500px;" class="mx-auto d-block">
+
+Additionally, they find that <em>activating</em> units in specific locations within an image 
+causes the model to draw, for example, extra doors. Interestingly, drawing in doors only works 
+in contexts that are semantically reasonable (i.e. activating "door" neurons in the sky does not 
+cause a door to be drawn in the sky). 
+<br><br>
+
+<h2>Multimodal Neurons</h2>
+
+As the authors discuss, the inspiration for <a href="https://distill.pub/2021/multimodal-neurons/">Multimodal Neurons in Artificial Neural Networks</a>
+comes from a <a href="https://amygdala.psychdept.arizona.edu/IntroData/Readings/week5/Quiroga-reddy-kreiman-koch-Fried+invariant-visual-single-neurons-human+Nature+2005.pdf">2005 paper by Quiroga et al.</a>
+
+
+<br><br> 
+
+<h2>Neurons in a Haystack</h2>
+
+todo 
+<br>
+<br>
+
+<h2>Demo: TODO</h2>
+
+Forthcoming! 
 
 
 </main>
