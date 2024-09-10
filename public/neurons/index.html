@@ -133,6 +133,7 @@ and sums those maps to produce its output.
 There is a little bit of disagreement with this terminology, however—
 some researchers use the term "channel" to describe these feature 
 maps and describe specific (x,y) positions within the maps as "neurons." 
+But the papers we are reading today mostly use the former definition. 
 <br><br>
 
 <h2>Maximal-Response Visualizations of Neurons</h2>
@@ -194,8 +195,8 @@ model and the sections of image that highly activate the filter.
 Using this method, they are able to describe neurons in later convolutional layers 
 as "object detectors" that consistently fire on things like planes, heads, and fur. 
 The more interpretable these features are, the more important they are shown to be 
-for downstream scene classification; there are some interesting experiments in their 
-Figure 2 that show what happens when you zero-ablate specific units. For example, 
+for downstream scene classification. They show some interesting experiments in their 
+Figure 2 that illustrate what happens when you zero-ablate specific units. For example, 
 removing a single unit that corresponds to "snow" decreases accuracy for the class "ski resort" 
 by 9-10%. 
 <br><br>
@@ -221,10 +222,45 @@ cause a door to be drawn in the sky).
 <br><br>
 
 <h2>Multimodal Neurons</h2>
+<p>
 
-As the authors discuss, the inspiration for <a href="https://distill.pub/2021/multimodal-neurons/">Multimodal Neurons in Artificial Neural Networks</a>
-comes from a <a href="https://amygdala.psychdept.arizona.edu/IntroData/Readings/week5/Quiroga-reddy-kreiman-koch-Fried+invariant-visual-single-neurons-human+Nature+2005.pdf">2005 paper by Quiroga et al.</a>
+The inspiration for the next paper, <a href="https://distill.pub/2021/multimodal-neurons/">Multimodal Neurons in Artificial Neural Networks</a>
+comes from a <a href="https://amygdala.psychdept.arizona.edu/IntroData/Readings/week5/Quiroga-reddy-kreiman-koch-Fried+invariant-visual-single-neurons-human+Nature+2005.pdf">2005 neuroscience paper by Quiroga et al.</a>
+In the original neuroscience paper, the authors claim to have found specific neurons in the medial temporal lobe that selectively 
+fire in response to certain individuals, invariant to the visual features of those stimuli. For example, one neuron 
+they studied in the hippocampus would fire in response to pictures of Halle Berry as Catwoman, drawings of her, 
+and the literal text "Halle Berry," but not fire in response to other famous actors. 
 
+<p>
+In this paper, Goh et al. claim to have found the equivalent phenomenon in CLIP neurons. 
+Instead of Halle Berry or Jennifer Aniston, their canonical example is a 
+<a href="https://microscope.openai.com/models/contrastive_4x/image_block_4_5_Add_6_0/550">Spider-Man neuron</a>
+in the final layer of CLIP ResNet-50 4x. To show this, they use two approaches similar to what we've discussed so far: 
+<b>feature visualization</b> across an entire channel and for a particular position in the image (left), and
+collecting <b>dataset examples</b> that cause the neuron to fire. 
+
+<img src="images/spiderman-neuron.png" style="max-width:100%; width:800px;" class="mx-auto d-block">
+
+<p>
+There are a lot of interesting neuron examples in this paper, along with experiments that 
+find language embeddings to match specific "emotion neurons," but the exact reasons for the 
+emergence of these multimodal representations is left implied.
+
+<img src="images/emotion-text.png" style="max-width:100%; width:500px;" class="mx-auto d-block">
+
+<p>
+<i>Sheridan's opinion:</i> It's worth emphasizing that this paper focuses on CLIP models, 
+which are pretrained with the objective of aligning images 
+to their textual captions. CLIP models <em>have</em> to map images to high-level semantic 
+features in order to succeed on their training objective. It's definitely surprising that 
+some of these features seem to be localized to one neuron, but I personally find it 
+a little bit fallacious to frame these results as analogous to "Halle Berry" neurons in the brain,
+which themselves are somewhat contentious. 
+One of the original authors of that paper, Gabriel Kreiman, 
+now doubts the veracity of this line of work (<a href="https://klab.tch.harvard.edu/publications/PDFs/gk7786.pdf">Kreiman, 2019</a>; see Fig. 1).
+While I don't agree with Gabriel's entire dismissal of category-selective responses, 
+I think that we both share similar doubts as to how well humans can look at the 
+things a neuron responds to and accurately label what that neuron "wants." 
 
 <br><br> 
 
