@@ -254,23 +254,70 @@ which are pretrained with the objective of aligning images
 to their textual captions. CLIP models <em>have</em> to map images to high-level semantic 
 features in order to succeed on their training objective. It's definitely surprising that 
 some of these features seem to be localized to one neuron, but I personally find it 
-a little bit fallacious to frame these results as analogous to "Halle Berry" neurons in the brain,
+a little bit weird to frame these results as analogous to "Halle Berry" neurons in the brain,
 which themselves are somewhat contentious. 
 One of the original authors of that paper, Gabriel Kreiman, 
 now doubts the veracity of this line of work (<a href="https://klab.tch.harvard.edu/publications/PDFs/gk7786.pdf">Kreiman, 2019</a>; see Fig. 1).
-While I don't agree with Gabriel's entire dismissal of category-selective responses, 
-I think that we both share similar doubts as to how well humans can look at the 
-things a neuron responds to and accurately label what that neuron "wants." 
 
 <br><br> 
 
 <h2>Neurons in a Haystack</h2>
+<p>
+It's not just vision models that have interpretable neurons—in Finding Neurons in a Haystack, 
+Wes Gurnee and coauthors use sparse probing to identify interpretable neurons 
+in large language models. This paper has a lot of interesting results, including some foreshadowing 
+of upcoming topics, but we can focus on the findings that are relevant to our 
+discussion of neuron interpretation. 
 
-todo 
-<br>
+<h3>Approach: Sparse Probing</h3>
+<p>
+The tool that Gurnee et al. use to search through LLM neurons is <em>sparse probing.</em>
+Probing, which we'll cover in a few days, is the strategy of interpreting network activations 
+by training smaller models on top of those activations. The idea is that if a model represents 
+a feature like \( \texttt{is_german} \), a probe trained on that model's activations should have 
+high accuracy in distinguishing between German and non-German text. 
+
+<p>
+This paper specifically uses <em>\( k \)-sparse probes,</em>
+which are constrained to only be able to read from \( k \) neurons at a time. 
+In order to identify a single neuron that represents a specific feature, they can just 
+train a probe with \( k=1 \). 
+While it's extremely expensive to search over every neuron with typical probing 
+approaches, there are a number of tractable approaches in the sparse setting, which 
+you can read about in the paper. In this work, they use two techniques for 
+learning these probes depending on the size of \(k\), one of which comes from a previous 
+paper by Wes Gurnee's advisor, Dimitris Bertsimas. 
+
+<h3>Highlighted Results</h3>
+
+<p>
+The results of this paper show evidence of both <em>monosemantic</em> neurons in middle layers, single
+neurons that represent higher-level contextual features like \( \texttt{is_python_code} \), and <em>polysemantic</em> 
+neurons in early layers, neurons that activate for a number of sparsely-occurring multi-token n-grams. 
+
+<img src="images/gurnee-fig1.png" style="max-width:70%; width:800px;" class="mx-auto d-block">
+
+<p>
+The issue of monosemanticity versus polysemanticity is quite deep, and cuts at the central issue of what it means to interpret individual neurons.
+
+Take their discussion of the impact of model size on neuron representations: their general hypothesis 
+(their "quantization hypothesis") is that larger models should be able to learn a longer tail of increasingly rare features, 
+as they have more neurons that they can dedicate to these less common concepts.
+
+<img src="images/gurnee-size.png" style="max-width:90%; width:900px;" class="mx-auto d-block">
+
+But they also raise an interesting counterpoint, which is that as models get bigger, they may learn 
+more fine-grained features than what we are actually probing for. For example, while
+a smaller model may just have one \( \texttt{ALL_CAPS} \) feature, a large 
+model could have separate neurons dedicated to capitalization in acronyms, Python constants, or shouting on the internet. 
+
+<p>
+As the authors point out, we can't assume that the way that models decide to represent features 
+will necessarily correspond with how we initially decide to probe or describe those features. 
+This is a major theme in neuron interpretation, and one we should keep an eye out for in later chapters. 
 <br>
 
-<h2>Demo: TODO</h2>
+<h2>Demo</h2>
 
 Forthcoming! 
 
