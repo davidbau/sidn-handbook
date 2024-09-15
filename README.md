@@ -42,6 +42,11 @@ To see any of your new content on the website, you will need to run
 the template expansion scripts and then `git add public` before
 doing a `git push` to see the content on the website.
 
+Please don't edit the contents of `/public/` directly - edit `/src/`
+and then use `make` to expand it to the public directory. To enable us
+to reconfigure templates and layouts in the future, we want to
+be able to delete all of `/public/`, then rebuild it from `/src/`.
+
 ## Tips on formatting your handbook page
 
 **Start with the `{header('Your title')}` and end with `{footer()}`.**
