@@ -138,19 +138,21 @@ with no nonlinearities in the middle.  The other is to constrain the second netw
 to have the same weights as the first, just transposed.  That is, the first layer has
 weights that act as follows:
 
-\[ h = Wx = \begin{bmatrix}
-\vline & \vline & & \vline & \\ w_1 & w_2 & ... & w_n \\ \vline & \vline & & \vline 
-\end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{bmatrix} =
+\[ h = Wx = \left[ \begin{array}{c|c|c|c}
+\phantom{0} & \phantom{0}  & & \phantom{0} & \\
+ w_1 & w_2 & ... & w_n \\
+\phantom{0} & \phantom{0}  & & \phantom{0}
+\end{array} \begin{bmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{bmatrix} =
 \sum_i w_i x_i
 \]
 
 <p>And then the second layer has exactly the same weights, but transposed:
 
 \[ \hat{x} = W^T h = \begin{bmatrix}
-\hline & w_1^T & \vhine \\
-\hline & w_2^T & \vhine \\
- & \vdots & \\
-\hline & w_n^T & \vhine
+\phantom{0} & w_1^T & \phantom{0} \\ \hline
+\phantom{0} & w_2^T & \phantom{0} \\ \hline
+ & \vdots & \\ \hline
+\phantom{0} & w_n^T & \phantom{0}
 \end{bmatrix} \begin{bmatrix} h_1 \\ h_2 \\ \vdots \\ h_m \end{bmatrix}
 =
 \begin{bmatrix}
