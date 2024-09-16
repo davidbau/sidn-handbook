@@ -114,11 +114,15 @@ specific instance (for example).
 rather synthesizes random sparse features, which gives them control over the
 following two characteristics for each feature \( x_i \):
 
-\[ S_i \text{ is the sparsity of the $i$th feature, that is the probabilitity it is zero.} \]
-\[ I_i \text{ is the importance of the $i$th feature, cost incurred if information about it was lost.} \]
+<p> \( S_i \) is the sparsity of the \(i\)th feature, that is the probabilitity it is zero.
+<p> \( I_i \) is the importance of the \(i\)th feature, the cost incurred if information about it was lost.
 
 <p>For example, if \( (1 - S_i) = 0.01 \), then the \( i \)th feature is nonzero only 1\% of the time.
-For each experiment, they preselect an \( S_i \) and \( I_i \) for each of \( n \) features, and then
+<p>And if \( I_i = 2 \) and \( I_j = 1 \), then the \( i \)th feature has twice the weight of the
+\( j \)th feature in the reconstruction loss.
+
+<p>For most of their experimens, they choose a uniform sparsity \( S \) for all the features
+and select a varying importance and \( I_i \) for each of \( n \) features, and then
 they synthesize fake data by creating random vectors \( [ x_1, x_2, ..., x_n ] \) that follow
 the sparsity probabilities.  They use this data to train neural networks
 on various tasks, then analyze the representations that are learned.  Since they know
@@ -139,7 +143,7 @@ to have the same weights as the first, just transposed.  That is, the first laye
 weights that act as follows:
 
 \[ h = Wx = \left[ \begin{array}{c|c|c|c}
-\phantom{0} & \phantom{0}  & & \phantom{0} & \\
+\phantom{0} & \phantom{0}  & & \phantom{0} \\
  w_1 & w_2 & ... & w_n \\
 \phantom{0} & \phantom{0}  & & \phantom{0}
 \end{array} \right] \begin{bmatrix} x_1 \\ x_2 \\ \vdots \\ x_n \end{bmatrix} =
@@ -153,7 +157,7 @@ weights that act as follows:
 \phantom{0} & w_2^T & \phantom{0} \\ \hline
  & \vdots & \\ \hline
 \phantom{0} & w_n^T & \phantom{0}
-\end{bmatrix} \begin{bmatrix} h_1 \\ h_2 \\ \vdots \\ h_m \end{bmatrix}
+\end{bmatrix} h
 =
 \begin{bmatrix}
 w_1^T h \\
@@ -166,9 +170,10 @@ w_n^T h
 <p>In other words: the first matrix is an embedding matrix that encodes the \(i\)th
 feature as the vector \(w_i\), and the second matrix is a projection matrix
 that decodes the \(i\)th feature by using the (Euclidean) inner product that
-evaluates the component in the direction of \(w_i\) again.
+evaluates the component in the direction of \(w_i\) again.  For both encoding and
+decoding $w_i$ can be thought of as the vector embedding of the \(i\)th feature.
 
-<p>Then they train the following variations:
+<p>With this basic starting point, they train the following variations:
 
 <p>Fully linear autoencoding: \( \hat{x} = W^T W x + b\),
  with \( \hat{x}_i \rightarrow x_i \).
@@ -176,15 +181,69 @@ evaluates the component in the direction of \(w_i\) again.
  with \( \hat{x}_i \rightarrow x_i \).
 <p>Adversarial attack: \( \hat{x} = \mathrm{ReLU}(W^T W (x + \epsilon + b) \),
  with \( \epsilon \) chosen to maximize error in \(\hat{x}\).
-<p>Absolute value: \( \hat{x} = \mathrm{ReLU}(W_2^T \mathrm{ReLU}(W_1 x) + b\),
+<p>Absolute value: \( \hat{x} = \mathrm{ReLU}(W_2^T \mathrm{ReLU}(W_1 x) + b) \),
  with \( \hat{x}_i \rightarrow |x_i| \).
 
-<p>The "absolute value" setting is the most conventional neural network setting,
-where the weights of the two layers are 
+<p>(The "absolute value" setting is the most conventional neural network setting,
+discarding the coupling of the weights and introducing a nonlinearity at the hidden layer.)
 
 <h3>Conditions that Lead to Superposition</h3>
 
-<h3>"Fractional Dimensions," Nonorthogonality, and Adversarial Attack</h3>
+<p>The main finding of the paper is the counterintuitive result that sparsity
+in the underlying features that is \( (1 - S) \) close to zero, leads to
+<em>more</em> superposition and more entanglement, rather than less.
+
+{img("images/sparsity.png", 100)}
+
+<p>The ordinary boring solution for the network, shown on the left of the figure above
+is what they call "PCA-like behavior".  When PCA is used to encode an \(n\) dimiensional problem
+in a smaller \(m\) dimensional space, PCA simply finds the most important vector
+directions in the distribution, directly encodes those, and then drops all the other
+directions, setting those components to zero.  They found that without nonlinearities,
+training always resulted in this PCA choice.  They also found that, even with nonlinearities,
+the PCA choice was found when the data was not sparse, i.e., when all the features were
+active most of the time.
+
+<p>However, when we have both sparsity and nonlinearity, then the network exploits an
+opportunity to encode <em>more</em> than \(m\) features within the \(m\)-dimensional vector space.
+This sacrifices the orthogonal independence of the \(w_i\) feature embedding vectors, as shown
+in this figure:
+
+{img("images/overbasis.png", 90)}
+
+<p>Thus, they argue, that the entanglement seen in distributed representations is inevitable:
+it's not just about a choice of basis that is unknown, but it is about a choice of
+embedding that <em>overcrowds</em> the available dimensions, and that does not cleanly
+correspond to a basis.
+
+<p>They supply a very nice <a href="{colab_link('colab/exact_toys.ipynb')}">python notebook
+that derives an exact solution</a> for the optimal "amount" of dimensionality that should
+be allocated to each feature, and they show that this model matches what is found
+by the optimizer in practice.
+
+{img("image/theorysweep.png, 30)}
+
+<p>Then they examine learning dynamics and the exact geometry of the layout of the
+vectors that are learned when they are in superposition, and they find some pretty
+symmetries that correspond to the optimizer finding the corners of
+regular polytopes in low dimensions.
+
+{img("image/dynamics.jpg, 100)}
+
+<h3>"Fractional Dimensions," Superposition, and Adversarial Attack</h3>
+
+<p>One of the interesting quantities defined by the paper is their fractional "dimension".
+In an ordinary PCA solution, all the feature vectors \( w_i \) are orthogonal
+and consume a whole dimension, leaving space for only \(m\) features to be represented.
+But they observe that a feature in superposition with other features will consume
+<em>less</em> than a whole dimension, and they quantify the "dimensionality" of the \(i\)th
+feature as:
+
+\[
+d_i = \frac{ ||w_i||^2 } { \sum_{j} (\hat{w}_i \cdot w_j)^2 } = \frac{ ||w_i||^4 }{\sum_{j} (w_{i} \cdot w_j)^2 }
+\]
+
+<p>
 
 <h2>The Linear Representation Hypothesis</h2>
 

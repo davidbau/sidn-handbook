@@ -88,8 +88,8 @@ def expand_template(template, namespace, pathname):
         # Return the original template if an error occurs during evaluation
         return template
     except (NameError, TypeError, ZeroDivisionError) as e:
-        print(f'Ignoring error in {pathname}:', e)
         print(escaped_template)
+        print(f'Ignoring error in {pathname}:', e)
         return template
 
 # Function to generate the static website recursively
