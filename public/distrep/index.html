@@ -1,4 +1,65 @@
-{header('Distributed Representations')}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Structure and Interpretation of Deep Networks</title>
+
+<!-- Bootstrap CSS Imports -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<!-- Google Font Imports -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+rel="stylesheet">
+
+<!-- Custom CSS Imports -->
+<link rel="stylesheet" href="/css/style.css">
+
+<!-- Mathjax -->
+<script sid="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" integrity="sha512-6FaAxxHuKuzaGHWnV00ftWqP3luSBRSopnNAA2RvQH1fOfnF/A1wOfiUWF7cLIOFcfb1dEhXwo5VG3DAisocRw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha256-3gQJhtmj7YnV1fmtbVcnAV6eI4ws0Tr48bVZCThtCGQ=" crossorigin="anonymous"></script>
+
+<!-- Auto Table of Contents -->
+<link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css"
+/>
+<script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script>
+
+</head>
+
+<body data-bs-spy="scroll" data-bs-target="#toc">
+<nav class="navbar navbar-dark bg-dark">
+<div class="container-fluid">
+<ul class="navbar-nav mr-auto">
+ <li class="nav-item active">
+  <a class="nav-link" href="/distrep/index.html">Distributed Representations</a>
+ </li>
+</ul>
+<ul class="navbar-nav ml-auto">
+ <li class="nav-item">
+  <a class="navbar-brand" href="/">Structure and Interpretation of Deep Networks</a>
+ </li>
+</ul>
+</div>
+</nav>
+
+<div class="container">
+<div class="row">
+<div class="col-2 position-fixed pt-5">
+<nav id="toc" data-toggle="toc"></nav>
+</div>
+<div class="col-2"></div>
+<main class="col-8">
+<h1 class="mt-5">Distributed Representations</h1>
+
 
 <h5>September 17, 2024 • <em>David Bau</em></h5>
 
@@ -41,7 +102,7 @@ typically look at the representation vector for the neurons in
 a single layer \( \mathbf{h} \ in \mathbb{R}^d \), where the dimensionality
 \( d \) is given by the number of neurons in a layer.
 
-{img("images/zeiler-fig-7.jpg")}
+<img src="images/zeiler-fig-7.jpg" style="max-width:50%; width:500px;" class="mx-auto d-block">
 
 <p>In 1987, the PDP authors examined several
 possible ways of encoding information in a distributed fashion
@@ -135,7 +196,7 @@ how those characteristics relate to different types of representations.
 information of many features \( x_i \) through a smaller number of hidden unit neurons,
 while still being able to reconstruct \( x_i \) in the end.
 
-{img("images/bottleneck.png", 30)}
+<img src="images/bottleneck.png" style="max-width:30%; width:300px;" class="mx-auto d-block">
 
 <p>They make two unusual choices. One is to begin by studying a totally linear network
 with no nonlinearities in the middle.  The other is to constrain the second network layer
@@ -193,7 +254,7 @@ discarding the coupling of the weights and introducing a nonlinearity at the hid
 in the underlying features that is \( (1 - S) \) close to zero, leads to
 <em>more</em> superposition and more entanglement, rather than less.
 
-{img("images/sparsity.png", 100)}
+<img src="images/sparsity.png" style="max-width:100%; width:1000px;" class="mx-auto d-block">
 
 <p>The ordinary boring solution for the network, shown on the left of the figure above
 is what they call "PCA-like behavior".  When PCA is used to encode an \(n\) dimiensional problem
@@ -209,26 +270,26 @@ opportunity to encode <em>more</em> than \(m\) features within the \(m\)-dimensi
 This sacrifices the orthogonal independence of the \(w_i\) feature embedding vectors, as shown
 in this figure:
 
-{img("images/overbasis.png", 90)}
+<img src="images/overbasis.png" style="max-width:90%; width:900px;" class="mx-auto d-block">
 
 <p>Thus, they argue, that the entanglement seen in distributed representations is inevitable:
 it's not just about a choice of basis that is unknown, but it is about a choice of
 embedding that <em>overcrowds</em> the available dimensions, and that does not cleanly
 correspond to a basis.
 
-<p>They supply a very nice <a href="{colab_link('colab/exact_toys.ipynb')}">python notebook
+<p>They supply a very nice <a href="https://colab.research.google.com/github/davidbau/sidn-handbook/blob/main/public/distrep/colab/exact_toys.ipynb">python notebook
 that derives an exact solution</a> for the optimal "amount" of dimensionality that should
 be allocated to each feature, and they show that this model matches what is found
 by the optimizer in practice.
 
-{img("image/theorysweep.png, 30)}
+<img src="image/theorysweep.png" style="max-width:30%; width:300px;" class="mx-auto d-block">
 
 <p>Then they examine learning dynamics and the exact geometry of the layout of the
 vectors that are learned when they are in superposition, and they find some pretty
 symmetries that correspond to the optimizer finding the corners of
 regular polytopes in low dimensions.
 
-{img("image/dynamics.jpg, 100)}
+<img src="image/dynamics.jpg" style="max-width:100%; width:1000px;" class="mx-auto d-block">
 
 <h3>"Fractional Dimensions," Superposition, and Adversarial Attack</h3>
 
@@ -256,6 +317,12 @@ d_i = \frac{ ||w_i||^2 } { \sum_{j} (\hat{w}_i \cdot w_j)^2 } = \frac{ ||w_i||^4
 
 
 <p>
-<a href="{colab_link('colab/toy_models.ipynb')}">colab link</a>
+<a href="https://colab.research.google.com/github/davidbau/sidn-handbook/blob/main/public/distrep/colab/toy_models.ipynb">colab link</a>
 
-{footer()}
+
+</main>
+</div>
+</div>
+</body>
+</html>
+

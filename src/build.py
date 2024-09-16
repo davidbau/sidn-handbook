@@ -84,10 +84,8 @@ def expand_template(template, namespace, pathname):
     try:
         # Evaluate the template as an f-string within the namespace
         return eval(f'rf"""{escaped_template}"""', namespace)
-    except (SyntaxError):
+    except (BaseException) as e:
         # Return the original template if an error occurs during evaluation
-        return template
-    except (NameError, TypeError, ZeroDivisionError) as e:
         print(escaped_template)
         print(f'Ignoring error in {pathname}:', e)
         return template
