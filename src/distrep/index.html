@@ -243,9 +243,32 @@ feature as:
 d_i = \frac{ ||w_i||^2 } { \sum_{j} (\hat{w}_i \cdot w_j)^2 } = \frac{ ||w_i||^4 }{\sum_{j} (w_{i} \cdot w_j)^2 }
 \]
 
-<p>
+<p>Plotting this dimensionality measure over time reveals a satsifying discreteness
+to the solutions that correspond to the symmetric-geometry solutions, for example, where
+a feature goes to "1/2" a dimension when the dimension is shared with one other feature,
+and jumps higher as it starts consuming more space in the representation.
+
+{img("images/dimensionality.png", 60)}
+
+<p>The paper also hypothesizes that the success of adversarial attacks hinges on this
+overpacking of features into dimensions, plotting a clear corrfelation between the
+(reciprocal of) the dimension measure and the vulnerability of the model to adversarial
+attack.
+
+{img("images/adversary.png", 50)}
 
 <h2>The Linear Representation Hypothesis</h2>
+
+<p>The <a href="https://arxiv.org/abs/2311.03658">Linear Representation Hypothesis paper</a>
+by Park, Choe, and Veitch (ICML 2024) examines the geometry of representation spaces
+from a very different perspective: instead of focusing on a "dimension overloading" phenomenon
+in which underlying features are inherently entangled, they hypothesize that useful
+underlying features are <em>disentangled</em> and orthogonal to each other
+if you define orthogonality in the right way.
+
+<p>To define orthogonality, they introduce a concept they call the <em>Causal Inner Product</em>.
+
+<p>
 
 <h3>The Data: Semantic Vector Offset Directions</h3>
 
@@ -253,9 +276,13 @@ d_i = \frac{ ||w_i||^2 } { \sum_{j} (\hat{w}_i \cdot w_j)^2 } = \frac{ ||w_i||^4
 
 
 
+<h2>Code resources</h2>
 
-
-<p>
-<a href="{colab_link('colab/toy_models.ipynb')}">colab link</a>
+<p>The "Toy Models" paper comes with two notebooks: the
+<a href="{colab_link('colab/toy_models.ipynb')}">main notebook</a> includes some
+efficient training code that can reproduce some of the larger experiments in the
+paper, but it is not very well-explained.  A more valuable starting point is the
+<a href="{colab_link('colab/exact_toys.ipynb')}">"exact solutions" notebook</a>
+that explains several things that are glossed over in the main paper.
 
 {footer()}
