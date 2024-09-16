@@ -2,6 +2,133 @@
 
 <h5>September 17, 2024 • <em>David Bau</em></h5>
 
+<p>Today we begin a segment of the class dealing with
+<em>understanding representations</em>: understanding
+the ways that information might be encoded in the
+patterns of neural activations in a neural network.
+
+<p>In the previous chapter on <a href="/neurons/">neurons</a>,
+we examined several efforts to visualize and understand the
+"concepts" that might be represented by individual neurons in
+an artificial neural network.  The idea that individual neurons
+might directly correspond to interpretable variables is the
+"Local Representation" hypothesis.  As we saw, some individual
+neurons do seem encode specific concepts. However, in practice,
+many other individual neurons seem to lack clear mappings
+to discrete understandable concepts. 
+
+<p>In the general case, all we can say is that all the neurons
+in work together to store the aggregate information in a network.
+Hinton, McClelland, and Rumelhart have advocated the
+hypothesis that this collective cooperation between many neurons is
+irreducible, and that every neuron is involved in encoding
+many different concepts; this is their
+<a href="https://stanford.edu/~jlmcc/papers/PDP/Chapter3.pdf">Distributed Representation</a>
+model, and they have advocated this viewpoint since their 1987 work
+"Parallel Distributed Processing" (PDP).
+
+<p>If information is inherently distributed, then instead of
+examining individual neurons \( h_i \in \mathbb{R} \) as scalar variables, we
+should examine the <em>vector space</em> \( \mathbf{h} \in \mathbb{R}^N \)
+of all the neurons together; we call this collective vector space the
+<em>representation space</em> of the network.  In a feedforward
+neural network, each layer of neurons is a bottleneck that fully
+determines all the subsequent information in a network, so we will
+typically look at the representation vector for the neurons in
+a single layer \( \mathbf{h} \ in \mathbb{R}^d \), where the dimensionality
+\( d \) is given by the number of neurons in a layer.
+
+<p>In 1987, the PDP authors examined several
+possible ways of encoding information in a distributed fashion
+within a representation vector space, from hash coding, to hierarchical
+schemes, compositional approaches, and sequential processing ideas.
+But what kind of encoding scheme do our neural networks use in practice?
+For example, in their Figure 2, they observed the following dilemma.
+Suppose neurons collaborate in two groups to encode an \( (x, y) \)
+combination, like a point on a plane.  It leads to the problem that
+if you use the same scheme to encode two points, there is not an
+ambiguity for which \( x \) goes with which \( y \).  Thus they
+faced a puzzle: when sets of neurons distribute information, how do they
+encode it effectively?
+
+<p>We begin today by looking at two recent papers that tackle this
+representation encoding question from a geometric point of view, beginning
+with mathematical principles and looking for some empirical support.
+
+<h2>Toy Models of Superposition</h2>
+
+<p>The paper <a href="https://transformer-circuits.pub/2022/toy_model/index.html">Toy
+Models of Superposition</a> is a blog post by Nelson Elhage and Chris Olah's group at Anthropic
+in collaboration with Martin Wattenberg at Harvard. [Why a blog?  For years, Olah has been
+a big advocate of publishing research in non-traditionally-peer-reviewed blog formats.]
+
+<h3>The Goal: Enumeration</h3>
+
+<p>To understand the motivation of the paper, it is helpful to start at the end; in
+their section 9, they explain that they would like to understand how to <b>enumerate</b>
+all the features in a representation.
+
+<blockquote>
+We'd like a way to have confidence that models will never do certain behaviors such
+as "deliberately deceive" or "manipulate." Today, it's unclear how one might show this,
+but we believe a promising tool would be the ability to
+<em>identify and enumerate over all features</em>.
+</blockquote>
+
+<p>Recall that this team had previously developed catalogs of neurons when
+they previously worked at OpenAI.  And they note that if each interpertable
+variable corresponded to one neuron, then "you could enumerate over features
+by enumerating over neurons."  Yet if we are in a distributed representation
+where every neuron is involved in encoding multple variables, then it is unclear
+how to find the representations of all the variables, or even how to identify
+what the variables are.
+
+<h3>The Data: Synthetic Sparse Features</h3>
+
+<p>To begin to tackle this reverse-engineering problem, the paper takes
+the approach of training very small neural networks on very small problems
+for which they can define a ground truth for the "interpretable variables."
+Then they will ask: how does the network represent information about these variables?
+
+<p>To play the role of interpretable variables, they propose "sparse features."
+Sparse features are an idea that date back to Hinton in 1987, (they also cite neuroscientists
+<a href="https://www.sciencedirect.com/science/article/pii/S0042698997001697">Olshausen 1997</a>).
+A sparse feature is a variable that is usually zero, but that becomes
+positive in the rare but interesting situations where there is something to say.
+For example, a sparse feature might be "there is a dog's head in the photo."
+Since most photos don't include dog heads, it's usually zero, but sometimes it
+is positive, and it could be a large number if there are lot of dogs (for example).
+
+<p>In their various experiments, Elhage does not use "real" data for features but
+rather synthesizes random sparse features, which give them control over the
+following two characteristics for each feature \( x_i \):
+
+\[ S_i \text{ is the sparsity of the $i$th feature, that is the probabilitity it is zero.} \]
+\[ I_i \text{ is the importance of the $i$th feature, cost incurred if information about it was lost.} \]
+
+<p>For each experiment, they preselect an $S_i$ and $I_i$ for each of $n$ features, and then
+they synthesize fake data by creating random vectors \( [ x_1, x_2, ..., x_n \] \) that follow
+the sparsity probabilities.  They use this data to train neural networks
+on various tasks, then analyze the representations that are learned.  Since they know
+the mathematical characteristics of their invented sparse features, they can measure
+how those characteristics relate to different types of representations.
+
+<h3>The Tasks: Autoencoding, Adversarial Attack, and Absolute Value</h3>
+
+<h3>Conditions that Lead to Superposition</h3>
+
+<h3>"Fractional Dimensions," Nonorthogonality, and Adversarial Attack</h3>
+
+<h2>The Linear Representation Hypothesis</h2>
+
+<h3>The Data: Semantic Vector Offset Directions</h3>
+
+<h3>The Task: Find a Causal Inner Product</h3>
+
+
+
+
+
 <p>
 <a href="{colab_link('colab/toy_models.ipynb')}">colab link</a>
 
