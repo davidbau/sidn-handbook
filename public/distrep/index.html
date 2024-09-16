@@ -167,8 +167,8 @@ following two characteristics for each feature \( x_i \):
 \[ S_i \text{ is the sparsity of the $i$th feature, that is the probabilitity it is zero.} \]
 \[ I_i \text{ is the importance of the $i$th feature, cost incurred if information about it was lost.} \]
 
-<p>For each experiment, they preselect an $S_i$ and $I_i$ for each of $n$ features, and then
-they synthesize fake data by creating random vectors \( [ x_1, x_2, ..., x_n \] \) that follow
+<p>For each experiment, they preselect an \( S_i \) and \( I_i \) for each of $n$ features, and then
+they synthesize fake data by creating random vectors \( [ x_1, x_2, ..., x_n ] \) that follow
 the sparsity probabilities.  They use this data to train neural networks
 on various tasks, then analyze the representations that are learned.  Since they know
 the mathematical characteristics of their invented sparse features, they can measure
