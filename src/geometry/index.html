@@ -1,4 +1,4 @@
-{header('Distributed Representations')}
+{header('Geometry of Distributed Representations')}
 
 <h5>September 17, 2024 • <em>David Bau</em></h5>
 
@@ -270,11 +270,104 @@ if you define orthogonality in the right way.
 
 {img("images/causalinner.jpg")}
 
+<p>The rough idea is this: if you have representation vectors representing concepts
+\(W\) and \(Z\), then ideally, if the two concepts are <em>indepenent</em>, then their
+corresponding representation vectors should be <em>orthogonal</em>. However, this rough
+idea needs to be refined to make things work: Park defines <em>concepts</em> in a
+certain way, and then introduces <em>causal separation</em> instead of indepedence;
+then defines what a good <em>unembedding</em> vector would be an separately an
+<em>embedding</em> vector for a concept; then finally introduces the
+<em>causal inner product</em> instead of Euclidean geometry.
+
 <h3>The Data: Semantic Vector Offset Directions</h3>
 
-<h3>The Task: Find a Causal Inner Product</h3>
+<p><b>Concept variables as changes</b>.  First, Park assumes that a concept variable
+is a <em>transformation</em> of an attribute from one value to another, for example
+"male&rArr;female".
 
+<p><b>Unembedding vectors lead directly to an output change</b>.  Language
+models have two ways of looking at the embedding spaces: first, you
+can look at each vector as encoding a "next word to output".  Park uses
+the symbol \(\gamma\) to describe a vector that will cause a particular
+word to be output, and defines the "unembedding" vector
+for a concept as the vector difference \(\gamma(Y(1)) - \gamma(Y(0)\), which is
+his notation for, for example, \(\gamma("woman") - \gamma("man")\)
+for the "man&rArr;woman" concept.
+If you look at the <a href="https://github.com/KihoPark/linear_rep_geometry/blob/main/store_matrices.py#L10"
+>source code</a> for the project, you can see that, in practice, these
+\(\gamma\) vectors are just read directly (mean-centered) columns of the decoding
+matrix of a transformer.
 
+<p><b>Embedding vectors encode a narrowly specific input change</b>.  The
+second way to look at embedding vectors is that they are a response to
+<em>input</em> text.  Park writes, e.g.,
+\(\lambda_0 = \lambda("He is the monarch of England,")\), or
+\(\lambda_1 = \lambda("She is the monarch of England,")\),
+to describe these vectors, and proposes that a vector for a concept is
+similarly a vector difference \(\lambda_1 - \lambda_0\) corresponding to
+the narrow concept change from one sentence to other.  If you look at the
+<a href="https://github.com/KihoPark/linear_rep_geometry/blob/main/linear_rep_geometry.py#L69"
+>source code</a> for the project, it appears that, in practice these
+\(\lambda\) vectors are read directly from the last-token last-layer hidden
+state of the transformer after processing some input text.
+
+<p><b>Causal separation</b>.  Park explains: causally separable concepts are those
+that can be varied freely and in isolation. For example, "English&rArr;French"
+and "male&rArr;female" are causally separable, whereas "English&rArr;Russian" is
+not separable from "English&rArr;French".  This definition pulls a lot of
+weight in Park's proofs: for example, Park says that an vector for
+a concept is only a good embedding vector for a concept \(W\) if adding
+the vector does not change the probability of any causally separated
+concetpts \(Z\).  I.e., he takes this as the definition for an embedding
+vector.
+
+<h3>Defining a Causal Inner Product</h3>
+
+<p><b>Causal inner product</b>.  Then finally: Park wants vectors for concepts
+to be orthogonal if the concepts are causally separable.  But he realizes
+this will not the case without an adjustment.  Instead of using the ordinary
+inner product \( \gamma \cdot \gamma' \) to relate two vectors, he proposes
+a covariance-corrected inner product:
+
+\[ \langle \bar{\gamma}, \bar{\gamma} \rangle_C = \bar{gamma}^T \mathrm{Cov}(\gamma)^{-1} \bar{gamma}' \]
+
+<p>In practice <a href="https://github.com/KihoPark/linear_rep_geometry/blob/main/store_matrices.py#L16"
+>in the code</a>, this covariance matrix is read directly from the
+decoding head of the model.  Park argues (he writes some proofs, but I think there
+might be some gaps in his assumptions) that when the causal inner product is
+used instead of the regular inner product, then causally separable
+concepts will be orthogonal to each other, i.e., \( \langle \gamma_W, \gamma_Z \rangle = 0 \)
+for separable \(W\) and \(Z\).
+
+<p>Park notes that if you transform embedding space through the square-root
+of this covariance correction, e.g., if you define
+
+\[ \bar{g} = A\bar{\gamma} \text{ \quad where \quad } A = \mathrm{Cov}(\gamma)^{-1/2} \]
+
+<p>Then within the transformed vector space of \(\bar{g}\), the ordinary
+Euclidean dot product acts like the causal inner product.
+
+<h3>Experimental Checks</h3>
+
+<p>To check their hypothesized geometrical intutions, they use this covariance-corrected
+geometry to test several things - interestingly, even though the geometry is totally
+based on covariances in the <em>output</em> embeddings, they seem to achieve good separation
+when making target changes of a concept on <em>inputs</em>.
+
+{img("images/park-fig5.png", 100)}
+
+<p>The paper builds upon a 2023 paper from the Veitch lab <a href="https://arxiv.org/abs/2302.03693"
+>Concept Algebra by Wang</a>, which does a similar thing in diffusion models.
+
+<p>(A research note - in our the Bau lab, we have several works that use a similar technique -
+<a href="https://arxiv.org/abs/2007.15646">Rewriting a generative model</a>, the
+<a href="https://arxiv.org/abs/2202.05262">ROME</a> paper and the
+<a href="https://arxiv.org/abs/2308.14761">Unified Concept Editing</a> papers
+make similar covariance corrections in order
+to align geometric orthogonality with statistical indepdnence - but we
+do covariance corrections based on input statistics and Park
+corrects based on the output embedding matrix.  It's reasonable to
+ask whether these are the same or different, and why.)
 
 <h2>Code resources</h2>
 
@@ -284,5 +377,18 @@ efficient training code that can reproduce some of the larger experiments in the
 paper, but it is not very well-explained.  A more valuable starting point is the
 <a href="{colab_link('colab/exact_toys.ipynb')}">"exact solutions" notebook</a>
 that explains several things that are glossed over in the main paper.
+
+<p>The "Linear Representation" paper comes with a
+<a href="https://github.com/KihoPark/linear_rep_geometry/">github repo</a>,
+and the most interesting code is in these files
+<a href="https://github.com/KihoPark/linear_rep_geometry/blob/main/store_matrices.py">store_matrices.py</a>
+and <a href="https://github.com/KihoPark/linear_rep_geometry/blob/main/linear_rep_geometry.py">linear_rep_geometry.py</a>.
+
+<h2>Discussion Questions</h2>
+
+<ul>
+<li>Why are these research groups so interested in the geometry of vector spaces? What does vector space geometry have to do with interpretability of deep networks?
+<li>Think about the contrast between Elhage's focus on discerning latent sparse features, and Park's focus on geometry of inner products in the space.  Do these viewpoints contradict each other? And think about the way the two papers were presented differently; which parts of their presentation and reasoning do you find convincing, or not, and why?
+</ul>
 
 {footer()}
