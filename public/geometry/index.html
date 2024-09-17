@@ -115,9 +115,24 @@ ambiguity for which \( x \) goes with which \( y \).  Thus they
 faced a puzzle: when sets of neurons distribute information, how do they
 encode it effectively?
 
+<h3>The Meaning of Right Angles</h3>
+
 <p>We begin today by looking at two recent papers that tackle this
 representation encoding question from a geometric point of view. Both
-begin with mathematical principles and look for some empirical support.
+begin can be seen as a contemplation of the question:
+<b>Why don't vectors for independent features lie at right angles
+in representation space?</b>
+
+<p>Notice that each individual neuron defines a simple representation
+vector \(e_i\) that has a 1 in the \(i\)th spot and 0 in all the other
+spots, so if each neuron were an independent feature, then they
+would all lie at right angles since \(e_i \cdot \e_j = 0\) for
+all \(i \neq j\).  But both papers notice that, in practice,
+vectors for features ado not seem to correspond to individual neurons,
+and moreover, vectors for independent features do not seem to
+satisfy \(v_i \cdot v_j = 0\).  So both ask: why not?
+
+<p>The two papers arrive at two different conclusions to this question.
 
 <h2>Toy Models of Superposition</h2>
 
