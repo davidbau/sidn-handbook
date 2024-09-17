@@ -390,7 +390,7 @@ this will not the case without an adjustment.  Instead of using the ordinary
 inner product \( \gamma \cdot \gamma' \) to relate two vectors, he proposes
 a covariance-corrected inner product:
 
-\[ \langle \bar{\gamma}, \bar{\gamma} \rangle_C = \bar{gamma}^T \mathrm{Cov}(\gamma)^{-1} \bar{gamma}' \]
+\[ \langle \bar{\gamma}, \bar{\gamma} \rangle_C = \bar{\gamma}^T \mathrm{Cov}(\gamma)^{-1} \bar{\gamma}' \]
 
 <p>In practice <a href="https://github.com/KihoPark/linear_rep_geometry/blob/main/store_matrices.py#L16"
 >in the code</a>, this covariance matrix is read directly from the
@@ -403,7 +403,7 @@ for separable \(W\) and \(Z\).
 <p>Park notes that if you transform embedding space through the square-root
 of this covariance correction, e.g., if you define
 
-\[ \bar{g} = A\bar{\gamma} \text{ \quad where \quad } A = \mathrm{Cov}(\gamma)^{-1/2} \]
+\[ \bar{g} = A\bar{\gamma} \quad \text{ where } \quad A = \mathrm{Cov}(\gamma)^{-1/2} \]
 
 <p>Then within the transformed vector space of \(\bar{g}\), the ordinary
 Euclidean dot product acts like the causal inner product.
