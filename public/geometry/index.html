@@ -352,7 +352,7 @@ can look at each vector as encoding a "next word to output".  Park uses
 the symbol \(\gamma\) to describe a vector that will cause a particular
 word to be output, and defines the "unembedding" vector
 for a concept as the vector difference \(\gamma(Y(1)) - \gamma(Y(0)\), which is
-his notation for, for example, \(\gamma(\text{"woman"}) - \gamma(\text{"man"})\)
+his notation for, for example, \(\gamma(\text{``woman"}) - \gamma(\text{``man"})\)
 for the "man&rArr;woman" concept.
 If you look at the <a href="https://github.com/KihoPark/linear_rep_geometry/blob/main/store_matrices.py#L10"
 >source code</a> for the project, you can see that, in practice, these
@@ -362,8 +362,8 @@ matrix of a transformer.
 <p><b>Embedding vectors encode a narrowly specific input change</b>.  The
 second way to look at embedding vectors is that they are a response to
 <em>input</em> text.  Park writes, e.g.,
-\(\lambda_0 = \lambda(\text{"He is the monarch of England,"})\), or
-\(\lambda_1 = \lambda(\text{"She is the monarch of England,"})\),
+\(\lambda_0 = \lambda(\text{``He is the monarch of England,"})\), or
+\(\lambda_1 = \lambda(\text{``She is the monarch of England,"})\),
 to describe these vectors, and proposes that a vector for a concept is
 similarly a vector difference \(\lambda_1 - \lambda_0\) corresponding to
 the narrow concept change from one sentence to other.  If you look at the
