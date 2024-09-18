@@ -1,1 +1,73 @@
+{header('Neuron Interpretation')}
+
+<!--
+<p>
+
+-->
+
+<div><h5>September 19, 2024 • <em>Rahul Chowdhury, Ritik Bompilwar</em></h5>
+
+<p>
+<h2>What is Probing?</h2>
+Probing is an attempt by computer scientists to understand the workings of neural networks.
+The most popular way of probing is by learning to make sense of a representation of a neural network 
+by keeping the information in its purest form as much as possible. The information under scrutiny is usually 
+a human interpretable property of known data that is believed could be decoded in the easiest way if the information 
+is present in the representation and also in the data that is passed through the neural network. 
+There is also a second line of work that is more concerned if a particular property that is learned is used in the 
+training objective. This line of work is unbothered by the presence of a particular feature which could be learned
+as a by-product of a training objective. This is investigated by switching off the features that are believed to be representing 
+a property and observing the reaction of the neural network's predictability to that intervention. 
+<p>
+<h2>Linear Probing</h2>
+Linear Probing is a learning technique to assess the information content in the representation layer of a neural network. 
+This is done to answer question like what property of the data in training did this representation layer learn that will 
+be used in the subsequent layers to make a prediction. The other question to ask is how we can test the presence of such property 
+without adulterating the purity of information. Computer scientists believed that associating a representation with a said property with 
+parametric learning paradigm could be done with less adulteration by learning a matrix that multiplies the representaiton and projects it into 
+the space of labels without non-linear activation since a complex model with non-linear activation might memorize the data and force the representation 
+to project to the labels associated with the data. One way to test if the probing learnable function is memorizing the label
+along with the data instead of finding a drawing a valid decision line is by checking the selectivity of the probing. 
+In this test, a probe under scrutiny is trained with random labels and the same probing structure is trained with 
+original labels and the probe trained with random label serves as a control and their performances are recorded. 
+If the probe achieves high accuracy on the random labels and their accuracy with the original accuracy is not high enough to counteract this high accuracy, 
+it is said to be low on selectivity and is memorizing the probing dataset. Non-linear probes have been alleged to have this property and that is why a linear probe is 
+entrusted with this task. Finally, good probing performance would hint at the presence of the said property which has the potential of 
+being used in making final decision to choose a label in the farthest layer of the neural network. 
+<p>
+<h2>Amnesic Probing</h2>
+Probing usually deals with discovery and localization of concepts in a trained neural network, and 
+investigate what the neural network has learned and how they could be responsible for the outcome of training.
+There is another line of research that has an orthogonal approach to understanding the dependencies of a neural network on 
+said features when it takes a decision. This line of research wants to study the reaction of the neural network if that feature that might be a
+representaiton of a said property is suppressed via intervention. Intervention is usually done in the deep layers than input
+since intervention in the input involves querying a lot of neurons. The goal of this intervention is to test if the features learning identified properties 
+are at all used during making a decision. This could also be a test to observe if the learned representation is actually the feature of the probed label or is 
+it just a mere correlation without causation. 
+<h3>Intervention Mechanism</h3>
+Iterative Null Space Projection algorithm was used to transform features that could be used to identify particular 
+property. This is usually done through repeated projection of weight matrix used to project features into the distribution of labels 
+to Null space, followed by learning a new matrix to linearly transform the null projected features into the distribution of labels. 
+This operation is repeated because null space projection can nullify the contribution by the number of dimension of the labels. In order to 
+ensure most of the dimension that could have information about the property multiple linear projections are required to minimize the rank of the matrix
+to a point where the information that could be transformed linearly to utilize the said property is diminished. This is repeated until the linear projection 
+can no longer classify the features into the target labels better than random projections. This repeated linear projections get rid off of the chance of the 
+embedding being processed linearly to utilize information that could represent the said property.
+<h3>How does intervention help?</h3>
+After performing linear intervention, we check if that intervention causes a drop in performance. This brings forth questions: Is the absence of the said 
+property is causing the drop? Or was it a mere correlation that could have caused the drop and were there other features entangled in the embedding that could have been the 
+reason for the original performance? A great way to test if our hypothesis that the said property that the feature is representing is 
+by simultaneously training another set of matrices in the same Iterative Null Space Projection algorithm but with random labels. 
+If the linear intervention finds the neutralized feature caused a drop in perfomance better than the random linear intervention, it could be concluded 
+that the said property might be representing the property and the information in that embedding was essential in determining the classes of a input data. 
+
+
+
+
+
+
+
+
+
+
 
