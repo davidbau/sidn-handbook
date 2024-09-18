@@ -371,7 +371,7 @@ can look at each vector as encoding a "next word to output".  Park uses
 the symbol \(\gamma\) to describe a vector that will cause a particular
 word to be output, and defines the "unembedding" vector
 for a concept as the vector difference \(\gamma(Y(1)) - \gamma(Y(0)\), which is
-his notation for, for example, \(\gamma(\text{“woman"}) - \gamma(\text{``man"})\)
+his notation for, for example, \(\gamma(\text{“woman"}) - \gamma(\text{“man"})\)
 for the "man&rArr;woman" concept.
 If you look at the <a href="https://github.com/KihoPark/linear_rep_geometry/blob/main/store_matrices.py#L10"
 >source code</a> for the project, you can see that, in practice, these
@@ -409,7 +409,7 @@ this will not the case without an adjustment.  Instead of using the ordinary
 inner product \( \gamma \cdot \gamma' \) to relate two vectors, he proposes
 a covariance-corrected inner product:
 
-\[ \langle \bar{\gamma}, \bar{\gamma} \rangle_C = \bar{\gamma}^T \mathrm{Cov}(\gamma)^{-1} \bar{\gamma}' \]
+\[ \langle \bar{\gamma}, \bar{\gamma}' \rangle_C = \bar{\gamma}^T \mathrm{Cov}(\gamma)^{-1} \bar{\gamma}' \]
 
 <p>In practice <a href="https://github.com/KihoPark/linear_rep_geometry/blob/main/store_matrices.py#L16"
 >in the code</a>, this covariance matrix is read directly from the
