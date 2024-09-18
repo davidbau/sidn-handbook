@@ -99,6 +99,7 @@ being used in making final decision to choose a label in the farthest layer of t
  
 <p>
 <h2>Amnesic Probing</h2>
+ 
 Probing usually deals with discovery and localization of concepts in a trained neural network, and 
 investigate what the neural network has learned and how they could be responsible for the outcome of training.
 There is another line of research that has an orthogonal approach to understanding the dependencies of a neural network on 
@@ -107,8 +108,10 @@ representaiton of a said property is suppressed via intervention. Intervention i
 since intervention in the input involves querying a lot of neurons. The goal of this intervention is to test if the features learning identified properties 
 are at all used during making a decision. This could also be a test to observe if the learned representation is actually the feature of the probed label or is 
 it just a mere correlation without causation. 
- 
+
+<p> 
 <h3>Intervention Mechanism</h3>
+ 
 Iterative Null Space Projection algorithm was used to transform features that could be used to identify particular 
 property. This is usually done through repeated projection of weight matrix used to project features into the distribution of labels 
 to Null space, followed by learning a new matrix to linearly transform the null projected features into the distribution of labels. 
@@ -117,7 +120,8 @@ ensure most of the dimension that could have information about the property mult
 to a point where the information that could be transformed linearly to utilize the said property is diminished. This is repeated until the linear projection 
 can no longer classify the features into the target labels better than random projections. This repeated linear projections get rid off of the chance of the 
 embedding being processed linearly to utilize information that could represent the said property.
- 
+
+<p>
 <h3>How Does Intervention Help?</h3>
 After performing linear intervention, we check if that intervention causes a drop in performance. This brings forth questions: Is the absence of the said 
 property is causing the drop? Or was it a mere correlation that could have caused the drop and were there other features entangled in the embedding that could have been the 
