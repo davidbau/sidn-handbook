@@ -129,13 +129,13 @@ vector \(e_i\) that has a 1 in the \(i\)th spot and 0 in all the other
 spots, so if each neuron were an independent feature, then they
 would all lie at right angles since \(e_i \cdot e_j = 0\) for
 all \(i \neq j\).  But both papers notice that, in practice,
-vectors for features ado not seem to correspond to individual neurons,
+vectors for features do not seem to correspond to individual neurons,
 and moreover, vectors \(v_i\) that seem to represent independent
-do not satisfy \(v_i \cdot v_j = 0\) in general.  Both papers
-ask: why not?
+features do not even satisfy \(v_i \cdot v_j = 0\) in general.
+Both papers ask: why not?
 
 <p>The two papers motivate this question from very different
-starting points, and they arrive at two very different answers
+starting points. Then they arrive at two very different answers
 to this question.
 
 <h2>Toy Models of Superposition</h2>
@@ -371,7 +371,7 @@ can look at each vector as encoding a "next word to output".  Park uses
 the symbol \(\gamma\) to describe a vector that will cause a particular
 word to be output, and defines the "unembedding" vector
 for a concept as the vector difference \(\gamma(Y(1)) - \gamma(Y(0)\), which is
-his notation for, for example, \(\gamma(\text{``woman"}) - \gamma(\text{``man"})\)
+his notation for, for example, \(\gamma(\text{“woman"}) - \gamma(\text{``man"})\)
 for the "man&rArr;woman" concept.
 If you look at the <a href="https://github.com/KihoPark/linear_rep_geometry/blob/main/store_matrices.py#L10"
 >source code</a> for the project, you can see that, in practice, these
@@ -381,8 +381,8 @@ matrix of a transformer.
 <p><b>Embedding vectors encode a narrowly specific input change</b>.  The
 second way to look at embedding vectors is that they are a response to
 <em>input</em> text.  Park writes, e.g.,
-\(\lambda_0 = \lambda(\text{``He is the monarch of England,"})\), or
-\(\lambda_1 = \lambda(\text{``She is the monarch of England,"})\),
+\(\lambda_0 = \lambda(\text{“He is the monarch of England,"})\), or
+\(\lambda_1 = \lambda(\text{“She is the monarch of England,"})\),
 to describe these vectors, and proposes that a vector for a concept is
 similarly a vector difference \(\lambda_1 - \lambda_0\) corresponding to
 the narrow concept change from one sentence to other.  If you look at the
@@ -452,10 +452,10 @@ ask whether these are the same or different, and why.)
 <h2>Code resources</h2>
 
 <p>The "Toy Models" paper comes with two notebooks: the
-<a href="https://colab.research.google.com/github/davidbau/sidn-handbook/blob/main/public/geometry/colab/toy_models.ipynb">main notebook</a> includes some
+<a href="https://colab.research.google.com/github/davidbau/sidn-handbook/blob/main/public/geometry/colab/toy_models.ipynb">link_text</a> includes some
 efficient training code that can reproduce some of the larger experiments in the
 paper, but it is not very well-explained.  A more valuable starting point is the
-<a href="https://colab.research.google.com/github/davidbau/sidn-handbook/blob/main/public/geometry/colab/exact_toys.ipynb">"exact solutions" notebook</a>
+<a href="https://colab.research.google.com/github/davidbau/sidn-handbook/blob/main/public/geometry/colab/exact_toys.ipynb">link_text</a>
 that explains several things that are glossed over in the main paper.
 
 <p>The "Linear Representation" paper comes with a
