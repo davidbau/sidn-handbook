@@ -77,6 +77,17 @@ your colab subdirectory, and then link it using HTML of the form
 `<a href="{colab_link('colab/example.ipynb')}">my demo</a>`.
 After you `make` and push your content to the website, this
 will make your notebook runnable by readers on Google Colab.
+You can also include a second argument to emit the entire
+hyperlink including the surrounding `<a>` tag, as in
+`{colab_link('colab/example.ipynb', 'Try this notebook'}`.
+
+**Use the `{img(url, size)}` macro.** When you
+To format images of a certain size, save the image to your
+images subdirectory, and then embed it in the HTML using
+`{img("images/my_image.png", 50)}`.
+The number in the second argument tells how wide to
+display the image: e.g., 50 means up to 50% of the
+column width, and 100 means 100%.
 
 
 
