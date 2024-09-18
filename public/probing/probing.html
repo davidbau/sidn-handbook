@@ -79,6 +79,7 @@ There is also a second line of work that is more concerned if a particular prope
 training objective. This line of work is unbothered by the presence of a particular feature which could be learned
 as a by-product of a training objective. This is investigated by switching off the features that are believed to be representing 
 a property and observing the reaction of the neural network's predictability to that intervention. 
+ 
 <p>
 <h2>Linear Probing</h2>
 Linear Probing is a learning technique to assess the information content in the representation layer of a neural network. 
@@ -95,6 +96,7 @@ If the probe achieves high accuracy on the random labels and their accuracy with
 it is said to be low on selectivity and is memorizing the probing dataset. Non-linear probes have been alleged to have this property and that is why a linear probe is 
 entrusted with this task. Finally, good probing performance would hint at the presence of the said property which has the potential of 
 being used in making final decision to choose a label in the farthest layer of the neural network. 
+ 
 <p>
 <h2>Amnesic Probing</h2>
 Probing usually deals with discovery and localization of concepts in a trained neural network, and 
@@ -114,6 +116,7 @@ ensure most of the dimension that could have information about the property mult
 to a point where the information that could be transformed linearly to utilize the said property is diminished. This is repeated until the linear projection 
 can no longer classify the features into the target labels better than random projections. This repeated linear projections get rid off of the chance of the 
 embedding being processed linearly to utilize information that could represent the said property.
+ 
 <h3>How Does Intervention Help?</h3>
 After performing linear intervention, we check if that intervention causes a drop in performance. This brings forth questions: Is the absence of the said 
 property is causing the drop? Or was it a mere correlation that could have caused the drop and were there other features entangled in the embedding that could have been the 
