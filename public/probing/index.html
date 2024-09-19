@@ -87,9 +87,9 @@ rel="stylesheet">
         along with the data instead of drawing a valid decision line is by checking the selectivity of the probing. 
       </p>
       <p>
-        In this test, a probe under scrutiny is trained with random labels and the same probing structure is trained with 
+        In this test, a probe for a feature under scrutiny is trained with random labels and the same probing structure is trained with 
         original labels, and the probe trained with random labels serves as a control and their performances are recorded. 
-        If the probe achieves high accuracy on the random labels and the difference between its accuracy and the probe trained with original labels is not significant, 
+        If the probe achieves high accuracy on the random labels and the difference between the accuracy of the probe trained with orignal and the noisy labels is not significant, 
         it is said to be low on selectivity and is memorizing the probing dataset. Non-linear probes have been alleged to have this property, and that is why a linear probe is 
         entrusted with this task. Finally, good probing performance would hint at the presence of the said property, which has the potential of 
         being used in making final decisions to choose a label in the farthest layer of the neural network. 
