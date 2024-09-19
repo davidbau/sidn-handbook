@@ -82,8 +82,7 @@ rel="stylesheet">
         This is done to answer questions like what property of the data in training did this representation layer learn that will 
         be used in the subsequent layers to make a prediction. The other question to ask is how we can test the presence of such property 
         without adulterating the purity of information. Computer scientists believed that associating a representation with a said property with 
-        parametric learning paradigm could be done with less adulteration by learning a matrix that multiplies the representation and projects it into 
-        the space of labels without non-linear activation since a complex model with non-linear activation might memorize the data and force the representation 
+        parametric learning paradigm could be done with less adulteration by a linear classifier since a complex model with non-linear activations might memorize the data and force the representation 
         to project to the labels associated with the data. One way to test if the probing learnable function is memorizing the label
         along with the data instead of drawing a valid decision line is by checking the selectivity of the probing. 
       </p>
