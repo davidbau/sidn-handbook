@@ -83,12 +83,12 @@ rel="stylesheet">
         be used in the subsequent layers to make a prediction. The other question to ask is how we can test the presence of such property 
         without adulterating the purity of information. Computer scientists believed that associating a representation with a said property with 
         parametric learning paradigm could be done with less adulteration by a linear classifier since a complex model with non-linear activations might memorize the data and force the representation 
-        to project to the labels associated with the data. One way to test if the probing learnable function is memorizing the label
+        to project to the labels associated with the data [1]. One way to test if the probing learnable function is memorizing the label
         along with the data instead of drawing a valid decision line is by checking the selectivity of the probing. 
       </p>
       <p>
         In this test, a probe for a feature under scrutiny is trained with random labels and the same probing structure is trained with 
-        original labels, and the probe trained with random labels serves as a control and their performances are recorded. 
+        original labels, and the probe trained with random labels serves as a control and their performances are recorded [1]. 
         If the probe achieves high accuracy on the random labels and the difference between the accuracy of the probe trained with original and the noisy labels is not significant, 
         it is said to be low on selectivity and is memorizing the probing dataset. Non-linear probes have been alleged to have this property, and that is why a linear probe is 
         entrusted with this task. Finally, good probing performance would hint at the presence of the said property, which has the potential of 
@@ -99,7 +99,7 @@ rel="stylesheet">
         Probing usually deals with discovery and localization of concepts in a trained neural network, and 
         investigates what the neural network has learned and how they could be responsible for the outcome of training.
         There is another line of research that has an orthogonal approach to understanding the dependencies of a neural network on 
-        said features when it takes a decision. This line of research wants to study the reaction of the neural network if that feature that might be a
+        said features when it takes a decision [1]. This line of research wants to study the reaction of the neural network if that feature that might be a
         representation of a said property is suppressed via intervention. Intervention is usually done in the deep layers rather than input
         since intervention in the input involves querying a lot of neurons. The goal of this intervention is to test if the features learning identified properties 
         are at all used during making a decision. This could also be a test to observe if the learned representation is actually the feature of the probed label or is 
@@ -109,13 +109,13 @@ rel="stylesheet">
       <h3>Intervention Mechanism</h3>
       <p>
         Iterative Null Space Projection algorithm was used to transform features that could be used to identify particular 
-        property. This is usually done through repeated projection of weight matrix used to project features into the distribution of labels 
+        property [1]. This is usually done through repeated projection of weight matrix used to project features into the distribution of labels 
         to null space, followed by learning a new matrix to linearly transform the null projected features into the distribution of labels. 
         This operation is repeated because null space projection can nullify the contribution by the number of dimensions of the labels. In order to 
         ensure most of the dimensions that could have information about the property, multiple linear projections are required to minimize the rank of the matrix
-        to a point where the information that could be transformed linearly to utilize the said property is diminished. This is repeated until the linear projection 
-        can no longer classify the features into the target labels better than random projections. This repeated linear projection gets rid of the chance of the 
-        embedding being processed linearly to utilize information that could represent the said property.
+        to a point where the information that could be transformed linearly to utilize the said property is diminished [1]. This is repeated until the linear projection 
+        can no longer classify the features into the target labels better than random projections [1]. This repeated linear projection gets rid of the chance of the 
+        embedding being processed linearly to utilize information that could represent the said property [1].
       </p>
 
       <h3>How Does Intervention Help?</h3>
@@ -124,7 +124,7 @@ rel="stylesheet">
         property causing the drop? Or was it a mere correlation that could have caused the drop, and were there other features entangled in the embedding that could have been the 
         reason for the original performance? A great way to test if our hypothesis that the said property that the feature is representing is 
         by simultaneously training another set of matrices in the same Iterative Null Space Projection algorithm but with random labels. 
-        If the linear intervention finds the neutralized feature caused a drop in performance better than the random linear intervention, it could be concluded 
+        If the linear intervention finds the neutralized feature caused a drop in performance better than the random linear intervention [1], it could be concluded 
         that the said property might be representing the property and the information in that embedding was essential in determining the classes of an input data. 
       </p>
       <h2>Emergent World Representations</h2>
@@ -165,6 +165,10 @@ rel="stylesheet">
       <h2>Code Resources</h2>
       <p> The "Emergent World Representations" paper has provided the code here: <a href="https://github.com/likenneth/othello_world">Othello World</a>. Aditionally, Neel Nanda has created a TransformerLens version of the Othello-GPT,which allows for inspecting each MLP neuron in the model, boosting the mechanistic interpretability. Try the Colab Notebook here: <a href="https://colab.research.google.com/github/neelnanda-io/TransformerLens/blob/main/demos/Othello_GPT.ipynb">Othello GPT Colab</a>.<p>
       <p> The "Amnesic Probing" paper has provided the code here: <a href="https://github.com/yanaiela/amnesic_probing">Amnesic Probing</a></p>.
+      <h2>References</h2>
+      <ol>
+        <li>Elazar, Yanai, et al. "Amnesic probing: Behavioral explanation with amnesic counterfactuals." Transactions of the Association for Computational Linguistics 9 (2021): 160-175.</li>
+      </ol>
     </main>
   </div>
 </div>
