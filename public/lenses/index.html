@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Structure and Interpretation of Deep Networks</title>
+
+<!-- Bootstrap CSS Imports -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<!-- Google Font Imports -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+rel="stylesheet">
+
+<!-- Custom CSS Imports -->
+<link rel="stylesheet" href="/css/style.css">
+
+<!-- Mathjax -->
+<script sid="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" integrity="sha512-6FaAxxHuKuzaGHWnV00ftWqP3luSBRSopnNAA2RvQH1fOfnF/A1wOfiUWF7cLIOFcfb1dEhXwo5VG3DAisocRw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha256-3gQJhtmj7YnV1fmtbVcnAV6eI4ws0Tr48bVZCThtCGQ=" crossorigin="anonymous"></script>
+
+<!-- Auto Table of Contents -->
+<link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css"
+/>
+<script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script>
+
+</head>
+
+<body data-bs-spy="scroll" data-bs-target="#toc">
+<nav class="navbar navbar-dark bg-dark">
+<div class="container-fluid">
+<ul class="navbar-nav mr-auto">
+ <li class="nav-item active">
+  <a class="nav-link" href="/lenses/index.html">Lenses</a>
+ </li>
+</ul>
+<ul class="navbar-nav ml-auto">
+ <li class="nav-item">
+  <a class="navbar-brand" href="/">Structure and Interpretation of Deep Networks</a>
+ </li>
+</ul>
+</div>
+</nav>
+
+<div class="container">
+<div class="row">
+<div class="col-2 position-fixed pt-5">
+<nav id="toc" data-toggle="toc"></nav>
+</div>
+<div class="col-2"></div>
+<main class="col-8">
+<h1 class="mt-5">Lenses</h1>
+
+
+<h5>September 26, 2024 • <em>Prajnan Goswami, Ritik Bompilwar</em></h5>
+
+<p>
+  The launch of GPT-3 by <a href="https://arxiv.org/abs/2005.14165">Brown et al. (2020)</a> marked 
+  a turning point, drawing widespread attention to the potential of Large Language Models (LLMs) 
+  and their applications such as ChatGPT, Copilot, etc. In parallel, diffusion models emerged as a 
+  powerful tool for synthesizing high-fidelity images as demonstrated by 
+  <a href="https://arxiv.org/abs/2006.11239">Ho et al.(2020)</a> and 
+  <a href="https://arxiv.org/abs/2112.10752"> Rombach et al. (2021)</a>. 
+  These new generative AI approaches led to a paradigm shift in scaling up models 
+  and data to extract more performance. 
+
+<h3>Scaling Trends in the Evolution of Generative Models (In a Nutshell) </h3>  
+<p>
+  A study by <a href="https://arxiv.org/abs/2001.08361"> Kaplan et al.</a> highlights the significance of 
+  model size, dataset scale, and compute used in training. Their analysis indicates that larger models 
+  will continue to perform better. Regardless of their findings, we can clearly observe 
+  how these models have scaled up over time: 
+
+  <ul>
+    <li>
+    2019, <a href="https://cdn.openai.com/better-language-models
+    /language_models_are_unsupervised_multitask_learners.pdf">GPT-2</a>, <b>1.5</b> billion parameters
+    </li>
+    <li>
+    2020, <a href="https://arxiv.org/abs/2005.14165">GPT-3</a>, <b>175</b> billion parameters
+    </li>
+    <li>
+    2024, <a href="https://ai.meta.com/blog/meta-llama-3-1/">Llama 3.1</a>, <b>405</b> billion parameters.
+    </li>
+  </ul>
+</p>  
+
+<h2>Looking Through the Lens of Interpretability</h3>
+
+<p> Although scaling up these approaches has led to significant capabilities 
+  and performance improvements, understanding the hidden representations 
+  and interpret how the model progresses toward generating its final output 
+  through all the intermediate layers.
+
+<p>
+  For example, when applying linear probing from the 
+  <a href="/probing/">previous chapter</a> to a Large Language Model(LLM), 
+  the process would involve training a separate probe for each layer. 
+  Additionally, each probe would require a predefined set of labels 
+  (e.g., sentiment, part-of-speech tags etc.) to evaluate specific 
+  types of information the model might encode. 
+
+<p>
+  In other words, probing LLMs is challenging because it requires 
+  interpreting large, multi-dimensional representations, and the 
+  results may not reflect the model's internal working for its original tasks.
+  To address these challenges, we need a mechanism to directly look at (👀 🔎) the hidden
+  representations of a large scale generative AI model without any external probes.
+
+
+<p>
+  This chapter will focus on some of these technqiues which offer a clearer view of 
+  how these large-scale model processes and represents information at each layer.
+
+
+<h3>Visualizing GPT through a Lens 🔎</h3>
+
+<p>
+  The first attempt on how to interpret the internal workings of a 
+  GPT-like model was introduced in an anonymous blog post 
+  <a href="https://www.lesswrong.com/posts/AcKRB8wDpdaN6v6ru/interpreting-gpt-the-logit-lens">Interpreting GPT: the logit lens — LessWrong.</a> 
+  The idea was fairly straightforward. In GPT-2/GPT-3, predictions are formed in a series 
+  of steps across multiple Transformer layers. The Logit Lens "peeks 👀" at these 
+  intermediate stages by taking the intermediate outputs at each layer and projecting 
+  them directly into the vocabulary space. In other words, the intermediate output from 
+  different layers is passed through the same output head that the final layer uses to 
+  predict the next token as shown in the figure below. 
+
+  <img src="images/logit_vs_tuned_lens_fig1.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
+
+  <p>
+    What makes this approach special is that, rather then relying on external probs, Logit lens uses 
+    its own prediction head to interpret the hidden representations. By doing so, we can easily track 
+    the evolution of the model's understanding at every processing stage. That being said, this first
+    attemt had few limitations.
+  </p>
+  <p>
+    Belrose et al. highlighted three specific limitations of Logit Lens in their paper 
+    <a href="https://arxiv.org/abs/2303.08112">Eliciting Latent Predictions from 
+    Transformers with the Tuned Lens</a>.  
+
+    <ul>
+      <li>
+        This same method didn’t work well for other models such as 
+        <a href="https://arxiv.org/abs/2211.05100">BLOOM (Scao et al.)</a> and
+        <a href="https://arxiv.org/abs/2205.01068">OPT 125M (Zhang et al.)</a>.
+      </li>
+      <li>
+        It is biased towards some vocabulary until the final layer of GPT. 
+        In simple terms, this means that the output of the intervention layer
+        is skewed towards certain words when compared to the final output of the 
+        GPT model itself.
+        
+        <p>
+        <img src="images/logit_lens_bias.png" style="max-width:80%; width:600px;" class="mx-auto d-block">
+
+        <p>
+        The x-axis represents the different layers of the neural network, and 
+        the y-axis represents the difference (in bits) between the output of 
+        the method and the final output of the model.
+      </li>
+      <li>
+        And finally Logit Lens is prone to representational drift. What it really
+        means is that the hidden representations at the intervention layer does not align 
+        with the input representation of the final layer. 
+      </li>
+    </ul>
+  </p>
+
+
+
+
+<h3>PatchScope</h3>
+
+
+<h3>Other Approaches</h3>
+
+
+
+<h3>Diffusion Lens</h3>
+
+
+
+<h2>Colab Notebook and other Code Resources</h2>
+
+
+</main>
+</div>
+</div>
+</body>
+</html>
+
