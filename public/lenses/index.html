@@ -306,13 +306,28 @@ rel="stylesheet">
 </blockquote>
 
 <h3>Patchscopes 🩺</h3>
-<p>
+<!-- <p>
   <figure id="figure4">
     <img src="images/patchscope.png" style="max-width:80%; width:600px;" class="mx-auto d-block">
   </figure> 
+</p> -->
+
+<p>
+  <figure id="figure4">
+    <img src="images/Patchscope_eg_1.png" style="max-width:80%; width:600px;" class="mx-auto d-block">
+  </figure> 
 </p>
 
-<p> Influenced by the efforts of Logit Lens and Tuned Lens <a href="https://arxiv.org/abs/2401.06102">Asma et al.</a> , presented a framework to decode the internal working of LLMs in a human interpretable format.  </p>
+<p>
+
+  <p>
+    Influenced by the efforts of Logit Lens and Tuned Lens <a href="https://arxiv.org/abs/2401.06102">Asma et al.</a> , presented a framework to decode the internal working of LLMs in a human interpretable format. 
+    The key idea is to use a target LLM to explain the internal working of the LLM under study. For example,  in the figure above, we are interested in the hidden representation of layer 4 that encodes "UK". This can be interpreted using an inspecting prompt. We replace x in the inspection prompt with the hidden state and continue generating the output in the target LLM. The results of the target LLM indicates that 'layer 4' indeed resolves UK as a country.
+    With this approach the authors provides  several applications of the framework to answer a wide range of questions about an LLM's computation. We highly recommend reading the  <a href="https://pair.withgoogle.com/explorables/patchscopes/#appendix-a-a-brief-review-of-transformers">interactive blog</a> to understand the framework's capability.
+     
+  
+  </p>
+
 
 
 <h4>Other Lens Approaches for LLMs</h4>
