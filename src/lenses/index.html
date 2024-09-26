@@ -73,8 +73,9 @@
   them directly into the vocabulary space. In other words, the intermediate output from 
   different layers is passed through the same output head that the final layer uses to 
   predict the next token as shown in the figure below. 
-
-  <img src="images/logit_vs_tuned_lens_fig1.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
+  <figure id="figure1">
+    <img src="images/logit_vs_tuned_lens_fig1.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
+  </figure> 
 
   <p>
     What makes this approach special is that, rather then relying on external probs, Logit lens uses 
@@ -110,13 +111,25 @@
       <li>
         And finally Logit Lens is prone to representational drift. What it really
         means is that the hidden representations at the intervention layer does not align 
-        with the input representation of the final layer. 
+        with the expected input representations of the final layer. 
       </li>
     </ul>
   </p>
 
+  In light of this, <a href="https://arxiv.org/abs/2303.08112">Belrose et al.</a> introduced 
+  a small modification to address the limitations of Logit Lens. In simple terms, the idea
+  is to introduce a <b><i>translator</i></b> that learns to map the hidden state at an intermediate
+  layer to the expected input of the final layer as show in <a href="#figure1">Figure 1</a>. 
+  
+  <p>
+  Formally, the <b><i>translator</i></b> is an affine transformation and can be written as:
 
+  \[ TunedLens_{l}(h_{l}) = LogitLens(A_{l}) \]
+  
+  ,where \(A_l\), \(h_l\) and \(b_l\) represents a basis matrix, the hidden state at layer (\l\) and biased
+  respectively.
 
+  These parameters
 
 <h3>PatchScope</h3>
 
