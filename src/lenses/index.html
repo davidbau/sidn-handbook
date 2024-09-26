@@ -237,9 +237,9 @@
     <i><strong>Prajnan's opinion:</strong></i> It's worth noting that although Tuned Lens 
     was able to draw out meaningful results in the early layers, it requires
     training a <b>translator</b> for each layer of the model. Furthermore,
-    the training these <b>translator</b> probes require access to the 
+    training the <b>translator</b> probes require access to the 
     validation dataset used during LLMs pre-training which may not always be 
-    available to analyze existing open-sourced model.
+    available to analyze open-sourced model.
     Whereas Logit Lens can be used on any pre-trained LLMs.
   </p>
 </blockquote>
@@ -346,20 +346,17 @@ The process involves:
 
 
 <h4>Logit Lens</h4>
-<p>
-The Colab Notebook for the Logit Lens can be found <a href="https://colab.research.google.com/drive/1MjdfK2srcerLrAJDRaJQKO0sUiZ-hQtA?usp=sharing">here</a>.
-</p>
-
-<h4>PatchScope</h4>
-<p>
-The official repository for PatchScope can be found <a href="https://github.com/PAIR-code/interpretability/tree/master/patchscopes/code">here</a>. It contains the code for the PatchScope analysis along with some jupyter notebooks.
-The interactive website for PatchScope can be found <a href="https://pair.withgoogle.com/explorables/patchscopes//">here</a>.
-</p>
-
-<h4>Diffusion Lens</h4>
-<p>
-The Github Repository for the Diffusion Lens can be found <a href="https://github.com/tokeron/DiffusionLens">here</a>.
-</p>
+<ul>
+  <li>
+    <a href="https://colab.research.google.com/drive/1MjdfK2srcerLrAJDRaJQKO0sUiZ-hQtA?usp=sharing">Here</a> is an 
+    interactive Colab demo that compares Logit Lens and Tuned Lens. You can ignore the '''pyarrow 17.0.0''' 
+    dependency error and execute the subsequent notebook cells.
+  </li>
+  <li>
+    A demo of Diffusion Lens can be viewed <a href="https://huggingface.co/spaces/tokeron/DiffusionLens">here</a>, 
+    where you can provide a text prompt and inspect the images generated from several layers of the Text Encoder.
+  </li>
+</ul>
 
 
 
