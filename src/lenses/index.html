@@ -135,18 +135,32 @@ latent space representation, while the diffusion model takes in this latent spac
 </p>
 
 </p>
-<img src="images/DiffusionLens1.png" style="max-width:80%; width:500px;" class="mx-auto d-block">
+<img src="images/DiffusionLens1.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
 </p>
 
 <p>
 <a href="https://aclanthology.org/2024.acl-long.524.pdf">Toker et al. (2024)</a> proposed Diffusion Lens to visualize the intermediate representations
 in the text encoder of T2I models. Authors examined the computational process of the text encoder in the Stable Diffusion (<a href="https://arxiv.org/abs/2112.10752">Rombach
 et al., 2022</a>) and Deep Floyd (<a href="https://github.com/deep-floyd/IF">StabilityAI, 2023</a>) to analyse the model's capabilty of conceptual combination and it's memory retrieval process.
+The process involves:
+<ul>
+  <li>
+    <strong>Layer-wise Visualization:</strong> At each layer of the text encoder, the intermediate outputs are extracted and projected into a human-interpretable space. This projection allows us to observe how textual representations evolve, 
+    revealing the gradual construction of semantic meaning.
+  </li>
+  <li>
+    <strong>Conceptual Mapping:</strong> By analyzing the latent representations, the Diffusion Lens identifies how individual concepts from the input prompt are encoded and combined. This mapping highlights the model's ability to understand and synthesize complex instructions.
+  </li>
+  <li>
+    <strong>Memory Retrieval Analysis:</strong> Diffusion Lens assesses how the model retrieves relevant information from its training data. By examining the activation patterns across layers, we can infer the mechanisms behind the model's knowledge retrieval and application.
+  </li>
+</ul>
 <p>
+
+<h4>Key Insights from the Analysis</h4>
 
 <img src="images/DiffuisonLensInights.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
 
-<h4>Key Insights from the Analysis</h4>
 
 <h5>Conceptual Combination Analysis</h3>
 <ul>
@@ -183,12 +197,22 @@ et al., 2022</a>) and Deep Floyd (<a href="https://github.com/deep-floyd/IF">Sta
 
 
 <h4>Logit Lens</h4>
+<p>
 The Colab Notebook for the Logit Lens can be found <a href="https://colab.research.google.com/drive/1MjdfK2srcerLrAJDRaJQKO0sUiZ-hQtA?usp=sharing">here</a>.
+</p>
 
 <h4>PatchScope</h4>
+<p>
 The official repository for PatchScope can be found <a href="https://github.com/PAIR-code/interpretability/tree/master/patchscopes/code">here</a>. It contains the code for the PatchScope analysis along with some jupyter notebooks.
 The interactive website for PatchScope can be found <a href="https://pair.withgoogle.com/explorables/patchscopes//">here</a>.
+</p>
 
 <h4>Diffusion Lens</h4>
+<p>
 The Github Repository for the Diffusion Lens can be found <a href="https://github.com/tokeron/DiffusionLens">here</a>.
+</p>
+
+
+
+
 {footer()}
