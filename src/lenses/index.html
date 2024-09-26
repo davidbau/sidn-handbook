@@ -16,21 +16,72 @@
 <p>
   A study by <a href="https://arxiv.org/abs/2001.08361"> Kaplan et al.</a> highlights the significance of 
   model size, dataset scale, and compute used in training. Their analysis indicates that larger models 
-  will continue to perform better. Regardless of their findings, we can clearly observe 
+  will continue to perform better. In the table below, we can clearly observe 
   how these models have scaled up over time: 
+  <table>
+    <thead>
+      <tr>
+        <th>Year</th>
+        <th>Model</th>
+        <th>Parameters</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>2019</td>
+        <td><a href="https://cdn.openai.com/better-language-models
+          /language_models_are_unsupervised_multitask_learners.pdf">GPT-2</a></td>
+        <td>1.5 billion</td>
+      </tr>
+      <tr>
+        <td>2020</td>
+        <td><a href="https://arxiv.org/abs/2005.14165">GPT-3</a></td>
+        <td>175 billion</td>
+      </tr>
+      <tr>
+        <td>2020</td>
+        <td><a href="https://arxiv.org/abs/2006.11239">Denoising Diffusion Probabilistic Models</a></td>
+        <td>256 million</td>
+      </tr>
+      <tr>
+        <td>2021</td>
+        <td><a href="https://arxiv.org/abs/2006.11239">Stable Diffusion</a></td>
+        <td>1 billion</td>
+      </tr>
+      <tr>
+        <td>2023</td>
+        <td><a href="https://arxiv.org/abs/2307.01952">Stable Diffusion XL</a></td>
+        <td>3.5 billion</td>
+      </tr>
+      <tr>
+        <td>2024</td>
+        <td><a href="https://ai.meta.com/blog/meta-llama-3-1/">Llama 3.1</a></td>
+        <td>405 billion</td>
+      </tr>
+    </tbody>
+  </table>
 
-  <ul>
+  <!-- <ul>
     <li>
     2019, <a href="https://cdn.openai.com/better-language-models
-    /language_models_are_unsupervised_multitask_learners.pdf">GPT-2</a>, <b>1.5</b> billion parameters
+    /language_models_are_unsupervised_multitask_learners.pdf">GPT-2</a>, <b>1.5</b> billion parameters.
     </li>
     <li>
-    2020, <a href="https://arxiv.org/abs/2005.14165">GPT-3</a>, <b>175</b> billion parameters
+    2020, <a href="https://arxiv.org/abs/2005.14165">GPT-3</a>, <b>175</b> billion parameters.
+    </li>
+    <li>
+      2020, <a href="https://arxiv.org/abs/2006.11239">Denoising Diffusion Probabilistic Models</a>, <b>256</b> million parameters.
+    </li>
+    <li>
+      2021, <a href="https://arxiv.org/abs/2006.11239">Stable Diffusion</a>, <b>1</b> billion parameters.
+    </li>
+    <li>
+      2023, <a href="https://arxiv.org/abs/2307.01952">Stable Diffusion XL</a>, <b>3.5</b> billion parameters.
     </li>
     <li>
     2024, <a href="https://ai.meta.com/blog/meta-llama-3-1/">Llama 3.1</a>, <b>405</b> billion parameters.
     </li>
-  </ul>
+  </ul> -->
 </p>  
 
 <h2>Looking Through the Lens of Interpretability</h3>
@@ -38,23 +89,31 @@
 <p> Although scaling up these approaches has led to significant capabilities 
   and performance improvements, understanding the hidden representations 
   and interpret how the model progresses toward generating its final output 
-  through all the intermediate layers. 
+  through all the intermediate layers remains a challenge. 
+  
+<p>
+  For example, in the paper <i>'Locating and Editing Factual Associations 
+  in GPT'</i>, <a href='https://arxiv.org/abs/2202.05262'>Meng et al.</a> 
+  demonstrates that when a harmful context is provided to a GPT model, 
+  the model <b><i>knows</i></b> the correct answer but imitates and <b><i>states</i></b> the wrong one". 
+  Hence, in such scenarios it is critical to identify the components in these GPT-like models
+  that causes incorrect  imitations to emerge over the course of the model's processing
+  (<a href="https://arxiv.org/abs/2307.09476">Halawi et al., Overthinking the Truth</a>).
+
 
 <p>
-  For example, when applying linear probing from the 
-  <a href="/probing/">previous chapter</a> to a Large Language Model(LLM), 
-  the process would involve training a separate probe for each layer. 
+  Now what if we apply linear probing from the 
+  <a href="/probing/">previous chapter</a> to a Large Language Model(LLM). 
+  The process would involve training a separate probe for each layer. 
   Additionally, each probe would require a predefined set of labels 
   (e.g., sentiment, part-of-speech tags etc.) to evaluate specific 
-  types of information the model might encode. 
-
+  types of information the model might encode. In other words, the 
+  results may not reflect the model's internal working for the original task
+  it was trained on.
+  
 <p>
-  In other words, probing LLMs is challenging because it requires 
-  interpreting large, multi-dimensional representations, and the 
-  results may not reflect the model's internal working for its original tasks.
   To address these challenges, we need a mechanism to directly look at (👀 🔎) the hidden
   representations of a large scale generative AI model without any external probes.
-
 
 <p>
   This chapter will focus on some of these technqiues which offer a clearer view of 
@@ -67,7 +126,7 @@
   The first attempt on how to interpret the internal workings of a 
   GPT-like model was introduced in an anonymous blog post 
   <a href="https://www.lesswrong.com/posts/AcKRB8wDpdaN6v6ru/interpreting-gpt-the-logit-lens">Interpreting GPT: the logit lens — LessWrong.</a> 
-  The idea was fairly straightforward. In GPT-2/GPT-3, predictions are formed in a series 
+  The idea was fairly straightforward. In large language models(LLMs), predictions are formed in a series 
   of steps across multiple Transformer layers. The Logit Lens "peeks 👀" at these 
   intermediate stages by taking the intermediate outputs at each layer and projecting 
   them directly into the vocabulary space. In other words, the intermediate output from 
@@ -90,7 +149,7 @@
 
     <ul>
       <li>
-        This same method didn’t work well for other models such as 
+        Logit Lens didn’t work well for other models such as 
         <a href="https://arxiv.org/abs/2211.05100">BLOOM (Scao et al.)</a> and
         <a href="https://arxiv.org/abs/2205.01068">OPT 125M (Zhang et al.)</a>.
       </li>
@@ -119,26 +178,71 @@
   In light of this, <a href="https://arxiv.org/abs/2303.08112">Belrose et al.</a> introduced 
   a small modification to address the limitations of Logit Lens. In simple terms, the idea
   is to introduce a <b><i>translator</i></b> that learns to map the hidden state at an intermediate
-  layer to the expected input of the final layer as show in <a href="#figure1">Figure 1</a>. 
+  layer to the expected input of the final layer as show in <a href="#figure1">Figure 1</a>. This  
+  <b><i>translator</i></b> is indeed a <b>prob</b> which requires training. The key difference
+  with probing approaches from the <a href="/probing/">previous chapter</a> is that the 
+  <b><i>translator</i></b> probs learn a mapping from the GPT model's final output itself
+  instead of a pre-determined set of labels, i.e, the model's final output distribution
+  are used as <i>soft labels</i>. As a result, the <b><i>translator</i></b> probs are not
+  incetivized to learn additional information unlike previous probing approaches.
+  
+  <!--We refer readers to <i>Section 3</i> of the paper
+  <a href="https://arxiv.org/abs/2303.08112">Eliciting Latent Predictions from 
+  Transformers with the Tuned Lens</a> for the implementation details.-->
+
+  <!--<ul>
+    <li>
+      Formally, the <b><i>translator</i></b> is an affine transformation and can be written as:
+
+      \[ TunedLens_{l}(h_{l}) = LogitLens(A_{l}) \]
+      
+      ,where \(A_l\), \(h_l\) and \(b_l\) represents a basis matrix, 
+      the GPT's hidden state at layer (\l\) and a bias term respectively.
+    </li>
+    <li>
+      The authors train these parameters by minimizing the KL divergence between
+      the <b>Tuned Logits</b> and the <b>final layer</b> logits. Intuitively,
+      this can be viewed as <b>minimizing the distance</b> between the logit layers 
+      and the final layer by using the the <b>final layer's output distribution</b> 
+      as a <b>soft label</b>.
+    </li>
+    <li>
+      These <b><i>translators</i></b> are trained during the pre-training stage 
+      of the GPT-like models such as GPT-2, BLOOM and OPT.
+    </li>
+  </ul>-->
+
+
+  <p>
+    With this adjustment made to the Logit Lens, the Tuned Lens showed 
+    more meaningful results starting from the early layers of the model
+    as shown in <a href="#figure3">Figure 3</a>.
+  
+    <figure id="figure3">
+      <img src="images/output_comparison_lens.png" style="max-width:80%; width:600px;" class="mx-auto d-block">
+    </figure> 
   
   <p>
-  Formally, the <b><i>translator</i></b> is an affine transformation and can be written as:
+    <blockquote>
+      <i>Prajnan's opinion</i> It's worth noting that although Tuned Lens 
+      was able draw out meaningful results in the early layers, it requires
+      training a <b>translator</b> for each layer of the model. Furthermore,
+      the training these <b>translator</b> probes require access to the 
+      validation dataset used during LLMs pre-training which may not always be 
+      available to analyze existing open-sourced model.
+      
+      Whereas Logit Lens can be used on any pre-trained LLMs.
+    </blockquote>
 
-  \[ TunedLens_{l}(h_{l}) = LogitLens(A_{l}) \]
-  
-  ,where \(A_l\), \(h_l\) and \(b_l\) represents a basis matrix, the hidden state at layer (\l\) and biased
-  respectively.
-
-  These parameters
 
 <h3>PatchScope</h3>
 
 
-<h3>Other Approaches</h3>
+<h3>Other Lens Approaches for LLMs</h3>
 
+There are several other approaches toward interpretability of Generative Language Models. 
 
-
-<h3>Diffusion Lens</h3>
+<h2>Diffusion Lens</h2>
 
 
 <p>
