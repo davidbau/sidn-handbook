@@ -12,7 +12,7 @@
   These new generative AI approaches led to a paradigm shift in scaling up models 
   and data to extract more performance. 
 
-<h3>Scaling Trends in the Evolution of Generative Models (In a Nutshell) </h3>  
+<h2>Scaling Trends in the Evolution of Generative Models (In a Nutshell) </h2>  
 <p>
   A study by <a href="https://arxiv.org/abs/2001.08361"> Kaplan et al.</a> highlights the significance of 
   model size, dataset scale, and compute used in training. Their analysis indicates that larger models 
@@ -84,7 +84,7 @@
   </ul> -->
 </p>  
 
-<h2>Looking Through the Lens of Interpretability</h3>
+<h2>Looking Through the Lens of Interpretability</h2>
 
 <p> Although scaling up these approaches has led to significant capabilities 
   and performance improvements, understanding the hidden representations 
@@ -244,17 +244,40 @@
   </p>
 </blockquote>
 
-<h3>PatchScope</h3>
+<h3>Patchscopes 🩺</h3>
+<!-- <p>
+  <figure id="figure4">
+    <img src="images/patchscope.png" style="max-width:80%; width:600px;" class="mx-auto d-block">
+  </figure> 
+</p> -->
+
+<p>
+  <figure id="figure4">
+    <img src="images/Patchscope_eg_1.png" style="max-width:80%; width:600px;" class="mx-auto d-block">
+  </figure> 
+</p>
+
+<p>
+
+  <p>
+    Influenced by the efforts of Logit Lens and Tuned Lens <a href="https://arxiv.org/abs/2401.06102">Asma et al.</a> , presented a framework to decode the internal working of LLMs in a human interpretable format. 
+    The key idea is to use a target LLM to explain the internal working of the LLM under study. For example,  in the figure above, we are interested in the hidden representation of layer 4 that encodes "UK". This can be interpreted using an inspecting prompt. We replace x in the inspection prompt with the hidden state and continue generating the output in the target LLM. The results of the target LLM indicates that 'layer 4' indeed resolves UK as a country.
+    With this approach the authors provides  several applications of the framework to answer a wide range of questions about an LLM's computation. We highly recommend reading the  <a href="https://pair.withgoogle.com/explorables/patchscopes/#appendix-a-a-brief-review-of-transformers">interactive blog</a> to understand the framework's capability.
+     
+  
+  </p>
 
 
-<h3>Other Lens Approaches for LLMs</h3>
+
+<h4>Other Lens Approaches for LLMs</h4>
 
 There are several other approaches toward interpretability of Generative Language Models. 
 
-<h2>Diffusion Lens</h2>
+<h3>Diffusion Lens</h3>
 
 
 <p>
+  
 Diffusion based text to image models have been a game changer in the field of generative AI. Such text-to-image (T2I) models consist of a 
 of two main components: the text encoder and the diffusion model. The text encoder takes in the text input and encodes it into a 
 latent space representation, while the diffusion model takes in this latent space representation and generates an image. However the process by which the encoder produces the text representation is still not well understood.
