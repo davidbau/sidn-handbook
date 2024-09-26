@@ -1,6 +1,6 @@
 {header("Lenses")}
 
-<h5>September 26, 2024 • <em>Prajnan Goswami, Ritik Bompilwar</em></h5>
+<h5>October 01, 2024 • <em>Prajnan Goswami, Ritik Bompilwar</em></h5>
 
 <p>
   The launch of GPT-3 by <a href="https://arxiv.org/abs/2005.14165">Brown et al. (2020)</a> marked 
@@ -38,7 +38,7 @@
 <p> Although scaling up these approaches has led to significant capabilities 
   and performance improvements, understanding the hidden representations 
   and interpret how the model progresses toward generating its final output 
-  through all the intermediate layers.
+  through all the intermediate layers. 
 
 <p>
   For example, when applying linear probing from the 
@@ -77,7 +77,7 @@
   <img src="images/logit_vs_tuned_lens_fig1.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
 
   <p>
-    What makes this approach special is that, rather then relying on external probs, Logit lens uses 
+    What makes this approach special is that, rather then relying on external probes, Logit lens uses 
     its own prediction head to interpret the hidden representations. By doing so, we can easily track 
     the evolution of the model's understanding at every processing stage. That being said, this first
     attemt had few limitations.
@@ -128,7 +128,67 @@
 <h3>Diffusion Lens</h3>
 
 
+<p>
+Diffusion based text to image models have been a game changer in the field of generative AI. Such text-to-image (T2I) models consist of a 
+of two main components: the text encoder and the diffusion model. The text encoder takes in the text input and encodes it into a 
+latent space representation, while the diffusion model takes in this latent space representation and generates an image. However the process by which the encoder produces the text representation is still not well understood.
+</p>
+
+</p>
+<img src="images/DiffusionLens1.png" style="max-width:80%; width:500px;" class="mx-auto d-block">
+</p>
+
+<p>
+<a href="https://aclanthology.org/2024.acl-long.524.pdf">Toker et al. (2024)</a> proposed Diffusion Lens to visualize the intermediate representations
+in the text encoder of T2I models. Authors examined the computational process of the text encoder in the Stable Diffusion (<a href="https://arxiv.org/abs/2112.10752">Rombach
+et al., 2022</a>) and Deep Floyd (<a href="https://github.com/deep-floyd/IF">StabilityAI, 2023</a>) to analyse the model's capabilty of conceptual combination and it's memory retrieval process.
+<p>
+
+<img src="images/DiffuisonLensInights.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
+
+<h4>Key Insights from the Analysis</h4>
+
+<h5>Conceptual Combination Analysis</h3>
+<ul>
+  <li>
+    Complex prompts require more computation to achieve a faithful representation compared to simpler prompts.
+  </li>
+  <li>
+    Complex representations are built gradually. The early layer represenations are like "bag of concepts", that encode concepts separately or together without capturing their true relationship.
+    Subsequent layers encodes the relationship between the concepts more accurately.
+  </li>
+  <li>
+    The order in which the objects during computation is influence by their linear or syntactical precedence in the prompt. 
+    SD's CLIP (<a href="https://arxiv.org/abs/2103.00020">Radford et al., 2021</a>) encoder tends to reflect linear precedence, while Deep Floyd's T5 (<a href="https://arxiv.org/abs/1910.10683">Raffel et al., 2019</a>) encoder reflects syntactical precedence.
+  </li>
+</ul>
+
+<h5>Memory Retrieval Analysis</h3>
+<ul>
+  <li>
+    Common concepts like "Kangaroo" emerge in early layers while less common concepts like "Dik-dik" (an animal) gradually emerge in subsequent layers, with most accurate represenation predominantly appearing in upper layers.
+  </li>
+  <li>
+    Finer details materializes in the later layers.
+  </li>
+  <li>
+    Knowledge retrieval is gradual, unfolds as the computation progresses. This observation contrdicts from prior research (<a href="https://arxiv.org/pdf/2306.00738"></a>Arad et al., 2023</a>) on knowledge encoding in languagae models which suggests that the knowledge is encoded in specific layers.
+  </li>
+  <li>
+    Memory retrieval patterns in Deep Floyd's T5 encoder are different from Stable Diffusion's CLIP encoder. T5's memory retrival exhibits a more incremental pattern compared to CLIP's. 
+  </li>
+</ul>
 
 <h2>Colab Notebook and other Code Resources</h2>
 
+
+<h4>Logit Lens</h4>
+The Colab Notebook for the Logit Lens can be found <a href="https://colab.research.google.com/drive/1MjdfK2srcerLrAJDRaJQKO0sUiZ-hQtA?usp=sharing">here</a>.
+
+<h4>PatchScope</h4>
+The official repository for PatchScope can be found <a href="https://github.com/PAIR-code/interpretability/tree/master/patchscopes/code">here</a>. It contains the code for the PatchScope analysis along with some jupyter notebooks.
+The interactive website for PatchScope can be found <a href="https://pair.withgoogle.com/explorables/patchscopes//">here</a>.
+
+<h4>Diffusion Lens</h4>
+The Github Repository for the Diffusion Lens can be found <a href="https://github.com/tokeron/DiffusionLens">here</a>.
 {footer()}
