@@ -181,8 +181,8 @@
   layer to the expected input of the final layer as show in <a href="#figure1">Figure 1</a>. This  
   <b><i>translator</i></b> is indeed a <b>prob</b> which requires training. The key difference
   with probing approaches from the <a href="/probing/">previous chapter</a> is that the 
-  <b><i>translator</i></b> probs learn a mapping from the GPT model's final output itself
-  instead of a pre-determined set of labels, i.e, the model's final output distribution
+  <b><i>translator</i></b> probs learn a mapping from the GPT model's final output
+  instead of a pre-defined set of labels, i.e, the model's final output distribution
   are used as <i>soft labels</i>. As a result, the <b><i>translator</i></b> probs are not
   incetivized to learn additional information unlike previous probing approaches.
   
@@ -234,12 +234,12 @@
 
  <blockquote style="background-color: rgba(179, 174, 174, 0.484);">
   <p>
-    <i><strong>Prajnan's opinion:</strong></i> It's worth noting that although Tuned Lens 
+    <i><strong>Our opinion:</strong></i> It's worth noting that although Tuned Lens 
     was able to draw out meaningful results in the early layers, it requires
     training a <b>translator</b> for each layer of the model. Furthermore,
     training the <b>translator</b> probes require access to the 
     validation dataset used during LLMs pre-training which may not always be 
-    available to analyze open-sourced model.
+    available to analyze ore-trained model.
     Whereas Logit Lens can be used on any pre-trained LLMs.
   </p>
 </blockquote>
@@ -260,18 +260,35 @@
 <p>
 
   <p>
-    Influenced by the efforts of Logit Lens and Tuned Lens <a href="https://arxiv.org/abs/2401.06102">Asma et al.</a> , presented a framework to decode the internal working of LLMs in a human interpretable format. 
-    The key idea is to use a target LLM to explain the internal working of the LLM under study. For example,  in the figure above, we are interested in the hidden representation of layer 4 that encodes "UK". This can be interpreted using an inspecting prompt. We replace x in the inspection prompt with the hidden state and continue generating the output in the target LLM. The results of the target LLM indicates that 'layer 4' indeed resolves UK as a country.
-    With this approach the authors provides  several applications of the framework to answer a wide range of questions about an LLM's computation. We highly recommend reading the  <a href="https://pair.withgoogle.com/explorables/patchscopes/#appendix-a-a-brief-review-of-transformers">interactive blog</a> to understand the framework's capability.
-     
-  
+    Influenced by the efforts of Logit Lens and Tuned Lens <a href="https://arxiv.org/abs/2401.06102">Ghandeharioun et al.</a> , 
+    presented a framework to decode the internal working of LLMs in a human interpretable format. 
+    The key idea is to use a target LLM to explain the internal working of the LLM under study. 
+    For example,  in the figure above, we are interested in the hidden representation of layer 4 that encodes "UK". 
+    This can be interpreted using an inspecting prompt. We replace x in the inspection prompt with the hidden state 
+    and continue generating the output in the target LLM. The results of the target LLM indicates that 'layer 4' indeed 
+    resolves UK as a country. With this approach the authors provides  several applications of the framework to answer 
+    a wide range of questions about an LLM's computation. We highly recommend reading the  
+    <a href="https://pair.withgoogle.com/explorables/patchscopes/#appendix-a-a-brief-review-of-transformers">interactive 
+    blog</a> to understand the framework's capability.
   </p>
 
-
+  <blockquote style="background-color: rgba(179, 174, 174, 0.484);">
+    <p>
+      <i><strong>Our opinion:</strong></i> Overall this technique is cleary layed out in the paper as well as 
+      the interactive blog with lots of great examples. And the cherry on top is that it does not require further 
+      training of parameters. That being said, in scenarios where the results are not interpretable, it might be
+      challenging to identify if the source or the target model or the inspection prompt itself was responsible 
+      for misinterpreting the hidden state. A way to validate if the interpretations are legible might be 
+      to <b>patch</b> the hidden state with multiple target models.
+    </p>
+  </blockquote>
 
 <h4>Other Lens Approaches for LLMs</h4>
 
-There are several other approaches toward interpretability of Generative Language Models. 
+There are several other approaches that extends Logit Lens and Future Lens toward interpretability of Generative Language Models. 
+Some of these include <a href="https://arxiv.org/pdf/2202.05262">Locating and Editing Factual Associations in GPT</a> by Meng et al., 
+<a href="https://arxiv.org/abs/2307.09476">Overthinking the Truth: Understanding how Language Models Process False Demonstrations</a> by Halawi et al.,
+and <a href="https://arxiv.org/abs/2311.04897">Future Lens: Anticipating Subsequent Tokens from a Single Hidden State</a> by Pal et al.
 
 <h3>Diffusion Lens</h3>
 
@@ -344,12 +361,10 @@ The process involves:
 
 <h2>Colab Notebook and other Code Resources</h2>
 
-
-<h4>Logit Lens</h4>
 <ul>
   <li>
     <a href="https://colab.research.google.com/drive/1MjdfK2srcerLrAJDRaJQKO0sUiZ-hQtA?usp=sharing">Here</a> is an 
-    interactive Colab demo that compares Logit Lens and Tuned Lens. You can ignore the '''pyarrow 17.0.0''' 
+    interactive Colab demo that compares Logit Lens and Tuned Lens. You can ignore the 'pyarrow 17.0.0'
     dependency error and execute the subsequent notebook cells.
   </li>
   <li>
