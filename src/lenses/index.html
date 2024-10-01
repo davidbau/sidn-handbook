@@ -60,28 +60,6 @@
       </tr>
     </tbody>
   </table>
-
-  <!-- <ul>
-    <li>
-    2019, <a href="https://cdn.openai.com/better-language-models
-    /language_models_are_unsupervised_multitask_learners.pdf">GPT-2</a>, <b>1.5</b> billion parameters.
-    </li>
-    <li>
-    2020, <a href="https://arxiv.org/abs/2005.14165">GPT-3</a>, <b>175</b> billion parameters.
-    </li>
-    <li>
-      2020, <a href="https://arxiv.org/abs/2006.11239">Denoising Diffusion Probabilistic Models</a>, <b>256</b> million parameters.
-    </li>
-    <li>
-      2021, <a href="https://arxiv.org/abs/2006.11239">Stable Diffusion</a>, <b>1</b> billion parameters.
-    </li>
-    <li>
-      2023, <a href="https://arxiv.org/abs/2307.01952">Stable Diffusion XL</a>, <b>3.5</b> billion parameters.
-    </li>
-    <li>
-    2024, <a href="https://ai.meta.com/blog/meta-llama-3-1/">Llama 3.1</a>, <b>405</b> billion parameters.
-    </li>
-  </ul> -->
 </p>  
 
 <h2>Looking Through the Lens of Interpretability</h2>
@@ -185,33 +163,6 @@
   instead of a pre-defined set of labels, i.e, the model's final output distribution
   are used as <i>soft labels</i>. As a result, the <b><i>translator</i></b> probs are not
   incetivized to learn additional information unlike previous probing approaches.
-  
-  <!--We refer readers to <i>Section 3</i> of the paper
-  <a href="https://arxiv.org/abs/2303.08112">Eliciting Latent Predictions from 
-  Transformers with the Tuned Lens</a> for the implementation details.-->
-
-  <!--<ul>
-    <li>
-      Formally, the <b><i>translator</i></b> is an affine transformation and can be written as:
-
-      \[ TunedLens_{l}(h_{l}) = LogitLens(A_{l}) \]
-      
-      ,where \(A_l\), \(h_l\) and \(b_l\) represents a basis matrix, 
-      the GPT's hidden state at layer (\l\) and a bias term respectively.
-    </li>
-    <li>
-      The authors train these parameters by minimizing the KL divergence between
-      the <b>Tuned Logits</b> and the <b>final layer</b> logits. Intuitively,
-      this can be viewed as <b>minimizing the distance</b> between the logit layers 
-      and the final layer by using the the <b>final layer's output distribution</b> 
-      as a <b>soft label</b>.
-    </li>
-    <li>
-      These <b><i>translators</i></b> are trained during the pre-training stage 
-      of the GPT-like models such as GPT-2, BLOOM and OPT.
-    </li>
-  </ul>-->
-
 
   <p>
     With this adjustment made to the Logit Lens, the Tuned Lens showed 
@@ -221,35 +172,9 @@
     <figure id="figure3">
       <img src="images/output_comparison_lens.png" style="max-width:80%; width:600px;" class="mx-auto d-block">
     </figure> 
-  
-<!-- <p>
-      <i><strong>Prajnan's opinion :</strong></i> It's worth noting that although Tuned Lens 
-      was able draw out meaningful results in the early layers, it requires
-      training a <b>translator</b> for each layer of the model. Furthermore,
-      the training these <b>translator</b> probes require access to the 
-      validation dataset used during LLMs pre-training which may not always be 
-      available to analyze existing open-sourced model.
-      Whereas Logit Lens can be used on any pre-trained LLMs.
- </p> -->
 
- <!-- <blockquote style="background-color: rgba(179, 174, 174, 0.484);">
-  <p>
-    <i><strong>Our opinion:</strong></i> It's worth noting that although Tuned Lens 
-    was able to draw out meaningful results in the early layers, it requires
-    training a <b>translator</b> for each layer of the model. Furthermore,
-    training the <b>translator</b> probes require access to the 
-    validation dataset used during LLMs pre-training which may not always be 
-    available to analyze ore-trained model.
-    Whereas Logit Lens can be used on any pre-trained LLMs.
-  </p>
-</blockquote> -->
 
 <h3>Patchscopes 🩺</h3>
-<!-- <p>
-  <figure id="figure4">
-    <img src="images/patchscope.png" style="max-width:80%; width:600px;" class="mx-auto d-block">
-  </figure> 
-</p> -->
 
 <p>
   <figure id="figure4">
@@ -276,9 +201,9 @@
     <p>
       <i><strong>Prajnan's opinion:</strong></i> Overall this technique is cleary layed out in the paper as well as 
       the interactive blog with lots of great examples. And the cherry on top is that it does not require further 
-      training of parameters. That being said, in scenarios where the results are not interpretable, it might be
+      training of additional parameters. That being said, in scenarios where the results are not interpretable, it might be
       challenging to identify if the source or the target model or the inspection prompt itself was responsible 
-      for misinterpreting the hidden state. A way to validate if the interpretations are legible might be 
+      for misinterpreting the hidden state. One way to validate the Patchscope's interpretations might be 
       to <b>patch</b> the hidden state with multiple target models.
     </p>
   </blockquote>
