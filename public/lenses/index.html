@@ -335,7 +335,7 @@ rel="stylesheet">
 
   <blockquote style="background-color: rgba(179, 174, 174, 0.484);">
     <p>
-      <i><strong>Our opinion:</strong></i> Overall this technique is cleary layed out in the paper as well as 
+      <i><strong>Prajnan's opinion:</strong></i> Overall this technique is cleary layed out in the paper as well as 
       the interactive blog with lots of great examples. And the cherry on top is that it does not require further 
       training of parameters. That being said, in scenarios where the results are not interpretable, it might be
       challenging to identify if the source or the target model or the inspection prompt itself was responsible 
@@ -414,12 +414,23 @@ The process involves:
     Finer details materializes in the later layers.
   </li>
   <li>
-    Knowledge retrieval is gradual, unfolds as the computation progresses. This observation contrdicts from prior research (<a href="https://arxiv.org/pdf/2306.00738"></a>Arad et al., 2023</a>) on knowledge encoding in languagae models which suggests that the knowledge is encoded in specific layers.
+    Knowledge retrieval is gradual, unfolds as the computation progresses. This observation contrdicts from prior research (<a href="https://arxiv.org/pdf/2306.00738">Arad et al., 2023</a>) on knowledge encoding in languagae models which suggests that the knowledge is encoded in specific layers.
   </li>
   <li>
     Memory retrieval patterns in Deep Floyd's T5 encoder are different from Stable Diffusion's CLIP encoder. T5's memory retrival exhibits a more incremental pattern compared to CLIP's. 
   </li>
 </ul>
+
+<blockquote style="background-color: rgba(206, 202, 202, 0.484);">
+    <p>
+      <i><strong>Ritik's Take:</strong></i> I found the results from the Diffusion Lens really fascinating.
+      I felt the paper provides valuable insights on how the text is transformed into visual content, and the role text encoders play in it.
+      But I feel the paper should have also given insights on the outputs fom the diffusion layers, where the image generation actually happens.
+      I think it fell short to convince how the encoded information is actually translated into the final visual output. The paper does open up pathways
+      for a DiffusionLens that actually helps see output from the diffusion layers.
+    </p>
+  </blockquote>
+
 
 <h2>Colab Notebook and other Code Resources</h2>
 
