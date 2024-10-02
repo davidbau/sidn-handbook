@@ -82,8 +82,50 @@ rel="stylesheet">
 
 
       <h2>Sparse Feature Circuits</h2>
+      <h2>Feature disentanglement with sparse autoencoders</h2>
       <p>
+        The authors follow Bricken et al. (2023) to train SAEs  for attention outputs, MLP outputs, and residual stream activations for each layer of Pythia-70M.
+        \[x = \hat{x} + \epsilon(x) = \sum^{d_{SAE}}_{i=1} f_i(x)v_i + b + \epsilon(x)\]
+        </p>
 
+      <h2>Attributing causal effects with linear approximations<\h2>
+      <p>
+        The authors quantify the importance of neuron activations \(a\) from a pair of inputs \((x_{clean}, x_{patch})\) via indirect effect (IE; Pearl, 2001).
+        \[IE(m, \mathbb{a}; x_{clean}, x_{patch}) = m(x_{clean} | do(\mathbb{a} = \mathbb{a_{patch}})) - m(x_{clean})\]
+        Here \(\mathbb{a_{patch}}\) is the value that \(\mathbb{a}\) takes when computing \(m(x_{patch})\) and \(m(x_{clean} | do(\mathbb{a} = \mathbb{a_{patch}}))\) is the value of m when computing \(m_{clean}\) but intervening the computation of m by setting \(a\) to \(a_{patch}\).
+        Here \(a\) represents a node in the computation graph of the model.
+        The authors provided an example where \(x_{clean} = "The teacher"\) and \(x_{patch} = "The teachers"\) and the metric \(m(x)\) is defined as \(m(x) = \log P("are"|x) - \log P("is"|x)\) the log probability difference of output by the language model.
+        if \(a\) is the activation of a particular neuron, a large value of \(IE(m; a; x_{clean}, x_{patch})\) indicates that the neuron is highly influential on the model’s decision to output “is” vs. “are” on this pair of inputs.
+        The authors linearly approximate IE because of its inefficiency to compute for a large number of model components.
+        They propose two methods attribute patching (Nanda, 2022; Syed et al., 2023; Kramár et al., 2024) which employs a first order taylor expansion and a more expensive but more accurate approximation based on integrated gradients (Sundararajan et al., 2017).
+        \[\hat{IE}_{atp}(m; \mathbb{a}; x_{clean}; x_{patch}) = \nabla_{a} m |_{a = a_{clean} (a_{patch} - a{a_clean)\]
+        \[\hat{IE}_{ig} (m; \mathbb{a}; x_{clean}; x_{patch}) = (\sum_{\alpha} \nabla_a m |_{\alpha a_{clean} + (1-\alpha)a_{patch}}) (a_{patch} - a_{clean})\]
+        In \(\hat{IE_{ig}}\), N = 10 equally spaced \(\alpha \in \{0, 1/N, 2/N ... N-1/N\}\).
+      <\p>
+
+      <h2>Sparse Feature Circuit Discovery</h2>
+      <p> <figure> <img  src="images/sae_structure.png" alt="SparseFeatureCircuit-Overview" style="max-width:-70%; width:500px;" class="mx-auto d-block"></figure>
+        <p>
+            The activations from the clean input and patching input are stored followed by computation of gradients for each node. Step 3 is computing IE for each node and filtering based on IE threshold \(T_N\) and. Similarly, the edges are filtered as well.
+          </p>
+      </p>
+
+      <h2>Removing unintended signals using SHIFT</h2>
+      <p>
+        The authors propose SHIFT to remove sensitivity to unintended signals without manipulating labeled data or even without knowing what these signals are ahead of time.
+      </p>
+      <p>
+        The authors setup an experiment on the Bias on Bios dataset from which they use two subsample sets of labeled data.
+      </p>
+      <p>
+        <b>Ambiguous set</b> contains male professors and female nurses.
+      </p>
+      <p>
+        <b>balanced set</b> contains equal number of bios of male and female professors and nurses.
+        This dataset contains profession label which is the intended signal and gender which is unintended.
+      </p>
+      <p>
+        The authors train a linear classifier on the ambigious dataset which is initially biased on the unintended signal (gender). 
       </p>
 
       <h3>Linearity And Non-Linearity in Feature Space</h3>
