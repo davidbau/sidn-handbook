@@ -91,11 +91,11 @@ rel="stylesheet">
 
       <h2>Attributing causal effects with linear approximations</h2>
       <p>
-        The authors quantify the importance of neuron activations $a$ from a pair of inputs $(x_{clean}, x_{patch})$ via indirect effect (IE; Pearl, 2001).
+        The authors quantify the importance of neuron activations \(a\) from a pair of inputs \((x_{clean}, x_{patch})\) via indirect effect (IE; Pearl, 2001).
         \[IE(m, \mathbb{a}; x_{clean}, x_{patch}) = m(x_{clean} | do(\mathbb{a} = \mathbb{a_{patch}})) - m(x_{clean})\]
         Here \(\mathbb{a_{patch}}\) is the value that \(\mathbb{a}\) takes when computing \(m(x_{patch})\) and \(m(x_{clean} | do(\mathbb{a} = \mathbb{a_{patch}}))\) is the value of m when computing \(m_{clean}\) but intervening the computation of m by setting \(a\) to \(a_{patch}\).
         Here \(a\) represents a node in the computation graph of the model.
-        The authors provided an example where \(x_{clean} = "The teacher"\) and \(x_{patch} = "The teachers"\) and the metric \(m(x)\) is defined as \(m(x) = \log P("are"|x) - \log P("is"|x)\) the log probability difference of output by the language model.
+        The authors provided an example where \(x_{clean} = \text{"The teacher"}\) and \(x_{patch} = \text{"The teachers"}\) and the metric \(m(x)\) is defined as \(m(x) = \log P(\text{"are"}|x) - \log P(\text{"is"}|x)\) the log probability difference of output by the language model.
         if \(a\) is the activation of a particular neuron, a large value of \(IE(m; a; x_{clean}, x_{patch})\) indicates that the neuron is highly influential on the model’s decision to output “is” vs. “are” on this pair of inputs.
         The authors linearly approximate IE because of its inefficiency to compute for a large number of model components.
         They propose two methods attribute patching (Nanda, 2022; Syed et al., 2023; Kramár et al., 2024) which employs a first order taylor expansion and a more expensive but more accurate approximation based on integrated gradients (Sundararajan et al., 2017).
