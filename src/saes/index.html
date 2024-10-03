@@ -67,13 +67,10 @@ rel="stylesheet">
         investigating entangled concepts in neurons or their activations. This class of autoencoders have a single encoding layer of neurons with non-linear activation
         that outputs a set of coefficients that are sparse, and there is a decoding layer that takes in the the output of the encoder and multiplies them with the transpose of the linear embedding layer of 
         the encoder. [1]
-      </p>
-      <p> <figure> <img  src="images/SparseAutoencoders.jpg" alt="Sparse Autoencoder" style="max-width:-70%; width:500px;" class="mx-auto d-block"></figure>
-          <p>
-              This Figure Shows The Structure of a Sparse Autoencoder [1]
-          </p>
-      </p>
-      
+        <p> <figure> <img  src="images/SparseAutoencoders.jpg" alt="Sparse Autoencoder" style="max-width:-70%; width:500px;" class="mx-auto d-block"></figure>
+            <p>
+                This Figure Shows The Structure of a Sparse Autoencoder [1]
+              </p>
       <p>
         Sparse Autoencoders are often used to estimate the properties of a neurons or their activation. Sparse autoencoders are used with an assumption that output of a single neuron will not carry the full representation of a property in its outputs. 
         Properties might be encoded in a neural network as a superposition of multiple neural activations. Thus in order to separate the concepts the original basis of feature space needs to be expanded. 
@@ -90,6 +87,7 @@ rel="stylesheet">
       <p>
         The authors follow Bricken et al. (2023) to train SAEs  for attention outputs, MLP outputs, and residual stream activations for each layer of Pythia-70M.
         \[x = \hat{x} + \epsilon(x) = \sum^{d_{SAE}}_{i=1} f_i(x)v_i + b + \epsilon(x)\]
+      </p>
 
       <h2>Attributing causal effects with linear approximations</h2>
       <p>
