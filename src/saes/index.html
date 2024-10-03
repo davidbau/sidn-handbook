@@ -68,9 +68,9 @@ rel="stylesheet">
         that outputs a set of coefficients that are sparse, and there is a decoding layer that takes in the the output of the encoder and multiplies them with the transpose of the linear embedding layer of 
         the encoder. [1]
         <p> <figure> <img  src="images/SparseAutoencoders.jpg" alt="Sparse Autoencoder" style="max-width:-70%; width:500px;" class="mx-auto d-block"></figure>
-            <p>
+            <figcaption>
                 This Figure Shows The Structure of a Sparse Autoencoder [1]
-              </p>
+            </figcaption>
       <p>
         Sparse Autoencoders are often used to estimate the properties of a neurons or their activation. Sparse autoencoders are used with an assumption that output of a single neuron will not carry the full representation of a property in its outputs. 
         Properties might be encoded in a neural network as a superposition of multiple neural activations. Thus in order to separate the concepts the original basis of feature space needs to be expanded. 
@@ -98,7 +98,7 @@ rel="stylesheet">
         The authors provided an example where \(x_{clean} = \text{'The teacher'}\) and \(x_{patch} = \text{'The teachers'}\) and the metric \(m(x)\) is defined as \(m(x) = \log P(\text{'are'}|x) - \log P(\text{'is'}|x)\) the log probability difference of output by the language model.
         if \(a\) is the activation of a particular neuron, a large value of \(IE(m; a; x_{clean}, x_{patch})\) indicates that the neuron is highly influential on the model’s decision to output “is” vs. “are” on this pair of inputs.
         The authors linearly approximate IE because of its inefficiency to compute for a large number of model components.
-        They propose two methods attribute patching (Nanda, 2022; Syed et al., 2023; Kramár et al., 2024) which employs a first order taylor expansion and a more expensive but more accurate approximation based on integrated gradients (Sundararajan et al., 2017).
+        They propose two methods attribute patching (Nanda, 2022; Syed et al., 2023; Kramár et al., 2024) which employs a first order taylor expansion and a more computationally expensive but more accurate approximation based on integrated gradients (Sundararajan et al., 2017).
         \[\hat{IE}_{atp}(m; \mathbb{a}; x_{clean}; x_{patch}) = \nabla_{a} m |_{a = a_{clean}} (a_{patch} - a_{clean})\]
         \[\hat{IE}_{ig} (m; \mathbb{a}; x_{clean}; x_{patch}) = (\sum_{\alpha} \nabla_a m |_{\alpha a_{clean} + (1-\alpha)a_{patch}}) (a_{patch} - a_{clean})\]
         In \(\hat{IE_{ig}}\), N = 10 equally spaced \(\alpha \in \{0, 1/N, 2/N ... N-1/N\}\).
