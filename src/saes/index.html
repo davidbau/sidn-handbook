@@ -87,11 +87,10 @@ rel="stylesheet">
       <p>
         The authors follow Bricken et al. (2023) to train SAEs  for attention outputs, MLP outputs, and residual stream activations for each layer of Pythia-70M.
         \[x = \hat{x} + \epsilon(x) = \sum^{d_{SAE}}_{i=1} f_i(x)v_i + b + \epsilon(x)\]
-      </p>
 
       <h2>Attributing causal effects with linear approximations</h2>
       <p>
-        The authors quantify the importance of neuron activations \(a\) from a pair of inputs \((x_{clean}, x_{patch})\) via indirect effect (IE; Pearl, 2001).
+        The authors quantify the importance of neuron activations $a$ from a pair of inputs $(x_{clean}, x_{patch})$ via indirect effect (IE; Pearl, 2001).
         \[IE(m, \mathbb{a}; x_{clean}, x_{patch}) = m(x_{clean} | do(\mathbb{a} = \mathbb{a_{patch}})) - m(x_{clean})\]
         Here \(\mathbb{a_{patch}}\) is the value that \(\mathbb{a}\) takes when computing \(m(x_{patch})\) and \(m(x_{clean} | do(\mathbb{a} = \mathbb{a_{patch}}))\) is the value of m when computing \(m_{clean}\) but intervening the computation of m by setting \(a\) to \(a_{patch}\).
         Here \(a\) represents a node in the computation graph of the model.
@@ -103,7 +102,7 @@ rel="stylesheet">
         \[\hat{IE}_{ig} (m; \mathbb{a}; x_{clean}; x_{patch}) = (\sum_{\alpha} \nabla_a m |_{\alpha a_{clean} + (1-\alpha)a_{patch}}) (a_{patch} - a_{clean})\]
         In \(\hat{IE_{ig}}\), N = 10 equally spaced \(\alpha \in \{0, 1/N, 2/N ... N-1/N\}\).
       </p>
-
+        
 
       <h2>Sparse Feature Circuit Discovery</h2>
       <p> <figure> <img  src="images/sae_structure.png" alt="SparseFeatureCircuit-Overview" style="max-width:-70%; width:500px;" class="mx-auto d-block"></figure>
