@@ -102,10 +102,7 @@ rel="stylesheet">
         if \(a\) is the activation of a particular neuron, a large value of \(IE(m; a; x_{clean}, x_{patch})\) indicates that the neuron is highly influential on the model’s decision to output “is” vs. “are” on this pair of inputs.
         The authors linearly approximate IE because of its inefficiency to compute for a large number of model components.
         They propose two methods attribute patching (Nanda, 2022; Syed et al., 2023; Kramár et al., 2024) which employs a first order taylor expansion and a more computationally expensive but more accurate approximation based on integrated gradients (Sundararajan et al., 2017).
-        \[\hat{IE}_{atp}(m; \mathbb{a}; x_{clean}; x_{patch}) = \nabla_{a} m |_{a = a_{clean}} (a_{patch} - a_{clean})\]
-        \[\hat{IE}_{ig} (m; \mathbb{a}; x_{clean}; x_{patch}) = (\sum_{\alpha} \nabla_a m |_{\alpha a_{clean} + (1-\alpha)a_{patch}}) (a_{patch} - a_{clean})\]
-        In \(\hat{IE_{ig}}\), N = 10 equally spaced \(\alpha \in \{0, 1/N, 2/N ... N-1/N\}\).
-      </p>
+        </p>
         
 
       <h2>Sparse Feature Circuit Discovery</h2>
