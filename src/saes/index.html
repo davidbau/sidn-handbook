@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SAEs</title>
+
+<!-- Bootstrap CSS Imports -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<!-- Google Font Imports -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+rel="stylesheet">
+
+<!-- Custom CSS Imports -->
+<link rel="stylesheet" href="/css/style.css">
+
+<!-- Mathjax -->
+<script sid="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" integrity="sha512-6FaAxxHuKuzaGHWnV00ftWqP3luSBRSopnNAA2RvQH1fOfnF/A1wOfiUWF7cLIOFcfb1dEhXwo5VG3DAisocRw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha256-3gQJhtmj7YnV1fmtbVcnAV6eI4ws0Tr48bVZCThtCGQ=" crossorigin="anonymous"></script>
+
+<!-- Auto Table of Contents -->
+<link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css"
+/>
+<script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script>
+
+</head>
+
+<body data-bs-spy="scroll" data-bs-target="#toc">
+<nav class="navbar navbar-dark bg-dark">
+  <div class="container-fluid">
+    <ul class="navbar-nav mr-auto">
+     <li class="nav-item active">
+      <a class="nav-link" href="/index.html">SAEs</a>
+     </li>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+     <li class="nav-item">
+      <a class="navbar-brand" href="/">Structure and Interpretation of Deep Networks</a>
+     </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="row">
+    <div class="col-2 position-fixed pt-5">
+      <nav id="toc" data-toggle="toc"></nav>
+    </div>
+    <div class="col-2"></div>
+    <main class="col-8">
+      <h1 class="mt-5">SAEs</h1>
+      <h5>October 3, 2024  • <em>Rahul Chowdhury, Satya Venkata Anudeep Ragata</em></h5>
+
+      <h2>What are SAEs?</h2>
+      <p>
+        Sparse Autoencoders are a class of autoencoders that enforces sparsity in the encoding space and are used for
+        investigating entangled concepts in neurons or their activations. This class of autoencoders have a single encoding layer of neurons with non-linear activation
+        that outputs a set of coefficients that are sparse, and there is a decoding layer that takes in the the output of the encoder and multiplies them with the transpose of the linear embedding layer of 
+        the encoder. [1]
+        <p> <figure> <img  src="images/SparseAutoencoders.jpg" alt="Sparse Autoencoder" style="max-width:-70%; width:500px;" class="mx-auto d-block"></figure>
+            <p>
+                This Figure Shows The Structure of a Sparse Autoencoder [1]
+              </p>
+      <p>,
+        Sparse Autoencoders are often used to estimate the properties of a neurons or their activation. Sparse autoencoders are used with an assumption that output of a single neuron will not carry the full representation of a property in its outputs. 
+        Properties might be encoded in a neural network as a superposition of multiple neural activations. Thus in order to separate the concepts the original basis of feature space needs to be expanded. 
+        Sparse Autoencoder first expands the basis of the neural activations into to more dimension [1]. In order to learn the concepts for each input token we enforce sparsity in the encoded features of the Sparse Autoencoder since one token is unlikely to belong with all concepts. 
+        This action makes the representation interpretable as we can now focus on the dictionary column that could be reponsible for a particular property. 
+        Sparse Autoencoders could be used for both discovery and pruning through techniques that identify which columns in the dictionary light up more for a particular direction of change that could be of our interest. 
+        Following identifications of the bases that correspond to a particular feature, that particular feature could be kept if that concept needs to be kept or pruned in order to suppress that from being represented in the output of a neural network [3]. 
+      </p>
+
+      <h3>Linearity And Non-Linearity in Feature Space</h3>
+      <p>
+        f(king) - f(man) + f(woman) = f(queen) [2] is a classic example of an emergence of linearity in feature space of neural networks. 
+        In this example, we could see the vector that shifts the representation from one gender to another gender is added to king which is a title representing a 
+        status quo with entangled gender information, the output shifts to another title of the corresponding gender. There are two parts that needs to be understood. First, 
+        the direction of change, and, second, the entanglement of information in an input token. Not all input token will have another property entangled in it, and not all shift in state will be linear. 
+        We can have a look at a clock to develop an intution of the second property. If we want to shift from 1 to 2, there is a change of +1 in magnitude. Now pay attention to the vector change that brought this change from 1 to 2.
+        Can we use the same vector to increment from 2 to 3 in the clock space? Not, right? This time the vector that we need to increment the same +1 would be different. This is an example portraying why might need a non-linear intervention to produce change in different context.   
+      </p>
+      <h3>Evidence of Circular Representation</h3>
+      <p>
+        Sparse Autoencoder could be used to analyze the activation space and its circular representaion [3]. The dictionary columns of the decoders could be used as a similarity index since 
+        conceptually similar features would light up and reconstruct the input representation [3]. First, the dictionary elements are clustered, and the features are passed through the Sparse Autoencoder with columns that are in a particular 
+        cluster [4]. Then, PCA projections are used to visualize their non-linear representation in lower dimensional subspace [3]. 
+        We could observe that different days of the week and different months of the year are in a circle. This means that inorder to increment your current state by the same number a linear scaling of basis would not work. This shows assumption that information transformation could be done 
+        in one dimension is a partially correct argument.          
+      </p>
+      </p>
+       <p> <figure> <img  src="images/circular.jpg" alt="Circular Representation" style="max-width:-70%; width:500px;" class="mx-auto d-block"></figure>
+        <p>
+            This figure shows the PCA Projections of Representation of Weeks and Years [4]
+          </p>
+
+
+      <h2>Code Resources</h2>
+      <p>  Try The Colab Notebook To Train Sparse Autoencoder here (this is based on  Towards Monosemanticity: Decomposing Language Models With Dictionary Learning): <a href="https://colab.research.google.com/github/ai-safety-foundation/sparse_autoencoder/blob/main/docs/content/demo.ipynb">Sparse Autoencoder Colab</a>.<p>
+
+      <h2>References</h2>
+      <ol>
+        <li>Cunningham, Hoagy, et al. "Sparse autoencoders find highly interpretable features in language models." arXiv preprint arXiv:2309.08600 (2023).</li>
+        <li>Mikolov, Tomas, et al. "Distributed representations of words and phrases and their compositionality." Advances in neural information processing systems 26 (2013).</li>
+        <li>Marks, Samuel, et al. "Sparse feature circuits: Discovering and editing interpretable causal graphs in language models." arXiv preprint arXiv:2403.19647 (2024).</li>
+        <li>Engels, Joshua, et al. "Not All Language Model Features Are Linear." arXiv preprint arXiv:2405.14860 (2024).</li>
+      </ol>
+    </main>
+  </div>
+</div>
+</body>
+</html>
