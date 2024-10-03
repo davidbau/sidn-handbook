@@ -93,7 +93,8 @@ rel="stylesheet">
 
       <h2>Causal effects showcase Subject-Verb Agreement Influence</h2>
       <p>
-        The authors quantify the importance of neuron activations \(a\) from a pair of inputs \((x_{clean}, x_{patch})\) via indirect effect (IE; Pearl, 2001).
+        The authors are interested in understanding the causal effects of neuron activations in  the language model's decision to output "is" vs. "are" on a pair of inputs.
+        They quantify the importance of neuron activations \(a\) from a pair of inputs \((x_{clean}, x_{patch})\) via indirect effect (IE; Pearl, 2001).
         \[IE(m, \mathbb{a}; x_{clean}, x_{patch}) = m(x_{clean} | do(\mathbb{a} = \mathbb{a_{patch}})) - m(x_{clean})\]
         Here \(\mathbb{a_{patch}}\) is the value that \(\mathbb{a}\) takes when computing \(m(x_{patch})\) and \(m(x_{clean} | do(\mathbb{a} = \mathbb{a_{patch}}))\) is the value of m when computing \(m_{clean}\) but intervening the computation of m by setting \(a\) to \(a_{patch}\).
         Here \(a\) represents a node in the computation graph of the model.
