@@ -107,8 +107,27 @@ introduction rubric:
 </p>
 
 <p>
-
+<h3> basic formulation: </h3>
+<ul>
+  <li>Embeddings \( \mathbf{x} \in \mathbb{R}^d \) are row vectors corresponding to a row of \( W_E \in \mathbb{R}^{\mathcal{V} \times d} \), where \( \mathcal{V} \) is the vocabulary size. The final layer residual stream state is projected into the vocabulary space via the unembedding matrix \( W_U \in \mathbb{R}^{d \times \mathcal{V}} \).
+  <li>An intermediate layer representation \( \mathbf{x}_i^l \) is the representation for token \( i \) in layer \( l \). \( \mathbf{x} \) is \( \mathbf{x}_i^0 \). The matrix \( \mathbf{X}^l \in \mathbb{R}^{n \times d} \) represents all the intermediate layer representations for layer \( l \), where \( n \) is the sequence length. \( \mathbf{X}_{\leq i}^l \) is the layer \( l \) representation up to position \( i \).
+  <li> layer norm trick: the weights of the affine transformation can be folded into the following linear layer, so we can pretty much ignore it (from a math perspective) until the end.
+</ul>
+<h3> attention block </h3>
+<ul>
+ <li> \( \text{Attn}^{l,h} (\mathbf{X}_{\leq i}^{l-1}) = \sum_{j \leq i} a_{i,j}^{l,h} \mathbf{x}_j^{l-1} \mathbf{W}_{OV}^{l,h} \). Importantly here, \( \mathbf{W}_{OV}^{l,h} = \mathbf{W}_O^{l,h} \mathbf{W}_V^{l,h} \), and \( \mathbf{W}_O^{l,h} \in \mathbb{R}^{d \times d_h} \) and \( \mathbf{W}_V^{l,h} \in \mathbb{R}^{d_h \times d} \).
+<li> \( \mathbf{a}_i^{l,h} = \text{softmax} \left( \frac{\mathbf{x}_i^{l-1} \mathbf{W}_Q^{l,h} (\mathbf{X}_{\leq i}^{l-1} \mathbf{W}_K^{l,h})^\top}{\sqrt{d_k}} \right) = \text{softmax} \left( \frac{\mathbf{x}_i^{l-1} \mathbf{W}_{Qk}^{h} \mathbf{X}_{\leq i}^{(l-1)\top}}{\sqrt{d_k}} \right) \)
+<li>\( \text{Attn}^l (\mathbf{X}_{\leq i}^{l-1}) = \sum_{h=1}^H \text{Attn}^{l,h} (\mathbf{X}_{\leq i}^{l-1}) \)</li>
+<li> Output of the attention block: \( \mathbf{x}_i^{\text{mid},l} = \mathbf{x}_i^{l-1} + \text{Attn}^l (\mathbf{X}_{\leq i}^{l-1}) \)</li>
 </p>
+
+<h3> MLP block </h3>
+<ul>
+  <li> \( \text{FFN}^l (\mathbf{x}_i^{\text{mid},l}) = g(\mathbf{x}_i^{mid,l} \mathbf{W}_{in}^l) \mathbf{W}_{out}^l \), where \( g(\cdot) \) is a nonlinearity, and \( \mathbf{W}_{in}^l \in \mathbb{R}^{d \times d_{\text{ffn}}} \) and \( \mathbf{W}_{out}^l \in \mathbb{R}^{d_{\text{ffn}} \times d} \).</li> 
+  <li> \( \mathbf{x}_i^{\text{out},l} = \mathbf{x}_i^{\text{mid},l} + \text{FFN}^l (\mathbf{x}_i^{\text{mid},l}) \)</li>
+</ul>
+
+<p></p>
 <h2>a mathematical framework for transformer circuits</h2>
 <h2>analyzing transformers in embedding space</h2>
 
