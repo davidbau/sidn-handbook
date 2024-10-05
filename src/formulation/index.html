@@ -45,8 +45,44 @@ introduction rubric:
   Javier Ferrando is at Universitat Politecnica de Catalunya, in Barcelona. He actually spent the summer at Berkeley, I spoke to him a few times while I was in Barcelona this summer. The final author, Marta Ruiz Costa-jussa, is a research scientist at FAIR Meta in Paris; she was a researcher at Ramon y Cajal / ERC at the Universitat Politecnica de Catalunya for seven years prior. She's been working on safety and gender bias in LLMs recently. The other authors, Gabriele Sarti and Arianna Bisazza, are in the netherlands (University of Groningen).
 </p>
 
-<p>
-<h3> basic formulation: </h3>
+<h4>a note</h4>
+<p>First, a note: the primer paper is confusing to read for mathematicians because notationally, because the vector \( x_i \) is considered a row vector, and consequently, linear transformations on it are right-multiplications.</p>
+\[
+  \mathbf{x}_i = \begin{bmatrix}
+    x_{1} & x_{2} & \cdots & x_{d}
+  \end{bmatrix}, \,\,\,\,
+
+  \mathbf{x_i} W = \begin{bmatrix}
+    x_{1} & x_{2} & \cdots & x_{d}
+  \end{bmatrix}, 
+
+      D = \begin{bmatrix}
+        d_1 & & \\
+        & \ddots & \\
+        && d_m
+    \end{bmatrix},\,\,\,\, 
+
+
+\]
+<h3>Formulation</h3>
+
+
+<p>We get to logits by passing the last token at the end of the residual stream \(x_n^L\) through the unembedding matrix.
+  {img("images/primer_prediction.png", width="60%")}
+We can think of the matrix at the end of the residual stream as a sum of the attention head outputs and of the feedforward layers. Writing this out leads to an interesting algebraic manipulation: we can simply move the unembedding matrix \(W_U\) inside either sum. This leads us to the conclusion that, at any moment along the residual stream, we can see what's happening in logit space. This is the idea behind, for instance, the logit lens.
+</p>
+<p> In practice, attention and feedforward layer are calculated sequentially. The attention operation happens per-head, with each head independently summed into the residual stream, and the feedforward layer is applied independently to each position in the sequence.</p>
+
+<h3>Attention</h3>
+<p>The attention operation at the \( l_{th} \) layer is simply the sum of all attention head outputs at that layer into the residual stream.
+{img("images/primer_attn_output.png", width="60%")}
+<p> Zoom into token \( i \). The attention operation for this token at layer \( l \), head \( h \), works as follows:
+  <ul>
+    <li> Loop through every other token in the sequence \( x_j \) for \( j \leq i \). </li>
+    <li> Read each \( x_j \) into a space such that its dot product with \( x_i \) is equal to its attention score. Do this with \( x_j W_{ov} \) </li>
+  </ul>
+
+</p>
 <ul>
   <li>Embeddings \( \mathbf{x} \in \mathbb{R}^d \) are row vectors corresponding to a row of \( W_E \in \mathbb{R}^{\mathcal{V} \times d} \), where \( \mathcal{V} \) is the vocabulary size. The final layer residual stream state is projected into the vocabulary space via the unembedding matrix \( W_U \in \mathbb{R}^{d \times \mathcal{V}} \).
   <li>An intermediate layer representation \( \mathbf{x}_i^l \) is the representation for token \( i \) in layer \( l \). \( \mathbf{x} \) is \( \mathbf{x}_i^0 \). The matrix \( \mathbf{X}^l \in \mathbb{R}^{n \times d} \) represents all the intermediate layer representations for layer \( l \), where \( n \) is the sequence length. \( \mathbf{X}_{\leq i}^l \) is the layer \( l \) representation up to position \( i \).
@@ -95,7 +131,7 @@ w_n^T h
 <h2>Discussion Questions</h2>
 
 <ul>
-<li>first question
+<li>Why is it that concatenating attention head outputs and then running the result through the output weight matrrix \( W_o \) is the same as running through \( W_{OV} \) inside attention heads? (page 3 of primer, bottom of the page)
 <li>second question
 </ul>
 
