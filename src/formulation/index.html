@@ -41,10 +41,14 @@ introduction rubric:
 
 <h2><a href="https://arxiv.org/abs/2405.00208">a primer on transformer language models</a></h2>
 <p>
-This primer was published recently and serves as a source of unified mathematical notation for techniques described in the interpretability literature. We will focus on everything prior to section 3, since the rest of the paper focuses on specific applications. </p>
+This primer was published recently and serves to unify mathematical notation for techniques described in the interpretability literature. We will focus on everything prior to section 3, since the rest of the paper focuses on specific applications. </p>
 
 <p>
 The authors are Javier Ferrando, Marta Ruiz Costa-jussa, Gabriele Sarti, and Arianna Bisazza. Javier is at Universitat Politecnica de Catalunya in Barcelona. He spent the summer at Berkeley, I spoke to him a few times while I was in Barcelona this summer. </p> <p>The final author, Marta Ruiz Costa-jussa, is a research scientist at FAIR Meta in Paris; she was a researcher at Ramon y Cajal / ERC at the Universitat Politecnica de Catalunya for seven years prior. She's been working on safety and gender bias in LLMs recently. </p><p>The other authors, Gabriele Sarti and Arianna Bisazza, are in the netherlands (University of Groningen).
+</p>
+
+<p>
+  There have been a few primers on this topic in the past, but interpretability moves quickly and notation hasn't been particularly standardized, to the best of my knowledge. This paper serves to formalize many of the ideas we will explore in the mor geva paper and in the mathematical framework paper, so we will make sure we understand this notation first. We will then use it to describe the mor geva paper and the mathematical framework paper.
 </p>
 
 <h4>Notes</h4>
@@ -84,17 +88,34 @@ We can think of the output of the residual stream as a sum of the attention head
 {img("images/primer_attn_output.png", width="60%")}
 <p>Attention is the communication between residual stream tokens. The outputs of the attention operation are written into the residual stream.</p>
 
-<p>The attention operation at the \( l_{th} \) layer is simply the sum of all attention head outputs at that layer into the residual stream.
+<p>The attention operation at the \( l_{th} \) layer is simply the sum of all attention head outputs at that layer into the residual stream.</p>
 
-<h4> How does attention modify a single token? </h4>
+<h4>How does attention modify a single token?</h4>
 {img("images/primer_attn.png", width="60%")}
-<p> Zoom into token \( i \). The attention operation for this token at layer \( l \), head \( h \), works as follows:
+<p>Zoom into token \( i \). The attention operation for this token at layer \( l \), head \( h \), works as follows:
   <ol>
-    <li> Loop through every other token in the sequence \( x_j \) for \( j \leq i \). </li>
-    <li> Read each \( x_j \) into a space that can be writeable into the residual stream</li>
-    <li> Weight that \( x_j \) by its attention with \( x_i \), and then write it into the residual stream  </li>
+    <li>Loop through every other token in the sequence \( x_j \) for \( j \leq i \).</li>
+    <li>Read each \( x_j \) into a space that can be writeable into the residual stream</li>
+    <li>Weight that \( x_j \) by its attention with \( x_i \), and then write it into the residual stream</li>
   </ol>
+</p>
 <p>
+This operation can be thought of as scaling each \( x_j \) by its attention score with \( x_i \) and then transforming it into a space that can be written into the residual stream (We can also think of the transformation as happening first, because of linearity).
+</p>
+<p>
+
+\[
+\sum_{j \leq i} a_{i,j}^{l,h} \begin{bmatrix}
+    \mathbf{x}_{j,1} & \cdots & \mathbf{x}_{j,d}
+  \end{bmatrix}
+\begin{bmatrix}
+  \leftarrow \mathbf{w}_{1,OV} \rightarrow \\
+  \vdots \\
+  \leftarrow \mathbf{w}_{d, OV} \rightarrow
+\end{bmatrix}, W_{OV} \in \mathbb{R}^{d \times d}
+\]
+
+</p>
 
 <h4> How is the attention score calculated? </h4>
 {img("images/primer_a_i.png", width="60%")}
@@ -102,11 +123,34 @@ We can think of the output of the residual stream as a sum of the attention head
 <p>The attention vector \(\mathbf{a}_i^{l,h} \) has attention values \( a_{i,j}^{l,h} \). Each are calculated by</p>
   <ol>
     <li> Reading the corresponding \( x_j \) into a space such that its dot product with \( x_i \) is monotonic with its attention score: \( W_{QK}^h x_j^{\top l-1} \) </li>
-    <li> Taking the actual dot product of the two to get an attention value, and then normalizing by the temperature \( \sqrt{d_k} \) 
+    <li> Taking the actual dot product of the two to get an attention value, and then normalizing by \( \sqrt{d_k} \) 
     <li> Softmaxing the result to get values between 0 and 1 </li>
     </li>
     
   </ol>
+
+<p>I prefer to think of the attention <i>matrix</i>, which is a nonsymmetric adjacency matrix \( \mathbf{A} \) where the attention between token \( i \) and token \( j \) is the \( (i, j)_{th} \) entry. The vector \( \mathbf{a}_i \), calculated directly above, is the row of this matrix corresponding to token \( i \). We can also think of the individual \( \mathbf{a}_{i,j} \) getting calculated, as below. We build the matrix by adding rows to the matrix on the left, and columns to the matrix on the right.</p>
+
+<p>
+  \[
+  a_{i,j} = \begin{bmatrix}
+    \mathbf{x}_{i,1} & \cdots & \mathbf{x}_{i,d}
+  \end{bmatrix}
+
+  \begin{bmatrix}
+    & &\\
+    & W_{QK} &\\ 
+    & &\\
+  \end{bmatrix}
+
+  \begin{bmatrix}
+    \mathbf{x}_{j,1} \\
+    \vdots \\
+    \mathbf{x}_{j,d}
+  \end{bmatrix}
+
+  \]
+</p>
 
 
 <h3> Feedforward Block </h3>
@@ -141,9 +185,7 @@ Each neuron defines how strongly its corresponding row vector in \( W_{out} \) s
   \leftarrow \mathbf{w_u} \rightarrow \\
   \vdots \\
   \leftarrow \mathbf{w_{d_{\text{FFN}}}} \rightarrow
-  \end{bmatrix} \\
-
-
+  \end{bmatrix}, W_{in} \in \mathbb{R}^{d \times d_{\text{FFN}}}, W_{out} \in \mathbb{R}^{d_{\text{FFN}} \times d}
 \]
 
 
