@@ -106,15 +106,28 @@ introduction rubric:
   Javier Ferrando is at Universitat Politecnica de Catalunya, in Barcelona. He actually spent the summer at Berkeley, I spoke to him a few times while I was in Barcelona this summer. The final author, Marta Ruiz Costa-jussa, is a research scientist at FAIR Meta in Paris; she was a researcher at Ramon y Cajal / ERC at the Universitat Politecnica de Catalunya for seven years prior. She's been working on safety and gender bias in LLMs recently. The other authors, Gabriele Sarti and Arianna Bisazza, are in the netherlands (University of Groningen).
 </p>
 
-<h4>a note</h4>
-<p>First, a note: the primer paper is confusing to read for mathematicians because notationally, because the vector \( x_i \) is considered a row vector.</p>
+<h4>A Note on Matrix Multiplication</h4>
+<p>The primer paper is confusing to read for mathematicians because notationally, the vector \( x_i \) is considered a row vector, and consequently, linear transformations on it are right-multiplications.</p>
+
 \[
-  \mathbf{x}_i = \begin{bmatrix}
+  \mathbf{x_i} W = \begin{bmatrix}
     x_{1} & x_{2} & \cdots & x_{d}
+  \end{bmatrix} 
+  \begin{bmatrix}
+    \top & & \top \\
+    \vec{w_1} & \cdots & \vec{w_m} \\
+    \perp & & \perp
   \end{bmatrix}
 \]
+
+<p>\( W \) has \( d \) rows. You can think of this matrix multiplication as scaling each row by its corresponding weight in \( \mathbf{x}_i \), and then summing vertically along the row axis. The output row vector is in \( m \) dimensions.</p>
 <h3>Formulation</h3>
 
+<ul>
+  <li>Embeddings \( \mathbf{x} \in \mathbb{R}^d \) are row vectors corresponding to a row of \( W_E \in \mathbb{R}^{\mathcal{V} \times d} \), where \( \mathcal{V} \) is the vocabulary size. The final layer residual stream state is projected into the vocabulary space via the unembedding matrix \( W_U \in \mathbb{R}^{d \times \mathcal{V}} \).
+  <li>An intermediate layer representation \( \mathbf{x}_i^l \) is the representation for token \( i \) in layer \( l \). \( \mathbf{x} \) is \( \mathbf{x}_i^0 \). The matrix \( \mathbf{X}^l \in \mathbb{R}^{n \times d} \) represents all the intermediate layer representations for layer \( l \), where \( n \) is the sequence length. \( \mathbf{X}_{\leq i}^l \) is the layer \( l \) representation up to position \( i \).
+  <li> layer norm trick: the weights of the affine transformation can be folded into the following linear layer, so we can pretty much ignore it (from a math perspective) until the end.
+</ul>
 
 <p>We get to logits by passing the last token at the end of the residual stream \(x_n^L\) through the unembedding matrix.
   <img src="images/primer_prediction.png" style="max-width:60%%; width:60%60%60%60%60%60%60%60%60%60%px;" class="mx-auto d-block">
@@ -122,21 +135,32 @@ We can think of the matrix at the end of the residual stream as a sum of the att
 </p>
 <p> In practice, attention and feedforward layer are calculated sequentially. The attention operation happens per-head, with each head independently summed into the residual stream, and the feedforward layer is applied independently to each position in the sequence.</p>
 
-<h3>Attention</h3>
+<h3>Attention Block</h3>
 <p>The attention operation at the \( l_{th} \) layer is simply the sum of all attention head outputs at that layer into the residual stream.
 <img src="images/primer_attn_output.png" style="max-width:60%%; width:60%60%60%60%60%60%60%60%60%60%px;" class="mx-auto d-block">
 <p> Zoom into token \( i \). The attention operation for this token at layer \( l \), head \( h \), works as follows:
-  <ul>
+  <ol>
     <li> Loop through every other token in the sequence \( x_j \) for \( j \leq i \). </li>
-    <li> Read each \( x_j \) into a space such that its dot product with \( x_i \) is equal to its attention score. Do this with \( x_j W_{ov} \) </li>
-  </ul>
+    <li> Read each \( x_j \) into a space that can be writeable into the residual stream</li>
+    <li> Weight that \( x_j \) by its attention with \( x_i \), and then write it into the residual stream  </li>
+  </ol>
+<p>
+<img src="images/primer_attn.png" style="max-width:60%%; width:60%60%60%60%60%60%60%60%60%60%px;" class="mx-auto d-block">
 
 </p>
-<ul>
-  <li>Embeddings \( \mathbf{x} \in \mathbb{R}^d \) are row vectors corresponding to a row of \( W_E \in \mathbb{R}^{\mathcal{V} \times d} \), where \( \mathcal{V} \) is the vocabulary size. The final layer residual stream state is projected into the vocabulary space via the unembedding matrix \( W_U \in \mathbb{R}^{d \times \mathcal{V}} \).
-  <li>An intermediate layer representation \( \mathbf{x}_i^l \) is the representation for token \( i \) in layer \( l \). \( \mathbf{x} \) is \( \mathbf{x}_i^0 \). The matrix \( \mathbf{X}^l \in \mathbb{R}^{n \times d} \) represents all the intermediate layer representations for layer \( l \), where \( n \) is the sequence length. \( \mathbf{X}_{\leq i}^l \) is the layer \( l \) representation up to position \( i \).
-  <li> layer norm trick: the weights of the affine transformation can be folded into the following linear layer, so we can pretty much ignore it (from a math perspective) until the end.
-</ul>
+<p>The attention vector \(\mathbf{a}_i^{l,h} \) has attention values \( a_{i,j}^{l,h} \). Each are calculated by</p>
+  <ol>
+    <li> Reading the corresponding \( x_j \) into a space such that its dot product with \( x_i \) is monotonic with its attention score: \( W_{QK} x_j^\top \) </li>
+    <li> Taking the actual dot product of the two to get an attention value, and then normalizing by the temperature \( \sqrt{d_k} \) 
+    <li> Softmaxing the result to get values between 0 and 1 </li>
+    </li>
+    
+  </ol>
+<img src="images/primer_a_i.png" style="max-width:60%%; width:60%60%60%60%60%60%60%60%60%60%px;" class="mx-auto d-block">
+
+
+
+
 <h3> attention block </h3>
 <ul>
  <li> \( \text{Attn}^{l,h} (\mathbf{X}_{\leq i}^{l-1}) = \sum_{j \leq i} a_{i,j}^{l,h} \mathbf{x}_j^{l-1} \mathbf{W}_{OV}^{l,h} \). Importantly here, \( \mathbf{W}_{OV}^{l,h} = \mathbf{W}_O^{l,h} \mathbf{W}_V^{l,h} \), and \( \mathbf{W}_O^{l,h} \in \mathbb{R}^{d \times d_h} \) and \( \mathbf{W}_V^{l,h} \in \mathbb{R}^{d_h \times d} \).
