@@ -67,6 +67,8 @@ The authors are Javier Ferrando, Marta Ruiz Costa-jussa, Gabriele Sarti, and Ari
 
 <p>\( W \) has \( d \) rows. You can think of this matrix multiplication as scaling each row by its corresponding weight in \( \mathbf{x}_i \), and then summing vertically along the row axis. The output row vector is in \( m \) dimensions.</p>
 <p> Second: There is a mathematical trick that shows we can lightly ignore the layer norm when building intuition. This is because the weights of the affine transformation can be folded into the following linear layer recursively until the end of the residual stream. </p>
+<p>This is also true with bias vectors: we can just fold them into the weights and creating a dimension that is always 1.</p>
+
 <h3> Prediction as a sum of component outputs </h3>
 <p> {img("images/primer_prediction.png", width="60%")} </p>
 <p>We get to logits by passing the last token at the end of the residual stream \(x_n^L\) through the unembedding matrix \( W_u \).
@@ -133,7 +135,7 @@ This operation can be thought of as scaling each \( x_j \) by its attention scor
 
 <p>
   \[
-  a_{i,j} = \begin{bmatrix}
+  a_{i,j} \text{ is monotonic with:} \begin{bmatrix}
     \mathbf{x}_{i,1} & \cdots & \mathbf{x}_{i,d}
   \end{bmatrix}
 
@@ -147,10 +149,11 @@ This operation can be thought of as scaling each \( x_j \) by its attention scor
     \mathbf{x}_{j,1} \\
     \vdots \\
     \mathbf{x}_{j,d}
-  \end{bmatrix}
+  \end{bmatrix}, W_{QK} \in \mathbb{R}^{d \times d}
 
   \]
 </p>
+<p>Remember that \( W_{QK} \) is low-rank: maximum rank \( n \). This is because \( W_Q \) is \( d \times n \) and vice-versa for \( W_K \). The hyperplane the columns and rows span is independent of the particular activations; there's just a different set-in-stone hyperplane for each weight matrix.</p>
 
 
 <h3> Feedforward Block </h3>
