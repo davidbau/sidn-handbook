@@ -63,7 +63,7 @@ rel="stylesheet">
 
 <h5>October 4, 2024 • <em>Alex Loftus, Michael Ripa, Dmitrii Troitskii</em></h5>
 
-<h3>scoring rubric</h3>
+<!-- <h3>scoring rubric</h3>
 <p>
   <ul>
     <li>+1: introduction poses the question, links the papers
@@ -98,7 +98,7 @@ introduction rubric:
 <p>Example of a <em>formula</em>: \( h_i \in \mathbb{R} \) and an <em>image</em>
 <img src="images/bigdavid.jpg" style="max-width:50%; width:500px;" class="mx-auto d-block">
 <p><b>bold text</b>
-<p>this is <a href="https://transformer-circuits.pub/2022/toy_model/index.html">an inline link</a></p>
+<p>this is <a href="https://transformer-circuits.pub/2022/toy_model/index.html">an inline link</a></p> -->
 
 <h2><a href="https://arxiv.org/abs/2405.00208">a primer on transformer language models</a></h2>
 <p>
@@ -179,6 +179,8 @@ This operation can be thought of as scaling each \( x_j \) by its attention scor
 \]
 
 </p>
+<p>Remember that \( W_{OV} \) is low-rank: maximum rank \( n \). This is because \( W_O \) and \( W_V \) are both \( d_h \times d \). The hyperplane the columns and rows span is independent of the particular activations; there's just a different set-in-stone hyperplane for each \( W_{OV} \).</p>
+
 
 <h4> How is the attention score calculated? </h4>
 <img src="images/primer_a_i.png" style="max-width:60%%; width:60%60%60%60%60%60%60%60%60%60%px;" class="mx-auto d-block">
@@ -214,7 +216,7 @@ This operation can be thought of as scaling each \( x_j \) by its attention scor
 
   \]
 </p>
-<p>Remember that \( W_{QK} \) is low-rank: maximum rank \( n \). This is because \( W_Q \) is \( d \times n \) and vice-versa for \( W_K \). The hyperplane the columns and rows span is independent of the particular activations; there's just a different set-in-stone hyperplane for each weight matrix.</p>
+<p>Remember that \( W_{QK} \) is low-rank: maximum rank \( n \). This is because \( W_Q \) is \( d \times n \) and vice-versa for \( W_K \). The hyperplane the columns and rows span is independent of the particular activations; there's just a different set-in-stone hyperplane for each \( W_{QK} \).</p>
 
 
 <h3> Feedforward Block </h3>
