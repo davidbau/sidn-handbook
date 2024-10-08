@@ -8,7 +8,7 @@
 
 <p>Our central question in this class isn't: 'what are the details of this method'. Instead, it is 'what is the overall structure of the transformer'.</p>
 
-<p>We will focus on three papers. The first,<a href="https://arxiv.org/abs/2405.00208">a primer on transformer language models</a> by Javier Ferrando, is a review paper that serves to create a common notation around techniques we will encounter for the rest of the course. The second, <a href="https://www.anthropic.com/research/a-mathematical-framework-for-transformer-circuits">a mathematical framework for transformer circuits</a>, was the anthropic post that introduced the idea of the residual stream, \( W_{OV} \) and \( W_{QK} \) circuits, and other fundamental ideas. Like other anthropic posts, it focuses on toy models and intuition. It focuses almost entirely on the attention operation, ignoring feedforward networks for future work. The third, <a href="https://arxiv.org/abs/2209.02535">Analyzing Transformers in Embedding Space</a> by Mor Geva, is the second in a pair of papers that follow up on the anthropic post to extend them to include feedforward networks. This paper, however, focuses on extending the method developed in the first paper to include every weight matrix in the model, avoiding the use of calculations dependent on activations.
+<p>We will focus on three papers. The first, <a href="https://arxiv.org/abs/2405.00208">a primer on transformer language models</a> by Javier Ferrando, is a review paper that serves to create a common notation around techniques we will encounter for the rest of the course. The second, <a href="https://www.anthropic.com/research/a-mathematical-framework-for-transformer-circuits">a mathematical framework for transformer circuits</a>, was the anthropic post that introduced the idea of the residual stream, \( W_{OV} \) and \( W_{QK} \) circuits, and other fundamental ideas. Like other anthropic posts, it focuses on toy models and intuition. It focuses almost entirely on the attention operation, ignoring feedforward networks for future work. The third, <a href="https://arxiv.org/abs/2209.02535">Analyzing Transformers in Embedding Space</a> by Mor Geva, is the second in a pair of papers that follow up on the anthropic post to extend them to include feedforward networks. This paper, however, focuses on extending the method developed in the first paper to include every weight matrix in the model, avoiding the use of calculations dependent on activations.
 
 <p>The anthropic line of papers in particular inherit from the <a href="https://distill.pub/2020/circuits/">distill circuits thread</a>, which attempted to reverse engineer vision models. The framework paper was the first to switch to language models.
 
@@ -49,7 +49,7 @@ introduction rubric:
 <p><b>bold text</b>
 <p>this is <a href="https://transformer-circuits.pub/2022/toy_model/index.html">an inline link</a></p> -->
 
-<h2><a href="https://arxiv.org/abs/2405.00208">a primer on transformer language models</a></h2>
+<h2><a href="https://arxiv.org/abs/2405.00208">A Primer on Transformer Language Models</a></h2>
 <p>
 This primer was published recently and serves to unify mathematical notation for techniques described in the interpretability literature. We will focus on everything prior to section 3, since the rest of the paper focuses on specific applications. </p>
 
@@ -219,7 +219,7 @@ Each neuron defines how strongly its corresponding row vector in \( W_{out} \) s
 </ul> -->
 
 <p></p>
-<h2>a mathematical framework for transformer circuits</h2>
+<h2>A Mathematical Framework for Transformer Circuits</h2>
 <h3>Authors</h3>
 <p>This paper was authored by a team primarily from Anthropic, a prominent AI research company. The lead authors are:</p>
 
@@ -287,14 +287,17 @@ Each neuron defines how strongly its corresponding row vector in \( W_{out} \) s
 
 <h2>Analyzing transformers in embedding space</h2>
 
-<p><a href="https://arxiv.org/abs/2209.02535">Analyzing Transformers in Embedding Space</a> by Guy Dar (The Blavatnik School of Computer Science), Mor Geva (Tel-Aviv University) et al. expands on ideas presented in the <a href="https://transformer-circuits.pub/2021/framework/index.html">mathematical framework</a>, covered above, as well as Mor Geva's previous work.</p>
+
+<p><a href="https://arxiv.org/abs/2209.02535">Analyzing Transformers in Embedding Space</a> by Guy Dar (The Blavatnik School of Computer Science), Mor Geva (Tel-Aviv University) et al. expands on ideas presented in the Mathematical Framework, covered above, as well as Mor Geva's previous work.</p>
+
+<h3>Parameter Projection</h3>
 
 <p>In <a href="https://arxiv.org/abs/2012.14913">Transformer Feed-Forward Layers Are Key-Value Memories</a> Mor Geva argued that a feed-forward layer can be thought of as as a key-value store, where a \(W_{in}\) matrix is a set of key vectors and a \(W_{out}\) matrix is a set of value vectors.</p>
 
 <p>
 \[
 \begin{align}
-\text{FFN}^l(\mathbf{x}_i^{\text{mid},l}) &= \sum_{u=1}^{d_\text{in}} g_u(\mathbf{x}_i^{\text{mid},l} \mathbf{w}_{\text{in}_u}^l)\mathbf{w}_{\text{out}_u}^l \\
+\text{FFN}^l(\mathbf{x}_i^{\text{mid},l}) &= \sum_{u=1}^{d_\text{ffn}} g_u(\mathbf{x}_i^{\text{mid},l} \mathbf{w}_{\text{in}_u}^l)\mathbf{w}_{\text{out}_u}^l \\
 &= g(\mathbf{x}^{\text{mid},l} \cdot \mathbf{K}_l^\top) \cdot \mathbf{V}_l
 \end{align}
 \]
@@ -304,7 +307,42 @@ Each neuron defines how strongly its corresponding row vector in \( W_{out} \) s
 
 <p>In this work, they expand on the idea of static interpretation using the embedding matrix and apply it to every other component of the Transformer model. To be able to project the components into the embedding space they use a simple trick: any matrix \(A \in \mathbb{R}^{N \times d}\) can projected into the embedding space by multiplying it by the embedding matrix E as \(\hat{A} = AE \in \mathbb{R}^{N \times \mathcal{V}}\). Then, using the inverse of the embedding matrix they project the components back into the original space effectively negating the projection \(A = A(EE') = \hat{A}E'\). Using clever positioning of \(EE'= I \in \mathbb{R}^{d \times d}\) within the expression, we can rearrange any components' formulation such that it can interpreted in the embedding space while preserving the original operation.</p>
 
-{img("images/embed_table1.png", 60)}
+{img("images/embed_table1.png", 70)}
+
+<p>Let's work out the formulations for the FFN keys and values. The expression for FFN values \(V\) have already been worked out by Mor Geva as \(VE \in \mathbb{R}\)
+We simply multiply the values by the embedding matrix to project them into the embedding space.</p>
+
+<p>Notice that the keys \(K\) of the FFN layer are multiplied on the left by the output of the attention module. Denoting the output of the attention module by \(Q\), we can write this product as</p>
+
+<p>
+\[
+\begin{align*}
+QK^T = QEE'K^T = QE(KE'^T)^T
+\end{align*}
+\]
+</p>
+
+<p class="sidenote"><em>Sidenote:</em> this also allows us to think of the attention module output as a query for FFN keys</p>
+
+<h3>Analysis and Experiments</h3>
+
+<p>Their findings lead to several interesting observations and applications. They are able to conduct static model weights analysis - as opposed to most interpretability methods, which rely on running models over inputs an analysis activations.</p>
+
+<p>Firstly, their method is <strong>zero-pass</strong> and hence computationally efficient.</p>
+
+<p>Secondly, they are able to conduct <strong>input-independent analysis</strong>, i.e., they are not reliant on a specific input and can be applied globally to the model. As such they can recast inner products in the model as inner products
+in embedding space. Viewing inner products this way, they can interpret such products as interactions between
+pairs of vocabulary items. Taking this perspective to the extreme, one can view Transformers as operating implicitly in the embedding space. This entails the existence of a single linear space that depends only on the tokenizer and a vocabulary.</p>
+
+{img("images/embed_fig1.png", 100)}
+
+<p>Dar and Geva empirically test their technique with several interesting experiments. I am highlighting the two I found most convincing.</p>
+
+<p><strong>Interpretation of Fine-tuned Models</strong>:  They also show that when fine-tuning GPT-2 on a sentiment analysis task (over movie reviews), projecting changes in parameters into embedding space yields words that characterize sentiment towards movies.</p>
+
+<p><strong>Aligning Models in Embedding Space</strong>: They compare two BERT-base models (A and B) by projecting their feed-forward values (\(V_A\), \(V_B\)) into embedding space (\(V_AE_A\), \(V_BE_B\)) and computing Pearson correlations, resulting in a similarity matrix \(S \in \mathbb{R}^{L \times L}\) where \(L\) is the number of layers. To obtain a one-to-one layer alignment, they apply the Hungarian algorithm to \(S\), maximizing the sum of scores for chosen layer pairs across all parameter groups (\(W_Q\), \(W_K\), \(W_V\), \(W_O\), \(K\)). The results suggests that different layers from different models that were trained separately (but with the same training objective and data) serve a similar function. At the same time, if not projected, the matching appears absolutely random.</p>
+
+{img("images/embed_fig3.png", 100)}
 
 <h2>Discussion Questions</h2>
 
