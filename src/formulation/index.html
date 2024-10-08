@@ -270,10 +270,10 @@ Each neuron defines how strongly its corresponding row vector in \( W_{out} \) s
 <p>3. Compute output vector for each token: \( h(x)_i = W_O r_i \) </p>
 
 <p> We can reformulate this in a way which allows for some new intuitions using tensor products. </p>
-<p> h(x) = (Id \otimes W_O) \cdot (A \otimes Id) \cdot (Id \otimes W_v) \cdot x </p>
+<p>  \( h(x) = (Id \otimes W_O) \cdot (A \otimes Id) \cdot (Id \otimes W_v) \cdot x \) </p>
 
 <p> This can be rewritten as (by mixed product property): </p>
-<p> h(x) = (A \otimes W_O W_v) \cdot x </p>
+<p> \( h(x) = (A \otimes W_O W_v) \cdot x \)</p>
 
 <p> Here, \( A = \text{softmax} \left( x^T W_{Q}^T W_K x \right) \) </p>
 
@@ -281,7 +281,7 @@ Each neuron defines how strongly its corresponding row vector in \( W_{out} \) s
 
 <p> 1. Attention heads "mix" information across the residual stream. The attention head output at a particular position \( i \) is a linear combination of the residual stream up to that position. </p>
 <p> 2. Asides from softmax, all the operations in this layer are linear. If we were to fix \( A \), we would have a linear transformer. </p>
-<p> 3. W_Q and W_K always operate on the residual stream in the same way across different positions (as do \( W_V \) and \(W_O\)). </p>
+<p> 3. \( W_Q \) and \( W_K \) always operate on the residual stream in the same way across different positions (as do \( W_V \) and \(W_O\)). </p>
 <p> 4. In a certain sense, attention heads are closed under multiplication: \[ (A^{h_2} \otimes W^{h_2}_{OV}) \cdot (A^{h1} \otimes W^{h_1}_{OV}) = (A^{h_2} A^{h_1} \otimes W^{h_2}_{OV} W^{h_1}_{OV}) \].</p>
 
 
