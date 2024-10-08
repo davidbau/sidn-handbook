@@ -8,7 +8,7 @@
 
 <p>Our central question in this class isn't: 'what are the details of this method'. Instead, it is 'what is the overall structure of the transformer'.</p>
 
-<p>We will focus on three papers. The first,<a href="https://arxiv.org/abs/2405.00208">a primer on transformer language models</a> by Javier Ferrando, is a review paper that serves to create a common notation around techniques we will encounter for the rest of the course. The second, <a href="https://www.anthropic.com/research/a-mathematical-framework-for-transformer-circuits">a mathematical framework for transformer circuits</a>, was the anthropic post that introduced the idea of the residual stream, \( W_{OV} \) and \( W_{QK} \) circuits, and other fundamental ideas. Like other anthropic posts, it focuses on toy models and intuition. It focuses almost entirely on the attention operation, ignoring feedforward networks for future work. The third, <a href="https://arxiv.org/abs/2209.02535">Analyzing Transformers in Embedding Space</a> by Mor Geva, is the second in a pair of papers that follow up on the anthropic post to extend them to include feedforward networks. This paper, however, focuses on extending the method developed in the first paper to include every weight matrix in the model, avoiding the use of calculations dependent on activations.
+<p>We will focus on three papers. The first, <a href="https://arxiv.org/abs/2405.00208">a primer on transformer language models</a> by Javier Ferrando, is a review paper that serves to create a common notation around techniques we will encounter for the rest of the course. The second, <a href="https://www.anthropic.com/research/a-mathematical-framework-for-transformer-circuits">a mathematical framework for transformer circuits</a>, was the anthropic post that introduced the idea of the residual stream, \( W_{OV} \) and \( W_{QK} \) circuits, and other fundamental ideas. Like other anthropic posts, it focuses on toy models and intuition. It focuses almost entirely on the attention operation, ignoring feedforward networks for future work. The third, <a href="https://arxiv.org/abs/2209.02535">Analyzing Transformers in Embedding Space</a> by Mor Geva, is the second in a pair of papers that follow up on the anthropic post to extend them to include feedforward networks. This paper, however, focuses on extending the method developed in the first paper to include every weight matrix in the model, avoiding the use of calculations dependent on activations.
 
 <p>The anthropic line of papers in particular inherit from the <a href="https://distill.pub/2020/circuits/">distill circuits thread</a>, which attempted to reverse engineer vision models. The framework paper was the first to switch to language models.
 
@@ -49,7 +49,7 @@ introduction rubric:
 <p><b>bold text</b>
 <p>this is <a href="https://transformer-circuits.pub/2022/toy_model/index.html">an inline link</a></p> -->
 
-<h2><a href="https://arxiv.org/abs/2405.00208">a primer on transformer language models</a></h2>
+<h2><a href="https://arxiv.org/abs/2405.00208">A Primer on Transformer Language Models</a></h2>
 <p>
 This primer was published recently and serves to unify mathematical notation for techniques described in the interpretability literature. We will focus on everything prior to section 3, since the rest of the paper focuses on specific applications. </p>
 
@@ -219,7 +219,7 @@ Each neuron defines how strongly its corresponding row vector in \( W_{out} \) s
 </ul> -->
 
 <p></p>
-<h2>a mathematical framework for transformer circuits</h2>
+<h2>A Mathematical Framework for Transformer Circuits</h2>
 <h3>Authors</h3>
 <p>This paper was authored by a team primarily from Anthropic, a prominent AI research company. The lead authors are:</p>
 
