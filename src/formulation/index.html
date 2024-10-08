@@ -2,6 +2,15 @@
 
 <h5>October 4, 2024 • <em>Alex Loftus, Michael Ripa, Dmitrii Troitskii</em></h5>
 
+<p>We now take a break from exploring new particular new methods to zoom out and think: What exactly are the objects we are working with? Can we get specific about exactly what we're doing, and will it lead to new insights and research directions?</p>
+
+<p>Creating a common notation for the mathematical structure of the transformer, and being careful about exactly what we mean when we talk about the residual stream, attention, and feedforward networks gives us a unified mental map that we can use when we think through other papers.</p>
+
+<p>Our central question in this class isn't: 'what are the details of this method'. Instead, it is 'what is the overall structure of the transformer'.</p>
+
+<p>We will focus on three papers. The first,<a href="https://arxiv.org/abs/2405.00208">a primer on transformer language models</a> by Javier Ferrando, is a review paper that serves to create a common notation around techniques we will encounter for the rest of the course. The second, <a href="https://www.anthropic.com/research/a-mathematical-framework-for-transformer-circuits">a mathematical framework for transformer circuits</a>, was the anthropic post that introduced the idea of the residual stream, \( W_{OV} \) and \( W_{QK} \) circuits, and other fundamental ideas. Like other anthropic posts, it focuses on toy models and intuition. It focuses almost entirely on the attention operation, ignoring feedforward networks for future work. The third, <a href="https://arxiv.org/abs/2209.02535">Analyzing Transformers in Embedding Space</a> by Mor Geva, is the second in a pair of papers that follow up on the anthropic post to extend them to include feedforward networks. This paper, however, 
+
+
 <!-- <h3>scoring rubric</h3>
 <p>
   <ul>
@@ -277,7 +286,7 @@ Each neuron defines how strongly its corresponding row vector in \( W_{out} \) s
 
 <h2>analyzing transformers in embedding space</h2>
 
-
+<!-- 
 <blockquote class="blockquote">
   this is a blockquote
 </blockquote>
@@ -297,7 +306,11 @@ w_2^T h \\
 \vdots \\
 w_n^T h
 \end{bmatrix}
-\]
+\] -->
+
+<h2> Code Examples </h2>
+
+A colab notebook exploring these ideas can be found <a href="https://colab.research.google.com/drive/1MrQAZ9WgKPkUwNM_q5bQO07sggOdpG7X?usp=sharing">here</a>.
 
 <h2>Discussion Questions</h2>
 
