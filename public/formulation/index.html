@@ -129,11 +129,11 @@ The authors are Javier Ferrando, Marta Ruiz Costa-jussa, Gabriele Sarti, and Ari
   \mathbf{x_i} W = \begin{bmatrix}
     x_{1} & x_{2} & \cdots & x_{d}
   \end{bmatrix} 
-  \begin{bmatrix}
-    \top & & \top \\
-    \vec{w_1} & \cdots & \vec{w_m} \\
-    \perp & & \perp
-  \end{bmatrix}
+\begin{bmatrix}
+  \leftarrow \mathbf{w}_{1} \rightarrow \\
+  \vdots \\
+  \leftarrow \mathbf{w}_{d} \rightarrow
+\end{bmatrix}
 \]
 
 <p>\( W \) has \( d \) rows. You can think of this matrix multiplication as scaling each row by its corresponding weight in \( \mathbf{x}_i \), and then summing vertically along the row axis. The output row vector is in \( m \) dimensions.</p>
