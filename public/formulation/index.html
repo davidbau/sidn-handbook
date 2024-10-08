@@ -346,33 +346,26 @@ Each neuron defines how strongly its corresponding row vector in \( W_{out} \) s
 <p> 4. In a certain sense, attention heads are closed under multiplication: \[ (A^{h_2} \otimes W^{h_2}_{OV}) \cdot (A^{h1} \otimes W^{h_1}_{OV}) = (A^{h_2} A^{h_1} \otimes W^{h_2}_{OV} W^{h_1}_{OV}) \].</p>
 
 
-<h2>analyzing transformers in embedding space</h2>
+<h2>Analyzing transformers in embedding space</h2>
 
-<!-- 
-<blockquote class="blockquote">
-  this is a blockquote
-</blockquote>
+<p><a href="https://arxiv.org/abs/2209.02535">Analyzing Transformers in Embedding Space</a> by Guy Dar (The Blavatnik School of Computer Science), Mor Geva (Tel-Aviv University) et al. expands on ideas presented in the <a href="https://transformer-circuits.pub/2021/framework/index.html">mathematical framework</a>, covered above, as well as Mor Geva's previous work.</p>
 
-<p>align latex:
+<p>In <a href="https://arxiv.org/abs/2012.14913">Transformer Feed-Forward Layers Are Key-Value Memories</a> Mor Geva argued that a feed-forward layer can be thought of as as a key-value store, where a \(W_{in}\) matrix is a set of key vectors and a \(W_{out}\) matrix is a set of value vectors.</p>
 
-\[ \hat{x} = W^T h = \begin{bmatrix}
-\phantom{0} & w_1^T & \phantom{0} \\ \hline
-\phantom{0} & w_2^T & \phantom{0} \\ \hline
- & \vdots & \\ \hline
-\phantom{0} & w_n^T & \phantom{0}
-\end{bmatrix} h
-=
-\begin{bmatrix}
-w_1^T h \\
-w_2^T h \\
-\vdots \\
-w_n^T h
-\end{bmatrix}
-\] -->
+<p>
+\[
+\begin{align}
+\text{FFN}^l(\mathbf{x}_i^{\text{mid},l}) &= \sum_{u=1}^{d_\text{in}} g_u(\mathbf{x}_i^{\text{mid},l} \mathbf{w}_{\text{in}_u}^l)\mathbf{w}_{\text{out}_u}^l \\
+&= g(\mathbf{x}^{\text{mid},l} \cdot \mathbf{K}_l^\top) \cdot \mathbf{V}_l
+\end{align}
+\]
+</p>
 
-<h2> Code Examples </h2>
+<p>Then, in <a href="https://arxiv.org/abs/2203.14680">Transformer Feed-Forward Layers Build Predictions by Promoting Concepts in the Vocabulary Space</a> Geva showed that the feed-forward value vectors \(V \in \mathbb{R}^{d_{\text{ffn}} \times d}\) can be interpreted by projecting them into the embedding space, i.e., multiplying them by the embedding matrix to obtain a representation over vocabulary items.</p>
 
-A colab notebook exploring these ideas can be found <a href="https://colab.research.google.com/drive/1MrQAZ9WgKPkUwNM_q5bQO07sggOdpG7X?usp=sharing">here</a>.
+<p>In this work, they expand on the idea of static interpretation using the embedding matrix and apply it to every other component of the Transformer model. To be able to project the components into the embedding space they use a simple trick: any matrix \(A \in \mathbb{R}^{N \times d}\) can projected into the embedding space by multiplying it by the embedding matrix E as \(\hat{A} = AE \in \mathbb{R}^{N \times \mathcal{V}}\). Then, using the inverse of the embedding matrix they project the components back into the original space effectively negating the projection \(A = A(EE') = \hat{A}E'\). Using clever positioning of \(EE'= I \in \mathbb{R}^{d \times d}\) within the expression, we can rearrange any components' formulation such that it can interpreted in the embedding space while preserving the original operation.</p>
+
+<img src="images/embed_table1.png" style="max-width:60%; width:600px;" class="mx-auto d-block">
 
 <h2>Discussion Questions</h2>
 
