@@ -348,7 +348,7 @@ pairs of vocabulary items. Taking this perspective to the extreme, one can view 
 
 <ul>
 <li>Why is it that concatenating attention head outputs and then running the result through the output weight matrrix \( W_o \) is the same as running through \( W_{OV} \) inside attention heads? (page 3 of primer, bottom of the page)</li>
-<li>The embedding matrix is (\ d \times v \), and d is usually smaller than v. This means that it is impossible for every initial embedding token to be orthogonal to every other initial embedding token. Do we care about this?</li>
+<li>The embedding matrix is \( d \times v \), and d is usually smaller than v. This means that it is impossible for every initial embedding token to be orthogonal to every other initial embedding token. Do we care about this?</li>
 <li>What are our thoughts on the style of the primer paper compared to the style of the framework paper? Is the intuition from the framework better to read, or does the concreteness of the primer make the content more clear?</li>
 <li>Are there any follow-ups to the key-value memory paper's model stitching technique? </li>
 <li>Why is \( d_{\text{FFN}} \) larger than \( d \)?</li>
