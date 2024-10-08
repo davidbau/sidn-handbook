@@ -271,6 +271,71 @@ Each neuron defines how strongly its corresponding row vector in \( W_{out} \) s
 
 <p></p>
 <h2>a mathematical framework for transformer circuits</h2>
+<h3>Authors</h3>
+<p>This paper was authored by a team primarily from Anthropic, a prominent AI research company. The lead authors are:</p>
+
+<ul>
+  <li><strong>Nelson Elhage</strong>: A research scientist at Anthropic, known for his work on AI safety and interpretability.</li>
+  <li><strong>Neel Nanda</strong>: An independent AI safety researcher, formerly at Anthropic, with a focus on transformer interpretability.</li>
+  <li><strong>Catherine Olsson</strong>: A research scientist at Anthropic, specializing in AI alignment and interpretability.</li>
+</ul>
+
+<p>Other key contributors from Anthropic include Tom Henighan, Nicholas Joseph, and Ben Mann. The paper also features contributions from a diverse group of researchers in the field of AI, including:</p>
+
+<ul>
+  <li>Dario Amodei: Co-founder and Chief Scientist at Anthropic.</li>
+  <li>Chris Olah: Known for his work on neural network interpretability, formerly at OpenAI and Google Brain.</li>
+  <li>Jared Kaplan: A physicist and AI researcher, known for scaling laws in machine learning.</li>
+</ul>
+
+<p>This collaborative effort brings together expertise from various backgrounds in AI research, safety, and interpretability.</p>
+
+<h3>Overview</h3>
+<p> This paper also introduces a new notation for transformers. It was published before the primer paper. </p>
+
+<h3>Tensor Products</h3>
+<p>
+  The authors utilize the notion of a tensor product to describe the operations of transformers. For convenience, we will define the tensor product here. Given two matrices \( A \) and \( B \), their tensor product \( A \otimes B \) is defined as the block matrix:
+</p>
+<p>
+  \[
+  A \otimes B = \begin{bmatrix}
+    a_{11}B & a_{12}B & \cdots & a_{1n}B \\
+    a_{21}B & a_{22}B & \cdots & a_{2n}B \\
+    \vdots & \vdots & \ddots & \vdots \\
+    a_{m1}B & a_{m2}B & \cdots & a_{mn}B
+  \end{bmatrix}
+  \]
+</p>
+
+<h3>Zero Layer Transformer</h3>
+<p> A zero layer transformer is a transformer with no layers. It is simply a product of the unembedding matrix and the embedding matrix. </p>
+<p>\[ T = W_u W_E \] </p>
+<p> The key intuition here is that this model does not move information across tokens.</p>
+
+<h3>One Layer Attention Only Transformer</h3>
+
+<p>In traditional attention, the output of an attention head is as follows: </p>
+<p>1. Compute vector value for each token: \( v_i = W_v x_i \) </p>
+<p>2. Compute "result" vector: \( r_i = \sum_{j} a_{i,j} v_j \) </p>
+<p>3. Compute output vector for each token: \( h(x)_i = W_O r_i \) </p>
+
+<p> We can reformulate this in a way which allows for some new intuitions using tensor products. </p>
+<p> h(x) = (Id \otimes W_O) \cdot (A \otimes Id) \cdot (Id \otimes W_v) \cdot x </p>
+
+<p> This can be rewritten as (by mixed product property): </p>
+<p> h(x) = (A \otimes W_O W_v) \cdot x </p>
+
+<p> Here, \( A = \text{softmax} \left( x^T W_{Q}^T W_K x \right) \) </p>
+
+<h4> Intuitions </h4>
+
+<p> 1. Attention heads "mix" information across the residual stream. The attention head output at a particular position \( i \) is a linear combination of the residual stream up to that position. </p>
+<p> 2. Asides from softmax, all the operations in this layer are linear. If we were to fix \( A \), we would have a linear transformer. </p>
+<p> 3. W_Q and W_K always operate on the residual stream in the same way across different positions (as do \( W_V \) and \(W_O\)). </p>
+<p> 4. In a certain sense, attention heads are closed under multiplication: \[ (A^{h_2} \otimes W^{h_2}_{OV}) \cdot (A^{h1} \otimes W^{h_1}_{OV}) = (A^{h_2} A^{h_1} \otimes W^{h_2}_{OV} W^{h_1}_{OV}) \].</p>
+
+
 <h2>analyzing transformers in embedding space</h2>
 
 
