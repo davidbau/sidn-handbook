@@ -269,92 +269,6 @@ the mechanistic interpretation of the induction head and how it works in the tra
 </p>
 
 <p><img src="images/Contribution_to_in_context_learning.png" style="max-width:100%; width:1000px;" class="mx-auto d-block">
-
-
-
-<!-- <p>Their argument is that <strong>induction heads contribute significantly to in-context learning</strong>.</p> -->
-
-  <!-- <h3>Phase Change and In-context Learning Formation</h3>
-
-  <p>One key finding, outlined in <strong>Argument 1</strong>, is the discovery of <strong>phase change</strong>.</p>
-
-  <p>The experiment involved running several models and recording the in-context learning score, defined as the difference
-      in loss between the 50th and 500th token, and observing the appearance of induction heads based on the formal
-      definition provided earlier.</p>
-
-  <p>They found that the model goes through a <strong>phase change</strong> during which in-context learning dramatically
-      improves. To begin with, nothing is happening in a one layer model, which is intuitive assuming the fact that
-      induction head requires 2 head in 2 layers working together.
-      However for other models it is evident that there is a time of great improvement of the in-context learning.</p>
-
-  <img src="images/phase_change.png" style="max-width:100%; width:1000px;" class="mx-auto d-block">
-
-  <p>During this phase change, the number of induction heads with prefix matching properties increases significantly. If
-      we assume the former definition of the induction head as a prefix matching attention head,
-      we see increase in heads that exhibit this property. And it is happening exactly at the time of the phase change.
-  </p>
-
-  <img src="images/Induction_Head_Formation.png" style="max-width:100%; width:1000px;" class="mx-auto d-block">
-
-  <p>One additional experiment they perform to confirm that the model learning goes in a different direction and a shift
-      in knowledge occurs is by looking at per-token loss.</p>
-
-  <p>To summarize the method, the steps are the following</p>
-
-  <ul>
-      <li>Train the model from the ground up. Save the snapshots of the model at different training steps.</li>
-      <li>Over the set of multiple dataset examples, collect one token's loss per example.</li>
-      <li>For each sample, extract the loss of a consistent token. Combine these to make a vector of losses per
-          model/snapshot.</li>
-      <li>The vectors are reduced via PCA into a 2D space, then combined.</li>
-  </ul>
-
-  <p>If we look at the direction of change of the model, we again can see the phase change as the learning direction
-      literally moves in a different way. It is not interperable apart from visualization purposes as it applies PCA and
-      not some measurable values, but it is an interesting observation and looking and the model development</p>
-
-  <img src="images/Per-Token-Loss.png" style="max-width:100%; width:1000px;" class="mx-auto d-block">
-  </ul>
-
-  <p>They concluded that the correlation between induction heads and in-context learning is strong and not due to chance,
-      model differences, or changes in learning rate. There is a definite connection between induction heads and
-      in-context learning.</p>
-
-  <h3>Further Confirmation of the Induction Head Impact</h3>
-
-  <p>But the paper does not stop on identifyinig the phase change and try to further claim the impact of the induction
-      heads on the in context learning. They do it in 2 different ways</p>
-
-  <p>In <strong>Argument 2</strong> they try to replicate the induction head behavior in a single-layer model, to see if
-      the performance improved. To replicate it, they add a trainable parameter \( \alpha\) that allows to forcefully add
-      the key from the previous token into the current one during the attention computation.
-      the exact formula is \(k_j^h = \sigma(\alpha^h) k_j^h + \left( 1 - \sigma(\alpha^h) \right) k_{j-1}^h \)</p>
-
-  <p>They applied it to all of the models and decided to see the difference and found out that now one-layer attention
-      model does have a better in-context learning. Moreover, it undergoes a same phase change!</p>
-
-  <img src="images/One_Layer_Model_Phase_Change.png" style="max-width:100%; width:1000px;" class="mx-auto d-block">
-
-  <p>In <strong>Argument 3</strong>, they demonstrate that in the absence of induction heads, in-context learning scores
-      decrease. </p>
-
-  <p>In this experiment, they knocked out the induction heads during the forward pass to calculate the in-context score,
-      then compared it to the score with induction heads present by computing the difference.
-      Each line in the graph represents an attention head, and the color indicates the extent to which it exhibits
-      induction head properties. Clearly, heads exhibiting strong induction properties contribute more to in-context
-      learning.</p>
-
-  <p>Visualization shows that the heads that excibit the induction properties the most have the greatest contribution to
-      the in-context learning score. Moreover, almost of the heads that have a positive in-context contribution are the
-      induction heads</p>
-
-  <img src="images/Contribution_to_in_context_learning.png" style="max-width:100%; width:1000px;" class="mx-auto d-block">
-
-  <p>This analysis shows great importance of the induction heads, but it is important to note that the behavior is not
-      shown in full scale multilayer models with MLP and positional encodings. Probably because the MLPs combined with
-      attention heads by themselves create in-context learning in some other way</p> -->
-
-
   <p>
   <blockquote style="background-color: rgba(179, 174, 174, 0.484);">
       <b>Nikita's Opinion:</b> The paper is acually was really easy and engaging to read, the biggest complication was to
@@ -376,7 +290,7 @@ the mechanistic interpretation of the induction head and how it works in the tra
     to identify:
       <ul>
         <li>
-          Why do Induction Heads appear all of sudden?
+          Why do Induction Heads appear all of a sudden?
         </li>
         <li>
           Why is there more than one Induction Head? And how are they dependent on each other?
@@ -390,21 +304,30 @@ the mechanistic interpretation of the induction head and how it works in the tra
   <p><img src="images/pattern_preserving_framework.png" style="max-width:100%; width:1000px;" class="mx-auto d-block"></p>
 
   <p>
-    Unlike prior work, this framework allowed intervening the activations during training
-    enabling targeted analysis such as <i>"What gives rise to the phase change in induction head formation?"</i>.
-    We will see how that works in the later part of this handbook.
+    The high level idea is to intervene the attention head computations during training,
+    thereby making it configurable to expose the activations or ablate them. As a result, 
+    unlike prior work, this framework enabled targeted analysis such as 
+    <i>"What gives rise to the phase change in induction head formation?"</i> by preserving(or clamping)
+    the attention head computations. We will see how that works in the later part of this handbook.
   </p>
 
   <p>
-    In order the study the <strong>copy</strong> and <strong>prefix-match</strong> behavior of Induction Heads, 
+    In order to study the <strong>copy</strong> and <strong>prefix-match</strong> behavior of Induction Heads, 
     the authors train and evaluate the model on <a href="https://github.com/brendenlake/omniglot">Omniglot</a>, 
     a synthetic handwritten dataset containing limited examples for each classication label. In simple terms, 
-    the key is to evaluate if the model can show  <strong>copy</strong> and <strong>prefix-match</strong> 
+    the key idea is to evaluate if the model can show  <strong>copy</strong> and <strong>prefix-match</strong> 
     behavior in a controlled setting using limited data. 
   </p>
 
   <p>
     <img src="images/omniglot.png" style="max-width:30%; width:300px;" class="mx-auto d-block">
+  </p>
+
+  <p>
+    The training data setup shown in the figure above shows the input sequence, i.e., context + query, where 
+    context includes example pairs of the handwritten alphabet and the label. The idea here is that through 
+    in-context learning, the model should be able to <strong>match</strong> and <strong>copy</strong> the pattern 
+    in the context to generate the target label.
   </p>
 
   <p>This <strong>framework</strong> coupled with the <strong>limited training data setup</strong> showed 
@@ -414,28 +337,66 @@ the mechanistic interpretation of the induction head and how it works in the tra
   </p>
 
   <p>
+    Here is the high level idea of how the author's analyze the phase change:
+    <ul>
+        <li>
+            First, define the computations that are of interest as shown in Figure(a).
+        </li>
+        <li>
+            Next, use the <i>pattern ablation framework</i> to clamp individual or combination of 
+            these computations. The clamping is done by specifying which computations we are interested
+            in <strong>preserving</strong>. As show in the first figure, this includes
+            a list of pairs (layer, head).
+        </li>
+        <li>
+            Finally, compute and record the loss by clamping various combinations of
+            the computations defined in the first step (Figure (c)).
+        </li>
+    </ul>
+  </p>
+
+  <p>
     <img src="images/clamping.png" style="max-width:100%; width:1000px;" class="mx-auto d-block">
   </p>
   
   <p>
-    Keep in mind that the black curve in Figure (c) above is the <strong>"phase change"</strong>
-    shown in prior work which does not involve any clamping. This analysis yields the formation 
-    of the following subciruits:
+
+  </p>
+
+  <p>
+    In Figure(c), the black curve shows the general <strong>"phase change"</strong> that occurs
+    without any clamping similar to prior work. Each color codes loss curves in Figure(c) correspond 
+    to the computation path take by the steps in Figure (a) and Figure (b). For example, the red 
+    loss curve corresponds to clamping Step 1 (PT-attend) and Step 2 (PT-copy).
+   
+   <p>
+    This analysis yields the formation of the following subciruits based on how the loss profile shifts
+    with little to no phase change:
     <ul>
       <li>
-        <strong>Subcircuit A:</strong> Attending to previous token and
+        <span style="color: red;"><strong>Subcircuit A:</strong></span> Attending to previous token and
         copying it forward. Comprised of Step-1 PT-attend and Step-2 PT-Copy. 
       </li>
       <li>
-        <strong>Subcircuit B:</strong> Matching queries to keys in
+        <span style="color: green;"><strong>Subcircuit B:</strong></span> Matching queries to keys in
         the induction head. Comprised of Step-3 Routing Q, Routing K and Step-4 IH-Match.
       </li>
       <li>
-        <strong>Subcircuit C:</strong> Copying of input label to output.
+        <span style="color: rgb(12, 134, 240);"><strong>Subcircuit C:</strong></span> Copying of input label to output.
           Comprised of Step-3 Routing V and Step-5 IH-Copy.
       </li>
     </ul>
   </p>
+
+  <p>
+    <blockquote style="background-color: rgba(179, 174, 174, 0.484);">
+        <b>Prajnan's take:</b> The key takeaway is that this paper provide a more systematic approach of
+        why induction head emerges in In-context learning. The author's were able to emperically resolve 
+        what does and doesn’t need to go right to form an induction head through their framework's intervening
+        capability. That being said, this study does not guarantee  that induction heads are formed in a similar
+        way for more complex tasks such as the "Chain-of-Thought" example shown in the Introduction. 
+    </blockquote>
+    </p>
 
   <h2>Colab Notebook and other Code Resources</h2>
     <p>
