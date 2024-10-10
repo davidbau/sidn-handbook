@@ -3,50 +3,52 @@
 <h5>October 10, 2024 • <em>Nikita Demidov, Prajnan Goswami</em></h5>
 
 <p>
-  Can we teach a Large Language Model (LLM) a new task without finetuning it? 
-  The anwer is In-context Learning(ICL) where the LLM performs a new task by prompting the model with
-  <b>input-output examples</b> demonstrating the task. This remarkable behaviour was first shown in
-  <a href="https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf">GPT-2</a> 
-  and caught more traction in <a href="https://arxiv.org/abs/2005.14165">GPT-3</a>.  
-  Jason Wei, who is an AI researcher at OpenAI(previously Google Brain) further showed the potential of 
-  ICL through his work on <a href="https://arxiv.org/abs/2201.11903">
-  Chain-of-Thought Prompting Elicits Reasoning in Large Language Models</a>. 
+    Can we teach a Large Language Model (LLM) a new task without finetuning it?
+    The anwer is In-context Learning(ICL) where the LLM performs a new task by prompting the model with
+    <b>input-output examples</b> demonstrating the task. This remarkable behaviour was first shown in
+    <a
+        href="https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf">GPT-2</a>
+    and caught more traction in <a href="https://arxiv.org/abs/2005.14165">GPT-3</a>.
+    Jason Wei, who is an AI researcher at OpenAI(previously Google Brain) further showed the potential of
+    ICL through his work on <a href="https://arxiv.org/abs/2201.11903">
+        Chain-of-Thought Prompting Elicits Reasoning in Large Language Models</a>.
 
-  <figure id="figure1">
+<figure id="figure1">
     <img src="images/chain-of-thought.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
-  </figure> 
+</figure>
 
 <h2>How can we better understand In-context Learning(ICL)?</h2>
 <p>As In-context Learning led to the development of customized LLM applications tailored
-  for specific use cases, it became increasingly important to understand how these <b>large 
-  Transformer</b> based langauge models were able to solve new tasks by merely looking 
-  at examples in the prompt.
+    for specific use cases, it became increasingly important to understand how these <b>large
+        Transformer</b> based langauge models were able to solve new tasks by merely looking
+    at examples in the prompt.
 
-<p>In the <a href="/formulation">previous chapter</a>, we delved into the inner workings of 
-  a <b>Transformer</b>. One key takeway from it was how attention heads can be decomposed
-  into Query-Key(QK) and Output-Value(OV) circuits. More importantly it showed how these 
-  independent circuits mapped input tokens to output tokens.
+<p>In the <a href="/formulation">previous chapter</a>, we delved into the inner workings of
+    a <b>Transformer</b>. One key takeway from it was how attention heads can be decomposed
+    into Query-Key(QK) and Output-Value(OV) circuits. More importantly it showed how these
+    independent circuits mapped input tokens to output tokens.
 
-<p>Leveraging this Mathematical Framework of Transformers, the same authors at Anthropic introduced 
-  the notion of Induction Heads. Chris Olah known for reverse engineering artificial neural networks
-  for human interpretability first discovered this phenomenon in a 2-layer model. Together with 
-  Catherine Olsson, Nelson Elhage and Neel Nanda, they led the systematic study of this phenomenon  
-  to <b>better understand how in-context learning works</b>.
-  
+<p>Leveraging this Mathematical Framework of Transformers, the same authors at Anthropic introduced
+    the notion of Induction Heads. Chris Olah known for reverse engineering artificial neural networks
+    for human interpretability first discovered this phenomenon in a 2-layer model. Together with
+    Catherine Olsson, Nelson Elhage and Neel Nanda led the systematic study of this phenomenon
+    to <b>better understand how in-context learning works</b>.
+
 <p>This chapter focuses on the role of Induction Heads in In-context Learning
-  and provides a high level walkthrough of how it works.
- 
+    and provides a high level walkthrough of how it works.
+
 
 <h2>What is an Induction Head?</h2>
 
-Induction heads were discovered in the paper <a
-    href="https://transformer-circuits.pub/2021/framework/index.html">
-    A Mathematical Framework for Transformer Circuits</a> while studying the behavior of the two-attention layer transofmers. These heads
+Induction heads were discovered in the paper <a href="https://transformer-circuits.pub/2021/framework/index.html">
+    A Mathematical Framework for Transformer Circuits</a> while studying the behavior of the two-attention layer
+transofmers. These heads
 impressed the authors (Olsson, Elhage and Nanda) so much they authored the creation of the paper <a
     href="https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html">In-context Learning
     and Induction Heads</a> to further explore the impact of the induction heads on the in-context learning.
 
-The <a href="https://transformer-circuits.pub/2021/framework/index.html#induction-heads">Original Paper</a> also gives the mechanistic interpretation of the induction head and how it works in the transformer model
+The <a href="https://transformer-circuits.pub/2021/framework/index.html#induction-heads">Original Paper</a> also gives
+the mechanistic interpretation of the induction head and how it works in the transformer model
 <h3>Intuitive Explanation</h3>
 <p>An <strong>Induction Head</strong> is a special type of attention mechanism inside transformer models, responsible
     for recognizing repeating patterns in a sequence of tokens and predicting the next token based on past patterns. To
@@ -56,23 +58,25 @@ The <a href="https://transformer-circuits.pub/2021/framework/index.html#inductio
     <li><strong>Previous Token Head</strong>: This attention head looks back at the sequence of tokens to find where a
         certain token has appeared before. It doesn’t just look at a single token but captures sequences. For instance,
         if the sequence "cat sat" has appeared earlier and the model sees "cat" again, the <strong>Previous Token
-            Head</strong> recalls that <span style="color: red;">"sat"</span> followed <span style="color: red;">"cat"</span> in the earlier context.</li>
+            Head</strong> recalls that <span style="color: red;">"sat"</span> followed <span
+            style="color: red;">"cat"</span> in the earlier context.</li>
     <li><strong>Induction Head</strong>: Once it retrieves the past sequence ("cat sat"), the <strong>Induction
-            Head</strong> predicts that <span style="color: red;">"sat"</span> will likely be the next word after <span style="color: red;">"cat"</span>. It essentially tries
+            Head</strong> predicts that <span style="color: red;">"sat"</span> will likely be the next word after <span
+            style="color: red;">"cat"</span>. It essentially tries
         to extend the previous pattern.</li>
 </ol>
 
-  <h3>Quick recap on the Mathematical Framework for Transformer circuits</h3>
-  <!-- <p>The <a
+<h3>Quick recap on the Mathematical Framework for Transformer circuits</h3>
+<!-- <p>The <a
       href="https://transformer-circuits.pub/2021/framework/index.html#induction-heads">
       A Mathematical Framework for Transformer Circuits</a> gives a formal definition of the induction head and supports its existence through tensor product
       definitions of the circuits.</p> -->
 
-  <p>Recall from the <a href="/formulation">previous chapter</a> the concepts of <strong>QK and OV circuits</strong>:</p>
+<p>Recall from the <a href="/formulation">previous chapter</a> the concepts of <strong>QK and OV circuits</strong>:</p>
 
-  <p><strong>Query-Key Circuit (QK)</strong>: This determines how much attention a given token (the query) pays to
-      previous tokens (the keys). It calculates attention scores to decide which previous tokens are relevant for
-      predicting the next token.</p>
+<p><strong>Query-Key Circuit (QK)</strong>: This determines how much attention a given token (the query) pays to
+    previous tokens (the keys). It calculates attention scores to decide which previous tokens are relevant for
+    predicting the next token.</p>
 
 <!-- <p>The matrix representing the QK circuit for a single attention model is:</p>
 
@@ -83,9 +87,9 @@ The <a href="https://transformer-circuits.pub/2021/framework/index.html#inductio
     is the attention paid by the ith token to the jth token with \(v_i\) being the ith token in the residual stream.
 </p> -->
 
-  <p><strong>Output-Value Circuit (OV)</strong>: This determines how the token attended to (the "value") influences the
-      final prediction of the model. It directly impacts the logits (predicted probabilities for each possible next
-      token).</p>
+<p><strong>Output-Value Circuit (OV)</strong>: This determines how the token attended to (the "value") influences the
+    final prediction of the model. It directly impacts the logits (predicted probabilities for each possible next
+    token).</p>
 
 <!-- <p>The matrix representing the OV circuit is:</p>
 
@@ -98,22 +102,22 @@ The <a href="https://transformer-circuits.pub/2021/framework/index.html#inductio
 </p> -->
 
 
-  <p>There is also the concept of <strong>Q, K, and V compositions</strong>. Compositions are products of multiple
-      attention layers that enable a more complex flow of information. They are distinguished based on which weight matrix
-      is used to read in the subspace of the residual stream:</p>
+<p>There is also the concept of <strong>Q, K, and V compositions</strong>. Compositions are products of multiple
+    attention layers that enable a more complex flow of information. They are distinguished based on which weight matrix
+    is used to read in the subspace of the residual stream:</p>
 
-  <ul>
-      <li><strong>Q-composition</strong> uses the \(W_Q\) matrix.</li>
-      <li><strong>K-composition</strong> uses the \(W_K\) matrix.</li>
-      <li><strong>V-composition</strong> uses the \(W_V\) matrix.</li>
-  </ul>
+<ul>
+    <li><strong>Q-composition</strong> uses the \(W_Q\) matrix.</li>
+    <li><strong>K-composition</strong> uses the \(W_K\) matrix.</li>
+    <li><strong>V-composition</strong> uses the \(W_V\) matrix.</li>
+</ul>
 
-  <p>Q and K compositions impact the results of the QK circuits, while V composition affects the OV circuit.</p>
+<p>Q and K compositions impact the results of the QK circuits, while V composition affects the OV circuit.</p>
 
-  <h3>Mechanistic Interpretation of Induction Head</h3>
+<h3>Mechanistic Interpretation of Induction Head</h3>
 
-  <p>The paper formally defines the induction head as exhibiting the following two properties on a repeated random
-      sequence of tokens:</p>
+<p>The paper formally defines the induction head as exhibiting the following two properties on a repeated random
+    sequence of tokens:</p>
 
 <!-- <ul>
     <li><strong>Prefix matching:</strong> The head attends to previous tokens that were followed by the current and/or
@@ -122,63 +126,65 @@ The <a href="https://transformer-circuits.pub/2021/framework/index.html#inductio
         will come next.</li>
     <li><strong>Copying:</strong> The head’s output increases the logit corresponding to the attended-to token.</li>
 </ul>-->
-    <ul>
-      <li><strong>Prefix matching</strong> is achieved mostly through the <strong>K-composition of the QK circuit</strong>,
-        meaning the key vector is trained to attend to the <em>preceding tokens</em>. The induction head uses the
-        <strong>K-composition (\(W_k\) matrix)</strong> to retrieve information about the preceding token from the residual
-        stream.
-      </li>
-      <li><strong>Copying</strong> is achieved through the <strong>OV circuit</strong>. The mechanistic paper proved that many
-      transformers exhibit copying behavior through the OV circuit.</p>
-      </li>
-    </ul>
+<ul>
+    <li><strong>Prefix matching</strong>: The head attends to previous tokens that were followed by the current one. 
+        The induction head uses the <strong>K-composition (\(W_k\) matrix)</strong> to retrieve information about the preceding token that were found in Preceeding Token Head and was writen in the residual stream then it matches
+        and them to the query, which is a current token. As a result, it allows to find the token that was followed by the current one.</li>
+    </li>
+    <li><strong>Copying</strong> is achieved through the <strong>OV circuit</strong>. The mechanistic paper proved that
+        many
+        transformers exhibit copying behavior through the OV circuit.</p>
+    </li>
+</ul>
 
+<p>In summary, the model first learns that a prefix follows the current token, passes this information through the
+    residual stream, and the induction head retrieves this information via the K-composition and copies the prefix into the output.</p>
 
-
-    <p>In summary, the model first learns that a prefix follows the current token, passes this information through the
-        residual stream, and the induction head retrieves this information and copies the prefix into the output.</p>
-
-    <p>The image is the summary of how the induction head is done visually
+<p>The image is the summary of how the induction head is done visually
     {img("images/Induction_Head_vis.png", 100)}
-    </p>
+</p>
 
-  <h3>Induction Head Visualization and Colab Demo</h3>
+<h3>Induction Head Visualization and Colab Demo</h3>
 
-    <p>The demo we have created for the post shows the attention heads themselves on a small toy model. 
-      We can clearly see which head is the induction head based on the activations and the information 
-      contributions. You can find the link <a href="{colab_link("colab/Induction_Head_Playbook.ipynb")}">to the colab here</a></p>
+<p>The demo we have created for the post shows the attention heads themselves on a small toy model.
+    We can clearly see which head is the induction head based on the activations and the information
+    contributions. You can find the link <a href="{colab_link(" colab/Induction_Head_Playbook.ipynb")}">to the colab
+        here</a></p>
 
-    <p>One of key resource to build a deep understanding of Induction Heads is the walkthrough by 
-      <a href="https://www.perfectlynormal.co.uk/blog-induction-heads-illustrated">Callum McDougall</a>. 
-      It is a really good visual representation of how the induction heads are formed with all of the underlying math.
-      Callum is also an author of the fork of <a href="https://github.com/callummcdougall/CircuitsVis#subdirectory=python">CircuitVis</a>, 
-      a library that we use in our demo to demonstrate the behavior of the Attention heads.</p>
+<p>One of key resource to build a deep understanding of Induction Heads is the walkthrough by
+    <a href="https://www.perfectlynormal.co.uk/blog-induction-heads-illustrated">Callum McDougall</a>.
+    It is a really good visual representation of how the induction heads are formed with all of the underlying math.
+    Callum is also an author of the fork of <a
+        href="https://github.com/callummcdougall/CircuitsVis#subdirectory=python">CircuitVis</a>,
+    a library that we use in our demo to demonstrate the behavior of the Attention heads.
+</p>
 
-    <p>Now knowing what induction is and how it is formed, we need to now understand why they are so important, 
-      and why and how they contribute to the in-context learning. </p>
+<p>Now knowing what induction is and how it is formed, we need to now understand why they are so important,
+    and why and how they contribute to the in-context learning. </p>
 
-  <h3>How Much Induction Heads Contribute to In-context Learning?</h3>
+<h3>How Much Induction Heads Contribute to In-context Learning?</h3>
 
-    <p>
-      <a href="https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html">Olsson et al.</a> 
-      used these findings and presented <strong>six arguments</strong> with emperical evidence that 
-      <strong>induction heads contribute significantly to in-context learning</strong>.</p>
-  
-    <p>
+<p>
+    <a href="https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html">Olsson et al.</a>
+    used these findings and presented <strong>six arguments</strong> with emperical evidence that
+    <strong>induction heads contribute significantly to in-context learning</strong>.
+</p>
+
+<p>
       We highlight one of these arguments where the authors demonstrate a <strong>phase change</strong> early
       in training, during which <strong>induction heads are formed</strong> and <strong>in-context
-      learning improves dramatically.</strong>
-    </p>    
+        learning improves dramatically.</strong>
+</p>
 
-    <p>{img("images/Phase_Change.png", 100)}
+<p>{img("images/Phase_Change.png", 100)}
 
-    <p>
-      During this phase change, the number of induction heads with prefix matching properties increases significantly. If
-      we assume the former definition of the induction head as a prefix matching attention head,
-      we see increase in heads that exhibit this property. And it is happening exactly at the time of the phase change.
-    </p>
+<p>
+    During this phase change, the number of induction heads with prefix matching properties increases significantly. If
+    we assume the former definition of the induction head as a prefix matching attention head,
+    we see increase in heads that exhibit this property. And it is happening exactly at the time of the phase change.
+</p>
 
-    <p>{img("images/Induction_Head_Formation.png", 100)}
+<p>{img("images/Induction_Head_Formation.png", 100)}
 
       <p>
         <blockquote style="background-color: rgb(247, 181, 181);">
@@ -186,6 +192,16 @@ The <a href="https://transformer-circuits.pub/2021/framework/index.html#inductio
             a context of length 512, averaged over dataset examples. 
         </blockquote>
       </p>
+
+      
+<p>To further confirm the impact of induction heads on in-context learning, the authors conducted another experiment ot understand to what extent the induction heads contribute to the in-context learning score.
+    For that while training and evaluating the results on the forward pass, they knocked out the induction heads and compared the in-context learning score with the induction heads present</p>
+</p>
+<p>
+    They found out that most of the heads that have a positive in-context contribution are the induction heads.
+</p>
+
+<p>{img("images/Contribution_to_in_context_learning.png", 100)}
 
 <!-- <p>Their argument is that <strong>induction heads contribute significantly to in-context learning</strong>.</p> -->
 
@@ -285,217 +301,5 @@ The <a href="https://transformer-circuits.pub/2021/framework/index.html#inductio
 
 Link to the <a href="{colab_link("colab/Induction_Head_Playbook.ipynb")}">Colab Notebook.</a></p>
 
-{footer()}{header('Induction Head and In-context Learning')}
 
-
-<h2>What is an Induction Head?</h2>
-
-Induction heads were discovered in the paper <a
-    href="https://transformer-circuits.pub/2021/framework/index.html">
-    A Mathematical Framework for Transformer Circuits</a> while studying the behavior of the two-attention layer transofmers. These heads
-impressed the authors (Olsson, Elhage and Nanda) so much they authored the creation of the paper <a
-    href="https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html">In-context Learning
-    and Induction Heads</a> to further explore the impact of the induction heads on the in-context learning.
-
-The <a href="https://transformer-circuits.pub/2021/framework/index.html#induction-heads">Original Paper</a> also gives the mechanistic interpretation of the induction head and how it works in the transformer model
-<h3>Intuitive Explanation</h3>
-<p>An <strong>Induction Head</strong> is a special type of attention mechanism inside transformer models, responsible
-    for recognizing repeating patterns in a sequence of tokens and predicting the next token based on past patterns. To
-    break it down, an induction head works as follows:</p>
-
-<ol>
-    <li><strong>Previous Token Head</strong>: This attention head looks back at the sequence of tokens to find where a
-        certain token has appeared before. It doesn’t just look at a single token but captures sequences. For instance,
-        if the sequence "cat sat" has appeared earlier and the model sees "cat" again, the <strong>Previous Token
-            Head</strong> recalls that "sat" followed "cat" in the earlier context.</li>
-    <li><strong>Induction Head</strong>: Once it retrieves the past sequence ("cat sat"), the <strong>Induction
-            Head</strong> predicts that after the token "cat", the next word will likely be "sat". It essentially tries
-        to extend the previous pattern.</li>
-</ol>
-
-<h3>Mathematical Foundation</h3>
-<p>The <a
-    href="https://transformer-circuits.pub/2021/framework/index.html#induction-heads">
-    A Mathematical Framework for Transformer Circuits</a> gives a formal definition of the induction head and supports its existence through tensor product
-    definitions of the circuits.</p>
-
-<p>Recall from the previous paper the concepts of <strong>QK and OV circuits</strong>:</p>
-
-<p><strong>Query-Key Circuit (QK)</strong>: This determines how much attention a given token (the query) pays to
-    previous tokens (the keys). It calculates attention scores to decide which previous tokens are relevant for
-    predicting the next token.</p>
-
-<p>The matrix representing the QK circuit for a single attention model is:</p>
-
-<p>
-    \[
-    c_{ij}^H = v^T_iW_{QK}^Hv_j
-    \]
-    is the attention paid by the ith token to the jth token with \(v_i\) being the ith token in the residual stream.
-</p>
-
-<p><strong>Output-Value Circuit (OV)</strong>: This determines how the token attended to (the "value") influences the
-    final prediction of the model. It directly impacts the logits (predicted probabilities for each possible next
-    token).</p>
-
-<p>The matrix representing the OV circuit is:</p>
-
-<p>
-    \[
-    (v_j^H)^TW_{OV}
-    \]
-    Where \(v_j\) is the residual stream vector at the source token. The result of the vector is propagated down the
-    stream for the source token.
-</p>
-
-
-<p>There is also the concept of <strong>Q, K, and V compositions</strong>. Compositions are products of multiple
-    attention layers that enable a more complex flow of information. They are distinguished based on which weight matrix
-    is used to read in the subspace of the residual stream:</p>
-
-<ul>
-    <li><strong>Q-composition</strong> uses the \(W_Q\) matrix.</li>
-    <li><strong>K-composition</strong> uses the \(W_K\) matrix.</li>
-    <li><strong>V-composition</strong> uses the \(W_V\) matrix.</li>
-</ul>
-
-<p>Q and K compositions impact the results of the QK circuits, while V composition affects the OV circuit.</p>
-
-<h3>Mechanistic Interpretation of Induction Head</h3>
-
-<p>The paper formally defines the induction head as exhibiting the following two properties on a repeated random
-    sequence of tokens:</p>
-
-<ul>
-    <li><strong>Prefix matching:</strong> The head attends to previous tokens that were followed by the current and/or
-        recent tokens. The simplest induction heads match just one preceding token. However, some induction heads
-        perform a fuzzy match over several preceding tokens, meaning they attend to the token that induction suggests
-        will come next.</li>
-    <li><strong>Copying:</strong> The head’s output increases the logit corresponding to the attended-to token.</li>
-</ul>
-
-<p><strong>Prefix matching</strong> is achieved mostly through the <strong>K-composition of the QK circuit</strong>,
-    meaning the key vector is trained to attend to the <em>preceding tokens</em>. The induction head uses the
-    <strong>K-composition (\(W_k\) matrix)</strong> to retrieve information about the preceding token from the residual
-    stream.
-</p>
-
-<p><strong>Copying</strong> is achieved through the <strong>OV circuit</strong>. The mechanistic paper proved that many
-    transformers exhibit copying behavior through the OV circuit.</p>
-
-<p>In summary, the model first learns that a prefix follows the current token, passes this information through the
-    residual stream, and the induction head retrieves this information and copies the prefix into the output.</p>
-
-<p>The image is the summary of how the induction head is done visually</p>
-{img("images/Induction_Head_vis.png", 100)}
-
-
-<h3>Induction Head Visualization and Demo</h3>
-
-<p>The demo we have created for the post shows the attention heads themselves on a small toy model. We can clearly see which head is the induction head based on the activations and the information contributions. You can find the link <a href="{colab_link("colab/Induction_Head_Playbook.ipynb")}">to the colab here</a></p>
-
-<p>One of another beneficial sources of understanding the Induction Heads deeper was the visualization by <a href="https://www.perfectlynormal.co.uk/blog-induction-heads-illustrated">Callum McDougall</a>it is a really good visual representation of how the induction heads are formed with all of the underlying math.
-<p>He also an author of the fork of <a href="https://github.com/callummcdougall/CircuitsVis#subdirectory=python">CircuitVis</a>, a library that we use in our demo used to demonstrate the behavior of the Attentions</p>
-
-<p>Now knowing what is the induction is, how it formed, we need to now understand why they are so important, and why and how they contribute to the in-context learning. </p>
-<h2>Paper 1: How Much Induction Heads Contribute to In-context Learning</h2>
-
-<p>The paper <a
-        href="https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html">In-context
-        Learning and Induction Heads</a> was composed by the same authors of the <strong>mechanistic
-        interpretability</strong> paper. Using the findings on induction heads, they decided to explore how much
-    induction heads contribute to in-context learning.</p>
-
-<p>Their argument is that <strong>induction heads contribute significantly to in-context learning</strong>.</p>
-
-<h3>Phase Change and In-context Learning Formation</h3>
-
-<p>One key finding, outlined in <strong>Argument 1</strong>, is the discovery of <strong>phase change</strong>.</p>
-
-<p>The experiment involved running several models and recording the in-context learning score, defined as the difference
-    in loss between the 50th and 500th token, and observing the appearance of induction heads based on the formal
-    definition provided earlier.</p>
-
-<p>They found that the model goes through a <strong>phase change</strong> during which in-context learning dramatically
-    improves. To begin with, nothing is happening in a one layer model, which is intuitive assuming the fact that
-    induction head requires 2 head in 2 layers working together.
-    However for other models it is evident that there is a time of great improvement of the in-context learning.</p>
-
-{img("images/phase_change.png", 100)}
-
-<p>During this phase change, the number of induction heads with prefix matching properties increases significantly. If
-    we assume the former definition of the induction head as a prefix matching attention head,
-    we see increase in heads that exhibit this property. And it is happening exactly at the time of the phase change.
-</p>
-
-{img("images/Induction_Head_Formation.png", 100)}
-
-<p>One additional experiment they perform to confirm that the model learning goes in a different direction and a shift
-    in knowledge occurs is by looking at per-token loss.</p>
-
-<p>To summarize the method, the steps are the following</p>
-
-<ul>
-    <li>Train the model from the ground up. Save the snapshots of the model at different training steps.</li>
-    <li>Over the set of multiple dataset examples, collect one token's loss per example.</li>
-    <li>For each sample, extract the loss of a consistent token. Combine these to make a vector of losses per
-        model/snapshot.</li>
-    <li>The vectors are reduced via PCA into a 2D space, then combined.</li>
-</ul>
-
-<p>If we look at the direction of change of the model, we again can see the phase change as the learning direction
-    literally moves in a different way. It is not interperable apart from visualization purposes as it applies PCA and
-    not some measurable values, but it is an interesting observation and looking and the model development</p>
-
-{img("images/Per-Token-Loss.png", 100)}
-</ul>
-
-<p>They concluded that the correlation between induction heads and in-context learning is strong and not due to chance,
-    model differences, or changes in learning rate. There is a definite connection between induction heads and
-    in-context learning.</p>
-
-<h3>Further Confirmation of the Induction Head Impact</h3>
-
-<p>But the paper does not stop on identifyinig the phase change and try to further claim the impact of the induction
-    heads on the in context learning. They do it in 2 different ways</p>
-
-<p>In <strong>Argument 2</strong> they try to replicate the induction head behavior in a single-layer model, to see if
-    the performance improved. To replicate it, they add a trainable parameter \( \alpha\) that allows to forcefully add
-    the key from the previous token into the current one during the attention computation.
-    the exact formula is \(k_j^h = \sigma(\alpha^h) k_j^h + \left( 1 - \sigma(\alpha^h) \right) k_{j-1}^h \)</p>
-
-<p>They applied it to all of the models and decided to see the difference and found out that now one-layer attention
-    model does have a better in-context learning. Moreover, it undergoes a same phase change!</p>
-
-{img('images/One_Layer_Model_Phase_Change.png', 100)}
-
-<p>In <strong>Argument 3</strong>, they demonstrate that in the absence of induction heads, in-context learning scores
-    decrease. </p>
-
-<p>In this experiment, they knocked out the induction heads during the forward pass to calculate the in-context score,
-    then compared it to the score with induction heads present by computing the difference.
-    Each line in the graph represents an attention head, and the color indicates the extent to which it exhibits
-    induction head properties. Clearly, heads exhibiting strong induction properties contribute more to in-context
-    learning.</p>
-
-<p>Visualization shows that the heads that excibit the induction properties the most have the greatest contribution to
-    the in-context learning score. Moreover, almost of the heads that have a positive in-context contribution are the
-    induction heads</p>
-
-{img('images/Contribution_to_in_context_learning.png', 100)}
-
-<p>This analysis shows great importance of the induction heads, but it is important to note that the behavior is not
-    shown in full scale multilayer models with MLP and positional encodings. Probably because the MLPs combined with
-    attention heads by themselves create in-context learning in some other way</p>
-
-<blockquote style="background-color: rgba(179, 174, 174, 0.484);">
-    <b>Nikita's Opinion:</b> The paper is acually was really easy and engaging to read, the biggest complication was to
-    mechanistically understand the induction head itself. The visualizations are clean and do tell the story of the
-    paper.
-    On top of that, every argument has a table with to which models the support is best applied to, which shows the
-    benefits and limitations for each argument. One thing I have just concerns about is to focus on the generalization
-    of the in-context learning scoring methodology. While
-    it does show the overall score, it is not much interperable on the concrete in-context tasks. Which is why I think
-    the second paper, that does use the few-shot prediction scoring, is a great addition to the first one.
-</blockquote>
 {footer()}
