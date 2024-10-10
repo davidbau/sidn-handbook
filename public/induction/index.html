@@ -40,7 +40,7 @@ rel="stylesheet">
 <div class="container-fluid">
 <ul class="navbar-nav mr-auto">
  <li class="nav-item active">
-  <a class="nav-link" href="/induction/index.html">In-context Learning and Induction</a>
+  <a class="nav-link" href="/induction/index.html">Induction</a>
  </li>
 </ul>
 <ul class="navbar-nav ml-auto">
@@ -58,7 +58,7 @@ rel="stylesheet">
 </div>
 <div class="col-2"></div>
 <main class="col-8">
-<h1 class="mt-5">In-context Learning and Induction</h1>
+<h1 class="mt-5">Induction</h1>
 
 
 <h5>October 10, 2024 • <em>Nikita Demidov, Prajnan Goswami</em></h5>
@@ -251,6 +251,12 @@ the mechanistic interpretation of the induction head and how it works in the tra
         <blockquote style="background-color: rgb(247, 181, 181);">
             <b>In-context learning score:</b> Difference in loss between the 50th and 500th token in 
             a context of length 512, averaged over dataset examples. 
+        </blockquote>
+      </p>
+      <p>
+        <blockquote style="background-color: rgb(247, 181, 181);">
+            <b>Prefix matching score:</b>It is the average of all attention pattern entries attending 
+            from a given token back to the tokens that preceded the same token in earlier repeats. 
         </blockquote>
       </p>
 
