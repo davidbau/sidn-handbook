@@ -148,7 +148,7 @@ the mechanistic interpretation of the induction head and how it works in the tra
 
 <p>The demo we have created for the post shows the attention heads themselves on a small toy model.
     We can clearly see which head is the induction head based on the activations and the information
-    contributions. You can find the link <a href="{colab_link('induction/colab/Induction_Head_Playbook.ipynb')}">to the colab
+    contributions. You can find the link <a href="https://colab.research.google.com/drive/1qU72TDhNq7JBqHv0xY9xJg1aBFbGFWqZ?usp=sharing#scrollTo=jU4EPdSbLlYR">to the colab
         here</a></p>
 
 <p>One of key resource to build a deep understanding of Induction Heads is the walkthrough by
@@ -202,6 +202,8 @@ the mechanistic interpretation of the induction head and how it works in the tra
 </p>
 
 <p>{img("images/Contribution_to_in_context_learning.png", 100)}
+
+
 
 <!-- <p>Their argument is that <strong>induction heads contribute significantly to in-context learning</strong>.</p> -->
 
@@ -284,6 +286,8 @@ the mechanistic interpretation of the induction head and how it works in the tra
   <p>This analysis shows great importance of the induction heads, but it is important to note that the behavior is not
       shown in full scale multilayer models with MLP and positional encodings. Probably because the MLPs combined with
       attention heads by themselves create in-context learning in some other way</p> -->
+
+
   <p>
   <blockquote style="background-color: rgba(179, 174, 174, 0.484);">
       <b>Nikita's Opinion:</b> The paper is acually was really easy and engaging to read, the biggest complication was to
@@ -297,9 +301,80 @@ the mechanistic interpretation of the induction head and how it works in the tra
   </blockquote>
   </p>
 
-<h2>Colab Notebook and other Code Resources</h2>
+  <h2>What needs to go right for an induction head?</h2>
 
-Link to the <a href="{colab_link('induction/colab/Induction_Head_Playbook.ipynb')}">Colab Notebook.</a></p>
+  <p>
+    Following the work of <a href="https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html">Olsson et al.</a>,
+    Aditya K. Singh, a PhD student at University College London, Ted Moskovitz of Anthropic and Andrew Saxe, an expert in neurosciene and machine learning built a framework 
+    to identify:
+      <ul>
+        <li>
+          Why do Induction Heads appear all of sudden?
+        </li>
+        <li>
+          Why is there more than one Induction Head? And how are they dependent on each other?
+        </li>
+        <li>
+          What are the subciruits that enable them to emerge?
+        </li>
+      </ul>
+  </p>
+  
+  <p>{img("images/pattern_preserving_framework.png", 100)}</p>
+
+  <p>
+    Unlike prior work, this framework allowed intervening the activations during training
+    enabling targeted analysis such as <i>"What gives rise to the phase change in induction head formation?"</i>.
+    We will see how that works in the later part of this handbook.
+  </p>
+
+  <p>
+    In order the study the <strong>copy</strong> and <strong>prefix-match</strong> behavior of Induction Heads, 
+    the authors train and evaluate the model on <a href="https://github.com/brendenlake/omniglot">Omniglot</a>, 
+    a synthetic handwritten dataset containing limited examples for each classication label. In simple terms, 
+    the key is to evaluate if the model can show  <strong>copy</strong> and <strong>prefix-match</strong> 
+    behavior in a controlled setting using limited data. 
+  </p>
+
+  <p>
+    {img("images/omniglot.png", 30)}
+  </p>
+
+  <p>This <strong>framework</strong> coupled with the <strong>limited training data setup</strong> showed 
+    insights into the emerging behavior of induction heads and demonstrated the in-context learing (ICL) abilities.
+    One <strong>key insight </strong>we would like to focus on is what gives rise to the <strong>"phase change"</strong> 
+    by clamping the computations through this <strong>framework</strong>.
+  </p>
+
+  <p>
+    {img("images/clamping.png", 100)}
+  </p>
+  
+  <p>
+    Keep in mind that the black curve in Figure (c) above is the <strong>"phase change"</strong>
+    shown in prior work which does not involve any clamping. This analysis yields the formation 
+    of the following subciruits:
+    <ul>
+      <li>
+        <strong>Subcircuit A:</strong> Attending to previous token and
+        copying it forward. Comprised of Step-1 PT-attend and Step-2 PT-Copy. 
+      </li>
+      <li>
+        <strong>Subcircuit B:</strong> Matching queries to keys in
+        the induction head. Comprised of Step-3 Routing Q, Routing K and Step-4 IH-Match.
+      </li>
+      <li>
+        <strong>Subcircuit C:</strong> Copying of input label to output.
+          Comprised of Step-3 Routing V and Step-5 IH-Copy.
+      </li>
+    </ul>
+  </p>
+
+  <h2>Colab Notebook and other Code Resources</h2>
+    <p>
+      Here is a <a href="https://colab.research.google.com/drive/1qU72TDhNq7JBqHv0xY9xJg1aBFbGFWqZ?usp=sharing#scrollTo=jU4EPdSbLlYR">Colab Notebook.</a>
+      that can be used to identify induction heads by experimenting with different text inputs.
+    </p>
 
 
 {footer()}
