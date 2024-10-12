@@ -2,23 +2,52 @@
 
 <div><h5>October 15, 2024 • <em>Achyut Kowshik, Sheridan Feucht</em></h5>
 
-If you ask a decent LLM to complete the sentence, "Coltrane plays the ___", 
-it will probably say "tenor" or "saxophone". But where and how do LLMs actually store 
-this information? Interpretability research on <i>factual association</i> focuses 
-on this question. 
+    <p>
+If you ask a (decent) LLM to complete the sentence "Coltrane plays the ___", 
+it will probably say "tenor" or "saxophone". In order to accurately predict the next word,
+the model has to be able to "understand" who John Coltrane is, and then retrieve information on what instrument he plays. 
+But how does it do this? Where do LLMs store information about the world, and how do they 
+process and retrieve it? These papers on <i>factual assocation</i> try to answer that question. 
 
-<h2>Associative Memory</h2>
+
+<h2>Linear Associative Memory</h2>
 <p>
-sheridan: Talk about associative memory history 
-mor gevas key-value memory paper? 
-<p>
-<h3>Rewriting a Generative Model</h3>
-Sheridan: cover https://rewriting.csail.mit.edu/ 
+A lot of current work in factual association is indebted to the foundational idea of 
+<i>linear associative memory</i>. In <a href="https://rewriting.csail.mit.edu/">one of David's PhD papers</a>, 
+they refer to <a href="https://ieeexplore.ieee.org/document/5009138">this 1972 paper</a>
+that illustrates how you can use a matrix \( M\) to store pairs of vectors \( (k_i, v_i) \). 
+This can approximately done with any kind of matrix.  
+
+\[
+v_i \approx Wk_i
+\]
+
+But you can actually do this retrieval perfectly if you have orthonormal keys. The way you 
+do so is by constructing a matrix that is the sum of the outer products of every desired pair, \(v_ik_i^T \). 
+Each one of these outer products is a rank one matrix that we can accumulate to create \( M \),
+which has a rank equal to the number of pairs that it is storing. 
+
+<!-- If \( M\) is an \(m\times n\) matrix, then we can store up to \( n \) pairs.  -->
+
+\[
+M \mathrel{\mathop:}= \sum_i v_ik_i^T 
+\]
+
+David et al. use this insight to edit the convolutional weights of GANs so that they 
+obey arbitrary user-defined rules, like making horses wear hats, or trees grow out of church towers.
+But what if we can use this to understand fact retrieval in language models? 
+
 
 <h2>ROME</h2>
 <p>
     Achyut: Cover the basics of ROME 
-    Sheridan: Hase response 
+
+<h3>Does Localization Inform Editing?</h3>
+<p>
+    A year or so later, some researchers from Google and UNC Chapel Hill wrote a response 
+    to David's paper 
+    Sheridan todo: https://arxiv.org/abs/2301.04213
+
 
 <h2>Dissecting Recall of Factual Associations</h2>
 <p>
