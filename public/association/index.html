@@ -116,7 +116,64 @@ But what if we can use this to understand fact retrieval in language models?
 
 <h2>Linearity of Relation Decoding</h2>
 <p>
-    Sheridan: LRE paper 
+    <a href="https://lre.baulab.info/">The last paper for today</a> from David's lab looks at 
+    factual association from a slightly different angle. Based on the idea that factual 
+    information is stored in early layers, they try to linearly approximate 
+    the process by which an LLM would "read out" that information for its final output.
+    This would only really work if models were near-linear when decoding relations. 
+    
+<p>
+    Concretely, this means that the authors have to come up with some clever way to 
+    get a weight matrix and bias that can be applied to a hidden state \(s\) to 
+    output \(o\), the state right before the model outputs its answer. In the image 
+    below, they basically want to skip over the entire blue part of model processing,
+    going straight from \(s\) to \(o\). 
+
+    <img src="images/lre.png" style="max-width:70%; width:500px;" class="mx-auto d-block">
+
+    The way that the authors ultimately build these approximators does not require 
+    any gradient descent. If \(F(s,c)\) is the function the transformer is 
+    typically performing to map \(s\) to \(c\), they take the first-order Taylor 
+    approximation where \(W = \partial F/\partial s\): 
+
+    \[ F(s,c) \approx F(s_0, c) + W(s - s_0) \]
+    \[ F(s,c) \approx Ws + F(s_0, c) - Ws_0 \]
+    
+    This approximation is just an affine transformation, with a bias \( F(s_0, c) - Ws_0 \). 
+    In practice, they calculate \(W\) by averaging the Jacobian of \( F \) for 
+    a few examples \(s_i, o_i \). 
+    
+<h3>Are these LREs faithful?</h3>
+<p>
+    The authors calculate these approximations for a number of relations and measure 
+    how <i>faithful</i> they are to the outputs of the original model. In other words,
+    what fraction of the time do they output the same token as the actual model?
+
+    <img src="images/faithfulness.png" style="max-width:70%; width:500px;" class="mx-auto d-block">
+
+    Their Figure 3 shows that some relations can be approximated extremely well in this way, like 
+    encodings of gender bias (occupation -> gender), whereas relations like (company -> CEO) 
+    are more difficult to approximate. This indicates that these relations are calculated 
+    in some non-linear manner; they require a bit more calculation to get out. 
+
+<h3>Are these LREs causal?</h3>
+    If these LREs are actually causally related to model behavior, then we should 
+    be able to use them to manipulate model outputs.
+    They do an experiment where they try to change the output associated with a subject 
+    (e.g. make the model say that Miles Davis plays the guitar). If you have 
+    \((s, r, o) = \) (Miles Davis, plays instrument, trumpet) and 
+    \((s', r, o') = \) (Cat Stevens, plays instrument, guitar), then 
+    
+    The authors derive that you should be able to add a special vector \( \Delta s = W^{-1}(o'-o)\) to \( s \)
+    to make it look like \(s'\), resulting in the model outputting \(o'\). This only works 
+    if \(W\) is causally related to model behavior. And in fact they show that their 
+    approach actually works slightly better than just directly substituting \(s'\) in place of \(s\). 
+    This is a really good sign that \(W\) reads relational information in the same way 
+    that the model does itself. 
+
+    <img src="images/causality.png" style="max-width:95%; width:800px;" class="mx-auto d-block">
+
+<h2>Bonus Paper: Identifying Linear Relational Concepts</h2>
     Sheridan: mention lrc paper as well 
 
 
