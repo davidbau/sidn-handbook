@@ -12,7 +12,7 @@ process and retrieve it? These papers on <i>factual assocation</i> try to answer
 
 <h2>Linear Associative Memory</h2>
 <p>
-A lot of current work in factual association is indebted to the foundational idea of 
+A lot of current work in factual association builds off the foundational idea of 
 <i>linear associative memory</i>. In <a href="https://rewriting.csail.mit.edu/">one of David's PhD papers</a>, 
 they refer to <a href="https://ieeexplore.ieee.org/document/5009138">this 1972 paper</a>
 that illustrates how you can use a matrix \( M\) to store pairs of vectors \( (k_i, v_i) \). 
@@ -22,7 +22,7 @@ This can approximately done with any kind of matrix.
 v_i \approx Wk_i
 \]
 
-But you can actually do this retrieval perfectly if you have orthonormal keys. The way you 
+You can actually do this retrieval perfectly if you have orthonormal keys. The way you 
 do so is by constructing a matrix that is the sum of the outer products of every desired pair, \(v_ik_i^T \). 
 Each one of these outer products is a rank one matrix that we can accumulate to create \( M \),
 which has a rank equal to the number of pairs that it is storing. 
@@ -33,10 +33,21 @@ which has a rank equal to the number of pairs that it is storing.
 M \mathrel{\mathop:}= \sum_i v_ik_i^T 
 \]
 
-David et al. use this insight to edit the convolutional weights of GANs so that they 
+In practice, the authors refer to <a href="https://papers.baulab.info/papers/also/Kohonen-1973.pdf">Kohonen (1973)</a>,
+which shows that you can store more keys than the maximum rank of the matrix if you allow them to be non-orthogonal, 
+with some amount of error.
+
+\[
+W_0 \mathrel{\mathop:}= \underset{W}{\text{argmin}}\sum_i||v_i - Wk_i||^2
+\]
+
+<a href="https://rewriting.csail.mit.edu/">David et al.</a> come up with a way to 
+pack a new \((k_*,v_*)\) pair in there by doing this minimization with 
+the constraint that \( v_* = Wk_*\). They use this math to edit the convolutional weights of GANs so that they 
 obey arbitrary user-defined rules, like making horses wear hats, or trees grow out of church towers.
 But what if we can use this to understand fact retrieval in language models? 
 
+<img src="images/rewriting.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
 
 <h2>ROME</h2>
 <p>
@@ -114,8 +125,13 @@ But what if we can use this to understand fact retrieval in language models?
 
 <h3>Bonus: Identifying Linear Relational Concepts</h3>
     A little while after this paper was released, researchers at University College London 
-
-    Sheridan todo 
+    built on their work to create linear relational concepts (LRCs). They create an LRE 
+    for some relation and get a low-rank pseudo-inverse of the LRE, which is just \( W^\dagger \) 
+    from the original paper. When they apply that \( W^\dagger \) to "York" or "Shanghai",
+    they get specific vectors that represent the concepts "Located in England" and "Located in China."
+    Then, given some hidden state representation of a place, e.g. "Boston", they dot its representation 
+    with every "Located in" vector. Whichever vector has the highest dot product they take as the answer. 
+    They argue that this method works a lot better than probing those hidden states using an SVM. 
 
 
 <h2>Demo</h2>
