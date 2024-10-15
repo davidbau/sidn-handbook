@@ -172,7 +172,10 @@ But what if we can use this to understand fact retrieval in language models?
     would be best to edit in order to override an existing stored fact with a new one. They suggest that a fact stored in a model
     can be changed by editing weights that are in a different location than where causal tracing suggests that the fact is stored.
 
-<img src="images/hase-challege1.png" style="max-width:40%; width:600px;" class="mx-auto d-block">
+    <div style="display: flex; justify-content: space-around;">
+        <img src="images/hase-challenge1.png" style="max-width:40%; width:600px;" class="mx-auto">
+        <img src="images/hase-challenge2.png" style="max-width:40%; width:600px;" class="mx-auto">
+    </div>
 
 <p>
     Their experiments indicate that while ROME's approach works for some edits, there are many cases where localized modifications
@@ -196,7 +199,39 @@ But what if we can use this to understand fact retrieval in language models?
     The diagram below shows how the recall process works, with key points such as subject enrichment, relation extraction,
     and attribute retrieval visualized to explain the flow of information through the model:
 
-    <img src="images/dissecting-recall1.png" style="max-width:40%; width:600px;" class="mx-auto d-block">
+    <img src="images/dissecting-recall.png" style="max-width:40%; width:600px;" class="mx-auto d-block">
+
+<p>
+    The authors performed several experiments to explore how factual knowledge is retrieved, focusing on the following key techniques:
+    <ul>
+        <li><strong>Attention Knockout:</strong> In this experiment, specific attention heads were disabled (knocked out) to determine
+          their contribution to factual recall. The results indicated that <strong>middle-upper attention layers</strong> play a critical role in retrieving
+          key information from subject positions directly to the last positions, while other layers have minimal impact. </li>
+
+          <img src="images/attention-knockout.png" style="max-width:40%; width:600px;" class="mx-auto d-block">
+
+        <li><strong>Subject Representation Enrichment using Sublayer Knockout:</strong> The authors used sublayer knockout to understand which parts
+          of the transformer layer add crucial information to subject representation. They zeroed out both the MHSA and MLP sublayers across 10 layers
+          and measured the impact on attribute recall. Results showed that knocking out MLP sublayers reduced the attribute rate by about 88%,
+          while MHSA knockouts had a smaller effect (<30%). This confirms the findings of Meng et al. that <strong>early-middle MLP sublayers</strong> play a
+          significant role in storing factual associations.</li>
+
+          <img src="images/sublayer-knockout.png" style="max-width:40%; width:600px;" class="mx-auto d-block">
+
+        <li><strong>Attribute Extraction to the Last Position:</strong> Finally, the authors investigated how attributes are extracted at the
+          final position by comparing the predicted token with the top-token from each MHSA sublayer update. Extraction events were defined when
+          there was agreement between these tokens. Below result shows the effect of blocking the last position from attending to different
+          positions, suggesting that both MHSA and MLP implement attribute extraction, but <strong>MHSA is the prominent mechanism for factual queries.</strong></li>
+
+          <img src="images/extraction-rate.png" style="max-width:40%; width:600px;" class="mx-auto d-block">
+    </ul>
+
+    <strong><em>Achyut's take:</em></strong> Personally, I find <strong>ROME</strong> to be an exciting contribution, offering an easy and computationally
+    efficient way to update factual information. However, the follow-up work wisely addresses potential oversimplifications in <strong>ROME</strong>'s assumptions.
+    <br>
+    A big takeaway here is that factual editing of LLMs is a promising direction, but we are far from fully understanding the underlying structure.
+    I think combining localized editing (like ROME) with broader entanglement analysis could lead to even more robust methods in the future.
+    <br><br>
 
 
 <h2>Linearity of Relation Decoding</h2>
