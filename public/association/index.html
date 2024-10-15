@@ -73,7 +73,7 @@ process and retrieve it? These papers on <i>factual assocation</i> try to answer
 
 <h2>Linear Associative Memory</h2>
 <p>
-A lot of current work in factual association builds off the foundational idea of 
+A lot of work in factual association builds off the foundational idea of 
 <i>linear associative memory</i>. In <a href="https://rewriting.csail.mit.edu/">one of David's PhD papers</a>, 
 they refer to <a href="https://papers.baulab.info/papers/also/Kohonen-1973.pdf">this 1973 paper</a>
 that illustrates how you can use a matrix \( M\) to store pairs of vectors \( (k_i, v_i) \). 
@@ -251,19 +251,23 @@ But what if we can use this to understand fact retrieval in language models?
     information is stored in early layers, they try to linearly approximate 
     the process by which an LLM would "read out" that information for its final output.
     This would only really work if models were near-linear when decoding relations. 
+    (They cite <a href="https://www.cs.toronto.edu/~fritz/absps/ieee-lre.pdf">Paccanaro and Hinton (2000)</a>
+    as inspiration for the term "Linear Relational Embedding.")
     
 <p>
     Concretely, this means that the authors have to come up with some clever way to 
-    get a weight matrix and bias that can be applied to a hidden state \(s\) to 
-    output \(o\), the state right before the model outputs its answer. In the image 
-    below, they basically want to skip over the entire blue part of model processing,
-    going straight from \(s\) to \(o\). 
+    get a weight matrix and bias representing a specific relation \(r\). 
+    This transformation should be applied to any hidden state \(s\) to 
+    output the right answer \(o\) (they use the hidden state right before the output). 
+    In the image below, they basically want to skip over the entire blue part of model processing,
+    going straight from \(s\) to \(o\) for any \(s\) and \(o\). For example, the transformation 
+    used for Miles Davis -> Trumpet should also work for John Coltrane -> Saxophone.
 
     <img src="images/lre.png" style="max-width:70%; width:500px;" class="mx-auto d-block">
 
     The way that the authors ultimately build these approximators does not require 
-    any gradient descent. If \(F(s,c)\) is the function the transformer is 
-    typically performing to map \(s\) to \(c\), they take the first-order Taylor 
+    any gradient descent. If \(F(s,c) : \mathbb{R}^d \rightarrow \mathbb{R}^d\) is the function the transformer is doing 
+    to map \(s\) to \(o\), they take the first-order Taylor 
     approximation where \(W = \partial F/\partial s\): 
 
     \[ F(s,c) \approx F(s_0, c) + W(s - s_0) \]
