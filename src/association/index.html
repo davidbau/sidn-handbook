@@ -207,7 +207,7 @@ But what if we can use this to understand fact retrieval in language models?
     The way that the authors ultimately build these approximators does not require 
     any gradient descent. If \(F(s,c) : \mathbb{R}^d \rightarrow \mathbb{R}^d\) is the function the transformer is doing 
     to map \(s\) to \(o\), they take the first-order Taylor 
-    approximation of the function where \(W = \partial F/\partial s\): 
+    approximation of the function about \(s_0\) where \(W = \partial F/\partial s\): 
 
     \[ F(s,c) \approx F(s_0, c) + W(s - s_0) \]
     \[ F(s,c) \approx Ws + F(s_0, c) - Ws_0 \]
