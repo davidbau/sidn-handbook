@@ -12,9 +12,9 @@ process and retrieve it? These papers on <i>factual assocation</i> try to answer
 
 <h2>Linear Associative Memory</h2>
 <p>
-A lot of current work in factual association builds off the foundational idea of 
+A lot of work in factual association builds off the foundational idea of 
 <i>linear associative memory</i>. In <a href="https://rewriting.csail.mit.edu/">one of David's PhD papers</a>, 
-they refer to <a href="https://ieeexplore.ieee.org/document/5009138">this 1972 paper</a>
+they refer to <a href="https://papers.baulab.info/papers/also/Kohonen-1973.pdf">this 1973 paper</a>
 that illustrates how you can use a matrix \( M\) to store pairs of vectors \( (k_i, v_i) \). 
 This can approximately done with any kind of matrix.  
 
@@ -32,6 +32,9 @@ which has a rank equal to the number of pairs that it is storing.
 \[
 M \mathrel{\mathop:}= \sum_i v_ik_i^T 
 \]
+\[
+Mk_i = v_1k_1^Tk_i + ... + v_ik_i^Tk_i + ... + v_nk_n^Tk_i = v_i
+\]
 
 In practice, the authors refer to <a href="https://papers.baulab.info/papers/also/Kohonen-1973.pdf">Kohonen (1973)</a>,
 which shows that you can store more keys than the maximum rank of the matrix if you allow them to be non-orthogonal, 
@@ -41,28 +44,144 @@ with some amount of error.
 W_0 \mathrel{\mathop:}= \underset{W}{\text{argmin}}\sum_i||v_i - Wk_i||^2
 \]
 
+<p>
 <a href="https://rewriting.csail.mit.edu/">David et al.</a> come up with a way to 
 pack a new \((k_*,v_*)\) pair in there by doing this minimization with 
-the constraint that \( v_* = Wk_*\). They use this math to edit the convolutional weights of GANs so that they 
+the constraint that \( v_* = Wk_*\). In other words, if you have matrices \(K\) and \(V\)
+whose columns consist of all \(k_i\) and \(v_i\) respectively, then to solve
+\[ W_1 = \underset{W}{\text{argmin}}||V-WK||^2 \text{ where } v_* = W_1k_* \] 
+you can just add a rank-one matrix \( \Lambda(C^{-1}k_*)^T\) to the original weight matrix. 
+\( C = KK^T \) is the covariance if the mean of the keys is zero, so intuitively,
+we can think of \( C^{-1}k_* \) as the "unskewed" direction of the key we want to insert.
+In this paper, they use \(v_*\) to optimize for a vector \( \Lambda \). 
+They use this math to edit the convolutional weights of GANs so that they 
 obey arbitrary user-defined rules, like making horses wear hats, or trees grow out of church towers.
-But what if we can use this to understand fact retrieval in language models? 
+But what if we can use this to understand fact retrieval in language models?
 
 <img src="images/rewriting.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
 
-<h2>ROME</h2>
+<h2>Locating and Editing Factual Associations in GPT</h2>
 <p>
-    Achyut: Cover the basics of ROME 
+    <a href="https://arxiv.org/pdf/2202.05262">The first paper</a> for today by Meng et al. presents an approach for locating and modifying factual associations in language models.<br>
+    <strong>Kevin Meng</strong>, a researcher at MIT, focuses on model interpretability and efficient language model editing techniques.<br>
+    <strong>David Bau</strong>, an assistant professor at Northeastern University, is known for his work in mechanistic interpretability of neural networks.<br>
+    <strong>Alex Andonian</strong>, affiliated with MIT, has expertise in deep learning applications and structural analysis of neural models.<br>
+    <strong>Yonatan Belinkov</strong>, a professor at Technion - Israel Institute of Technology, specializes in natural language processing and machine learning, particularly in analyzing neural models' behavior and robustness.
+    <br><br>
+    The authors introduce a method to identify specific weights that encode factual knowledge and perform rank-one updates
+    to alter it, enabling targeted edits without significant side effects. The focus is on enabling targeted edits
+    that change specific model outputs while preserving unrelated information, allowing for more controllable language models.
+
+<h3>Causal Tracing</h3>
+<p>
+    Building on the method of locating factual associations, the next step involves understanding <strong>causal tracing</strong>.
+    Causal tracing is a technique used to identify which parts of a model are responsible for specific outputs,
+    by tracing how information flows through the network. The authors used causal tracing to pinpoint the weights
+    that influence specific factual associations, which was a crucial precursor to the <strong>ROME</strong> approach.
+    This allowed them to determine how best to modify the model's knowledge effectively.
+
+<img src="images/causal-tracing.png" style="max-width:100%; width:500px;" class="mx-auto d-block">
+<img src="images/causal-tracing2.png" style="max-width:100%; width:500px;" class="mx-auto d-block">
+
+<h3>ROME</h3>
+<p>
+    With the insights gained from causal tracing, the next step was to develop a method for making precise, targeted edits
+    to a language model's factual knowledge. This led to the concept of <strong>Rank-One Model Editing (ROME)</strong>,
+    which focuses on efficiently altering specific associations without extensive retraining or impacting other knowledge stored in the model.
+
+<p>
+    The ROME approach involves creating a rank-one update that modifies the components identified during causal tracing.
+    By targeting these specific elements, the authors ensured that the model's knowledge could be updated with minimal disruption.
+    For instance, changing "Coltrane plays saxophone" to "piano" could be accomplished without affecting unrelated information.
+
+\[
+\text{minimize } ||\hat{W}K - V|| \text{ such that } \hat{W}k_* = v_* \text{ by setting } \hat{W} = W + \Lambda (C^{-1} k_*)^T
+\]
+
+<p>
+    The above equation updates the model weights (\(\hat{W}\)) to ensure that a specific key (\(k_*\)) maps to a
+    new desired value (\(v_*\)). By doing this, the equation allows the model to learn a new fact effectively,
+    like changing "Coltrane plays the saxophone" to "piano", without negatively impacting the model's other learned facts.
+
+<img src="images/rome.png" style="max-width:70%; width:600px;" class="mx-auto d-block">
+
+<p>
+    Editing one MLP layer with ROME: To associate the Space Needle with Paris, the ROME method inserts a new \((k_*, v_*)\)
+    association into layer \(l_*\), where (a) key \(k_*\) is determined by the subject, and (b) value \(v_*\) is optimized
+    to select the object. (c) hidden state at layer \(l_*\) and token \(i\) is expanded to produce (d) the key vector \(k_*\) for the subject.
+    (e) To write the new value vector \(v_*\) into the layer, (f) we calculate a rank-one update \(\Lambda(C^{-1} k_*)^T\)
+    to ensure \(\hat{W}^{(l)}_{proj} k_* = v_*\), while minimizing interference with other memories stored in the layer.
+
+<p>
+    This method highlights the importance of localizing the relevant information before making edits, ensuring that factual changes are both precise and effective.
 
 <h3>Does Localization Inform Editing?</h3>
 <p>
-    A year or so later, some researchers from Google and UNC Chapel Hill wrote a response 
-    to David's paper 
-    Achyut todo: https://arxiv.org/abs/2301.04213
+    A year or so later, some researchers from Google and UNC Chapel Hill wrote <a href="https://arxiv.org/pdf/2301.04213">a response</a> to David's paper.
+    Hase et al. show that localization conclusions from causal tracing do not provide any insight into which MLP layer
+    would be best to edit in order to override an existing stored fact with a new one. They suggest that a fact stored in a model
+    can be changed by editing weights that are in a different location than where causal tracing suggests that the fact is stored.
+
+    <div style="display: flex; justify-content: space-around;">
+        <img src="images/hase-challenge1.png" style="max-width:40%; width:600px;" class="mx-auto">
+        <img src="images/hase-challenge2.png" style="max-width:40%; width:600px;" class="mx-auto">
+    </div>
+
+<p>
+    Their experiments indicate that while ROME's approach works for some edits, there are many cases where localized modifications
+    do not capture the true breadth of the factual association in the model, leading to incomplete or unintended changes.<br>
+    The critique here is that factual knowledge isn't just localized in individual weights. Instead, multiple parameters
+    and layers are involved in the retrieval and association, thus complicating the editing process beyond a simple rank-one update.
 
 
 <h2>Dissecting Recall of Factual Associations</h2>
 <p>
-    Achyut: dissecting recall paper 
+    This paper from October 2023, available <a href="https://arxiv.org/pdf/2304.14767">here</a>, is authored by Mor Geva,
+    Jasmijn Bastings, Katja Filippova, and Amir Globerson. The authors are affiliated with Google DeepMind and Tel Aviv University.
+
+<p>
+    Their motivation for this research stemmed from the observation that while there has been significant progress in locating
+    where factual knowledge is stored in transformer-based language models, very little is known about how this knowledge is
+    retrieved during inference. By studying how a model handles subject-relation queries, they aimed to uncover the information flow
+    that enables correct attribute prediction, ultimately offering deeper insight into how these models function.
+
+<p>
+    The diagram below shows how the recall process works, with key points such as subject enrichment, relation extraction,
+    and attribute retrieval visualized to explain the flow of information through the model:
+
+    <img src="images/dissecting-recall.png" style="max-width:40%; width:600px;" class="mx-auto d-block">
+
+<p>
+    The authors performed several experiments to explore how factual knowledge is retrieved, focusing on the following key techniques:
+    <ul>
+        <li><strong>Attention Knockout:</strong> In this experiment, specific attention heads were disabled (knocked out) to determine
+          their contribution to factual recall. The results indicated that <strong>middle-upper attention layers</strong> play a critical role in retrieving
+          key information from subject positions directly to the last positions, while other layers have minimal impact. </li>
+
+          <img src="images/attention-knockout.png" style="max-width:40%; width:600px;" class="mx-auto d-block">
+
+        <li><strong>Subject Representation Enrichment using Sublayer Knockout:</strong> The authors used sublayer knockout to understand which parts
+          of the transformer layer add crucial information to subject representation. They zeroed out both the MHSA and MLP sublayers across 10 layers
+          and measured the impact on attribute recall. Results showed that knocking out MLP sublayers reduced the attribute rate by about 88%,
+          while MHSA knockouts had a smaller effect (<30%). This confirms the findings of Meng et al. that <strong>early-middle MLP sublayers</strong> play a
+          significant role in storing factual associations.</li>
+
+          <img src="images/sublayer-knockout.png" style="max-width:40%; width:600px;" class="mx-auto d-block">
+
+        <li><strong>Attribute Extraction to the Last Position:</strong> Finally, the authors investigated how attributes are extracted at the
+          final position by comparing the predicted token with the top-token from each MHSA sublayer update. Extraction events were defined when
+          there was agreement between these tokens. Below result shows the effect of blocking the last position from attending to different
+          positions, suggesting that both MHSA and MLP implement attribute extraction, but <strong>MHSA is the prominent mechanism for factual queries.</strong></li>
+
+          <img src="images/extraction-rate.png" style="max-width:40%; width:600px;" class="mx-auto d-block">
+    </ul>
+
+    <strong><em>Achyut's take:</em></strong> Personally, I find <strong>ROME</strong> to be an exciting contribution, offering an easy and computationally
+    efficient way to update factual information. However, the follow-up work wisely addresses potential oversimplifications in <strong>ROME</strong>'s assumptions.
+    <br>
+    A big takeaway here is that factual editing of LLMs is a promising direction, but we are far from fully understanding the underlying structure.
+    I think combining localized editing (like ROME) with broader entanglement analysis could lead to even more robust methods in the future.
+    <br><br>
 
 <h2>Linearity of Relation Decoding</h2>
 <p>
@@ -134,8 +253,21 @@ But what if we can use this to understand fact retrieval in language models?
     They argue that this method works a lot better than probing those hidden states using an SVM. 
 
 
-<h2>Demo</h2>
+<h2>Code Examples</h2>
 
-Sheridan/Achyut todo: make a quick ROME causal tracing (editing?) demo using nnsight
+Here are some notebooks from the authors of two of the papers that are fun to play around with.
+
+<p>
+For the first paper: 
+<ul>
+    <li><a href="https://colab.research.google.com/github/kmeng01/rome/blob/main/notebooks/causal_trace.ipynb"><strong>Causal Tracing</strong></a><br></li>
+    <li><a href="https://colab.research.google.com/github/kmeng01/rome/blob/main/notebooks/rome.ipynb"><strong>ROME</strong></a><br></li>
+</ul>
+
+For the second paper:
+<ul>
+    <li><a href="https://colab.research.google.com/github/evandez/relations/blob/main/demo/demo.ipynb"><strong>LRE Demo</strong></a><br></li>
+    <li><a href="https://colab.research.google.com/github/evandez/relations/blob/main/demo/attribute_lens.ipynb"><strong>Attribute Lens</strong></a></li>
+</ul>
 
 {footer()}

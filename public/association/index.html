@@ -64,47 +64,58 @@ rel="stylesheet">
 <div><h5>October 15, 2024 • <em>Achyut Kowshik, Sheridan Feucht</em></h5>
 
     <p>
-If you ask a (decent) LLM to complete the sentence "Coltrane plays the ___",
+If you ask a (decent) LLM to complete the sentence "Coltrane plays the ___", 
 it will probably say "tenor" or "saxophone". In order to accurately predict the next word,
-the model has to be able to "understand" who John Coltrane is, and then retrieve information on what instrument he plays.
-But how does it do this? Where do LLMs store information about the world, and how do they
-process and retrieve it? These papers on <i>factual assocation</i> try to answer that question.
+the model has to be able to "understand" who John Coltrane is, and then retrieve information on what instrument he plays. 
+But how does it do this? Where do LLMs store information about the world, and how do they 
+process and retrieve it? These papers on <i>factual assocation</i> try to answer that question. 
 
 
 <h2>Linear Associative Memory</h2>
 <p>
-A lot of current work in factual association builds off the foundational idea of
-<i>linear associative memory</i>. In <a href="https://rewriting.csail.mit.edu/">one of David's PhD papers</a>,
-they refer to <a href="https://ieeexplore.ieee.org/document/5009138">this 1972 paper</a>
-that illustrates how you can use a matrix \( M\) to store pairs of vectors \( (k_i, v_i) \).
-This can approximately done with any kind of matrix.
+A lot of current work in factual association builds off the foundational idea of 
+<i>linear associative memory</i>. In <a href="https://rewriting.csail.mit.edu/">one of David's PhD papers</a>, 
+they refer to <a href="https://papers.baulab.info/papers/also/Kohonen-1973.pdf">this 1973 paper</a>
+that illustrates how you can use a matrix \( M\) to store pairs of vectors \( (k_i, v_i) \). 
+This can approximately done with any kind of matrix.  
 
 \[
 v_i \approx Wk_i
 \]
 
-You can actually do this retrieval perfectly if you have orthonormal keys. The way you
-do so is by constructing a matrix that is the sum of the outer products of every desired pair, \(v_ik_i^T \).
+You can actually do this retrieval perfectly if you have orthonormal keys. The way you 
+do so is by constructing a matrix that is the sum of the outer products of every desired pair, \(v_ik_i^T \). 
 Each one of these outer products is a rank one matrix that we can accumulate to create \( M \),
-which has a rank equal to the number of pairs that it is storing.
+which has a rank equal to the number of pairs that it is storing. 
 
 <!-- If \( M\) is an \(m\times n\) matrix, then we can store up to \( n \) pairs.  -->
 
 \[
-M \mathrel{\mathop:}= \sum_i v_ik_i^T
+M \mathrel{\mathop:}= \sum_i v_ik_i^T 
+\]
+\[
+Mk_i = v_1k_1^Tk_i + ... + v_ik_i^Tk_i + ... + v_nk_n^Tk_i = v_i
 \]
 
 In practice, the authors refer to <a href="https://papers.baulab.info/papers/also/Kohonen-1973.pdf">Kohonen (1973)</a>,
-which shows that you can store more keys than the maximum rank of the matrix if you allow them to be non-orthogonal,
+which shows that you can store more keys than the maximum rank of the matrix if you allow them to be non-orthogonal, 
 with some amount of error.
 
 \[
 W_0 \mathrel{\mathop:}= \underset{W}{\text{argmin}}\sum_i||v_i - Wk_i||^2
 \]
 
-<a href="https://rewriting.csail.mit.edu/">David et al.</a> come up with a way to
-pack a new \((k_*,v_*)\) pair in there by doing this minimization with
-the constraint that \( v_* = Wk_*\). They use this math to edit the convolutional weights of GANs so that they
+<p>
+<a href="https://rewriting.csail.mit.edu/">David et al.</a> come up with a way to 
+pack a new \((k_*,v_*)\) pair in there by doing this minimization with 
+the constraint that \( v_* = Wk_*\). In other words, if you have matrices \(K\) and \(V\)
+whose columns consist of all \(k_i\) and \(v_i\) respectively, then to solve
+\[ W_1 = \underset{W}{\text{argmin}}||V-WK||^2 \text{ where } v_* = W_1k_* \] 
+you can just add a rank-one matrix \( \Lambda(C^{-1}k_*)^T\) to the original weight matrix. 
+\( C = KK^T \) is the covariance if the mean of the keys is zero, so intuitively,
+we can think of \( C^{-1}k_* \) as the "unskewed" direction of the key we want to insert.
+In this paper, they use \(v_*\) to optimize for a vector \( \Lambda \). 
+They use this math to edit the convolutional weights of GANs so that they 
 obey arbitrary user-defined rules, like making horses wear hats, or trees grow out of church towers.
 But what if we can use this to understand fact retrieval in language models?
 
@@ -233,83 +244,92 @@ But what if we can use this to understand fact retrieval in language models?
     I think combining localized editing (like ROME) with broader entanglement analysis could lead to even more robust methods in the future.
     <br><br>
 
-
 <h2>Linearity of Relation Decoding</h2>
 <p>
-    <a href="https://lre.baulab.info/">The last paper for today</a> from David's lab looks at
-    factual association from a slightly different angle. Based on the idea that factual
-    information is stored in early layers, they try to linearly approximate
+    <a href="https://lre.baulab.info/">The last paper for today</a> from David's lab looks at 
+    factual association from a slightly different angle. Based on the idea that factual 
+    information is stored in early layers, they try to linearly approximate 
     the process by which an LLM would "read out" that information for its final output.
-    This would only really work if models were near-linear when decoding relations.
-
+    This would only really work if models were near-linear when decoding relations. 
+    
 <p>
-    Concretely, this means that the authors have to come up with some clever way to
-    get a weight matrix and bias that can be applied to a hidden state \(s\) to
-    output \(o\), the state right before the model outputs its answer. In the image
+    Concretely, this means that the authors have to come up with some clever way to 
+    get a weight matrix and bias that can be applied to a hidden state \(s\) to 
+    output \(o\), the state right before the model outputs its answer. In the image 
     below, they basically want to skip over the entire blue part of model processing,
-    going straight from \(s\) to \(o\).
+    going straight from \(s\) to \(o\). 
 
     <img src="images/lre.png" style="max-width:70%; width:500px;" class="mx-auto d-block">
 
-    The way that the authors ultimately build these approximators does not require
-    any gradient descent. If \(F(s,c)\) is the function the transformer is
-    typically performing to map \(s\) to \(c\), they take the first-order Taylor
-    approximation where \(W = \partial F/\partial s\):
+    The way that the authors ultimately build these approximators does not require 
+    any gradient descent. If \(F(s,c)\) is the function the transformer is 
+    typically performing to map \(s\) to \(c\), they take the first-order Taylor 
+    approximation where \(W = \partial F/\partial s\): 
 
     \[ F(s,c) \approx F(s_0, c) + W(s - s_0) \]
     \[ F(s,c) \approx Ws + F(s_0, c) - Ws_0 \]
-
-    This approximation is just an affine transformation, with a bias \( F(s_0, c) - Ws_0 \).
-    In practice, they calculate \(W\) by averaging the Jacobian of \( F \) for
-    a few examples \(s_i, o_i \).
-
+    
+    This approximation is just an affine transformation, with a bias \( F(s_0, c) - Ws_0 \). 
+    In practice, they calculate \(W\) by averaging the Jacobian of \( F \) for 
+    a few examples \(s_i, o_i \). 
+    
 <h3>Are these LREs faithful?</h3>
 <p>
-    The authors calculate these approximations for a number of relations and measure
+    The authors calculate these approximations for a number of relations and measure 
     how <i>faithful</i> they are to the outputs of the original model. In other words,
     what fraction of the time do they output the same token as the actual model?
 
     <img src="images/faithfulness.png" style="max-width:70%; width:500px;" class="mx-auto d-block">
 
-    Their Figure 3 shows that some relations can be approximated extremely well in this way, like
-    encodings of gender bias (occupation -> gender), whereas relations like (company -> CEO)
-    are more difficult to approximate. This indicates that these relations are calculated
-    in some non-linear manner; they require a bit more calculation to get out.
+    Their Figure 3 shows that some relations can be approximated extremely well in this way, like 
+    encodings of gender bias (occupation -> gender), whereas relations like (company -> CEO) 
+    are more difficult to approximate. This indicates that these relations are calculated 
+    in some non-linear manner; they require a bit more calculation to get out. 
 
 <h3>Are these LREs causal?</h3>
-    If these LREs are actually causally related to model behavior, then we should
+    If these LREs are actually causally related to model behavior, then we should 
     be able to use them to manipulate model outputs.
-    They do an experiment where they try to change the output associated with a subject
-    (e.g. make the model say that Miles Davis plays the guitar). If you have
-    \((s, r, o) = \) (Miles Davis, plays instrument, trumpet) and
-    \((s', r, o') = \) (Cat Stevens, plays instrument, guitar), then
-
+    They do an experiment where they try to change the output associated with a subject 
+    (e.g. make the model say that Miles Davis plays the guitar). If you have 
+    \((s, r, o) = \) (Miles Davis, plays instrument, trumpet) and 
+    \((s', r, o') = \) (Cat Stevens, plays instrument, guitar), then 
+    
     The authors derive that you should be able to add a special vector \( \Delta s = W^{-1}(o'-o)\) to \( s \)
-    to make it look like \(s'\), resulting in the model outputting \(o'\). This only works
-    if \(W\) is causally related to model behavior. And in fact they show that their
-    approach actually works slightly better than just directly substituting \(s'\) in place of \(s\).
-    This is a really good sign that \(W\) reads relational information in the same way
-    that the model does itself.
+    to make it look like \(s'\), resulting in the model outputting \(o'\). This only works 
+    if \(W\) is causally related to model behavior. And in fact they show that their 
+    approach actually works slightly better than just directly substituting \(s'\) in place of \(s\). 
+    This is a really good sign that \(W\) reads relational information in the same way 
+    that the model does itself. 
 
     <img src="images/causality.png" style="max-width:95%; width:800px;" class="mx-auto d-block">
 
 <h3>Bonus: Identifying Linear Relational Concepts</h3>
-    A little while after this paper was released, researchers at University College London
-    built on their work to create linear relational concepts (LRCs). They create an LRE
-    for some relation and get a low-rank pseudo-inverse of the LRE, which is just \( W^\dagger \)
+    A little while after this paper was released, researchers at University College London 
+    built on their work to create linear relational concepts (LRCs). They create an LRE 
+    for some relation and get a low-rank pseudo-inverse of the LRE, which is just \( W^\dagger \) 
     from the original paper. When they apply that \( W^\dagger \) to "York" or "Shanghai",
     they get specific vectors that represent the concepts "Located in England" and "Located in China."
-    Then, given some hidden state representation of a place, e.g. "Boston", they dot its representation
-    with every "Located in" vector. Whichever vector has the highest dot product they take as the answer.
-    They argue that this method works a lot better than probing those hidden states using an SVM.
+    Then, given some hidden state representation of a place, e.g. "Boston", they dot its representation 
+    with every "Located in" vector. Whichever vector has the highest dot product they take as the answer. 
+    They argue that this method works a lot better than probing those hidden states using an SVM. 
 
 
-<h2>Code</h2>
+<h2>Code Examples</h2>
 
-<a href="https://colab.research.google.com/github/kmeng01/rome/blob/main/notebooks/causal_trace.ipynb"><strong>Causal Tracing</strong></a><br>
-<a href="https://colab.research.google.com/github/kmeng01/rome/blob/main/notebooks/rome.ipynb"><strong>ROME</strong></a><br>
-<a href="https://colab.research.google.com/github/evandez/relations/blob/main/demo/demo.ipynb"><strong>LRE Demo</strong></a><br>
-<a href="https://colab.research.google.com/github/evandez/relations/blob/main/demo/attribute_lens.ipynb"><strong>Attribute Lens</strong></a>
+Here are some notebooks from the authors of two of the papers that are fun to play around with.
+
+<p>
+For the first paper: 
+<ul>
+    <li><a href="https://colab.research.google.com/github/kmeng01/rome/blob/main/notebooks/causal_trace.ipynb"><strong>Causal Tracing</strong></a><br></li>
+    <li><a href="https://colab.research.google.com/github/kmeng01/rome/blob/main/notebooks/rome.ipynb"><strong>ROME</strong></a><br></li>
+</ul>
+
+For the second paper:
+<ul>
+    <li><a href="https://colab.research.google.com/github/evandez/relations/blob/main/demo/demo.ipynb"><strong>LRE Demo</strong></a><br></li>
+    <li><a href="https://colab.research.google.com/github/evandez/relations/blob/main/demo/attribute_lens.ipynb"><strong>Attribute Lens</strong></a></li>
+</ul>
 
 
 </main>
@@ -317,3 +337,4 @@ But what if we can use this to understand fact retrieval in language models?
 </div>
 </body>
 </html>
+
