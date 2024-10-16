@@ -11,12 +11,12 @@
   and retrieve it? These papers on <i>factual assocation</i> try to answer that
   question.
 
-  <h2>
+  <h1>
     <a href="https://arxiv.org/pdf/2402.11917"
       >A Mechanistic Analysis of a Transformer Trained on a Symbolic Multi-Step
       Reasoning Task</a
     >
-  </h2>
+  </h1>
   <p>
     <strong>Jannik Brinkmann</strong> Work done at University of Mannheim as a
     PhD<br />
@@ -33,7 +33,7 @@
     The authors
   </p>
 
-  <h3>The Reasoning Task</h3>
+  <h2>The Reasoning Task</h2>
   <p>
     The training dataset is a binary tree T=(V,E). The model is given an edge
     list, root node, and goal node. The model needs to predict the path from the
@@ -43,7 +43,7 @@
 
     <img
       src="images/reasoning_task.png"
-      style="width: 100%"
+      style="width: 100%; border: 5px solid #555"
       class="mx-auto d-block"
     />
     Figure 1. A -> B is an edge from node A to node B. Edges are separated by a
@@ -51,7 +51,7 @@
     <br />
     <img
       src="images/reasoning_task_tree.png"
-      style="width: 20%"
+      style="width: 20%; border: 5px solid #555"
       class="mx-auto d-block"
     />
     <br />
@@ -70,7 +70,7 @@
   <br />
   <img
     src="images/reasoningontology2.png"
-    style="width: 80%"
+    style="width: 80%; border: 5px solid #555"
     class="mx-auto d-block"
   />
   <br />
@@ -82,10 +82,20 @@
   <br />
   <img
     src="images/reasoningontology.png"
-    style="width: 10%"
+    style="width: 10%; border: 5px solid #555"
     class="mx-auto d-block"
   />
-
+  <h2>They discover the model uses the backward chaining algorithm</h2>
+  <p>
+    Backwards chaining is a term from symbolic AI which the model's algorithm shares similarities to. The algorithm is as follows:
+    <ol>
+        <li>"For each
+            edge [A]->[B] it copies the information from [A]
+            into the residual stream at position [B]" </li>
+        <li>Tea</li>
+        <li>Milk</li>
+    </ol>
+  </p>
   <h2>Locating and Editing Factual Associations in GPT</h2>
   <p>
     <a href="https://arxiv.org/pdf/2202.05262">The first paper</a> for today by
