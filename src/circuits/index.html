@@ -87,15 +87,41 @@
   />
   <h2>They discover the model uses the backward chaining algorithm</h2>
   <p>
-    Backwards chaining is a term from symbolic AI which the model's algorithm shares similarities to. The algorithm is as follows:
-    <ol>
-        <li>"For each
-            edge [A]->[B] it copies the information from [A]
-            into the residual stream at position [B]" </li>
-        <li>Tea</li>
-        <li>Milk</li>
-    </ol>
+    Backwards chaining is a term from symbolic AI which the model's algorithm
+    shares similarities to. The model's algorithm is as follows:
   </p>
+
+  <ol>
+    <li>
+      "In the first transformer layer, for each edge [A]->[B] it copies the
+      information from [A] into the residual stream at position [B]"
+    </li>
+    <li>
+      Backwards Chaining
+      <ol>
+        <li>
+          "The model copies the target node [G] into the final token position
+          [Pi]"
+        </li>
+        <li>
+          The authors terms the heads that perform the following operation in
+          each layer as "deduction heads." In a given layer at a given node at
+          the current position the model will find the source/parent node and
+          copy it to the current position. [A] [B] ... [B] → [A]
+        </li>
+        <li>
+          This is repeated in each layer, allowing the model to traverse up the
+          tree
+        </li>
+      </ol>
+    </li>
+    <li>
+      If the goal is more nodes away than the number of layers then the model
+      does backward chaining in parallel on multiple different token positions
+    </li>
+    <li>Each subpath is then merged together</li>
+  </ol>
+
   <h2>Locating and Editing Factual Associations in GPT</h2>
   <p>
     <a href="https://arxiv.org/pdf/2202.05262">The first paper</a> for today by
