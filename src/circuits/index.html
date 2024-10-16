@@ -10,6 +10,12 @@
   this? Where do LLMs store information about the world, and how do they process
   and retrieve it? These papers on <i>factual assocation</i> try to answer that
   question.
+  <h2>Causal Scrubbing</h2>
+  This technique intervenes during the model's inference by replacing
+  activations of a component of interest with activations of that same component
+  during a different input. This impacts the model's loss which is then used for
+  this performance metric: \(L_{CS} = (L_{scrubbed} - L_{random})/(L_{model} -
+  L_{random}) \).
 
   <h1>
     <a href="https://arxiv.org/pdf/2402.11917"
