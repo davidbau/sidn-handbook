@@ -40,7 +40,7 @@ rel="stylesheet">
 <div class="container-fluid">
 <ul class="navbar-nav mr-auto">
  <li class="nav-item active">
-  <a class="nav-link" href="/association/index.html">Factual Association</a>
+  <a class="nav-link" href="/circuits/index.html">Factual Association</a>
  </li>
 </ul>
 <ul class="navbar-nav ml-auto">
@@ -61,9 +61,8 @@ rel="stylesheet">
 <h1 class="mt-5">Factual Association</h1>
 
 
-<div><h5>October 15, 2024 • <em>Achyut Kowshik, Sheridan Feucht</em></h5>
+<div><h5>October 17, 2024 • <em>Philip Yao, Nikhil Prakash</em></h5>
 
-    <p>
 If you ask a (decent) LLM to complete the sentence "Coltrane plays the ___", 
 it will probably say "tenor" or "saxophone". In order to accurately predict the next word,
 the model has to be able to "understand" who John Coltrane is, and then retrieve information on what instrument he plays. 
@@ -71,55 +70,20 @@ But how does it do this? Where do LLMs store information about the world, and ho
 process and retrieve it? These papers on <i>factual assocation</i> try to answer that question. 
 
 
-<h2>Linear Associative Memory</h2>
+<h2><a href="https://arxiv.org/pdf/2402.11917">A Mechanistic Analysis of a Transformer Trained on
+a Symbolic Multi-Step Reasoning Task</a></h2>
 <p>
-A lot of work in factual association builds off the foundational idea of 
-<i>linear associative memory</i>. In <a href="https://rewriting.csail.mit.edu/">one of David's PhD papers</a>, 
-they refer to <a href="https://papers.baulab.info/papers/also/Kohonen-1973.pdf">this 1973 paper</a>
-that illustrates how you can use a matrix \( M\) to store pairs of vectors \( (k_i, v_i) \). 
-This can approximately done with any kind of matrix.  
+    <strong>Jannik Brinkmann</strong> Work done at University of Mannheim as a PhD<br>
+    <strong>Abhay Sheshadri</strong> Work done at Georgia Tech as an Undergrad<br>
+    <strong>Victor Levoso</strong> Unknown<br>
+    <strong>Paul Swoboda</strong> Work done at University Düsseldorf as a Professor <br>
+    <strong>Christian Bartelt</strong> Work done at University of Mannheim as a Managing Director <br>
 
-\[
-v_i \approx Wk_i
-\]
-
-You can actually do this retrieval perfectly if you have orthonormal keys. The way you 
-do so is by constructing a matrix that is the sum of the outer products of every desired pair, \(v_ik_i^T \). 
-Each one of these outer products is a rank one matrix that we can accumulate to create \( M \),
-which has a rank equal to the number of pairs that it is storing. 
-
-<!-- If \( M\) is an \(m\times n\) matrix, then we can store up to \( n \) pairs.  -->
-
-\[
-M \mathrel{\mathop:}= \sum_i v_ik_i^T 
-\]
-\[
-Mk_i = v_1k_1^Tk_i + ... + v_ik_i^Tk_i + ... + v_nk_n^Tk_i = v_i
-\]
-
-In practice, the authors refer to <a href="https://papers.baulab.info/papers/also/Kohonen-1973.pdf">Kohonen (1973)</a>,
-which shows that you can store more keys than the maximum rank of the matrix if you allow them to be non-orthogonal, 
-with some amount of error.
-
-\[
-W_0 \mathrel{\mathop:}= \underset{W}{\text{argmin}}\sum_i||v_i - Wk_i||^2
-\]
-
-<p>
-<a href="https://rewriting.csail.mit.edu/">David et al.</a> come up with a way to 
-pack a new \((k_*,v_*)\) pair in there by doing this minimization with 
-the constraint that \( v_* = Wk_*\). In other words, if you have matrices \(K\) and \(V\)
-whose columns consist of all \(k_i\) and \(v_i\) respectively, then to solve
-\[ W_1 = \underset{W}{\text{argmin}}||V-WK||^2 \text{ where } v_* = W_1k_* \] 
-you can just add a rank-one matrix \( \Lambda(C^{-1}k_*)^T\) to the original weight matrix. 
-\( C = KK^T \) is the covariance if the mean of the keys is zero, so intuitively,
-we can think of \( C^{-1}k_* \) as the "unskewed" direction of the key we want to insert.
-In this paper, they use \(v_*\) to optimize for a vector \( \Lambda \). 
-They use this math to edit the convolutional weights of GANs so that they 
-obey arbitrary user-defined rules, like making horses wear hats, or trees grow out of church towers.
-But what if we can use this to understand fact retrieval in language models?
-
-<img src="images/rewriting.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
+    <br><br>
+    The authors introduce a method to identify specific weights that encode factual knowledge and perform rank-one updates
+    to alter it, enabling targeted edits without significant side effects. The focus is on enabling targeted edits
+    that change specific model outputs while preserving unrelated information, allowing for more controllable language models.
+</p>
 
 <h2>Locating and Editing Factual Associations in GPT</h2>
 <p>
