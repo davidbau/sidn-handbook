@@ -61,248 +61,462 @@ rel="stylesheet">
 <h1 class="mt-5">Factual Association</h1>
 
 
-<div><h5>October 17, 2024 • <em>Philip Yao, Nikhil Prakash</em></h5>
+<div>
+  <h5>October 17, 2024 • <em>Philip Yao, Nikhil Prakash</em></h5>
 
-If you ask a (decent) LLM to complete the sentence "Coltrane plays the ___", 
-it will probably say "tenor" or "saxophone". In order to accurately predict the next word,
-the model has to be able to "understand" who John Coltrane is, and then retrieve information on what instrument he plays. 
-But how does it do this? Where do LLMs store information about the world, and how do they 
-process and retrieve it? These papers on <i>factual assocation</i> try to answer that question. 
+  If you ask a (decent) LLM to complete the sentence "Coltrane plays the ___",
+  it will probably say "tenor" or "saxophone". In order to accurately predict
+  the next word, the model has to be able to "understand" who John Coltrane is,
+  and then retrieve information on what instrument he plays. But how does it do
+  this? Where do LLMs store information about the world, and how do they process
+  and retrieve it? These papers on <i>factual assocation</i> try to answer that
+  question.
 
+  <h2>
+    <a href="https://arxiv.org/pdf/2402.11917"
+      >A Mechanistic Analysis of a Transformer Trained on a Symbolic Multi-Step
+      Reasoning Task</a
+    >
+  </h2>
+  <p>
+    <strong>Jannik Brinkmann</strong> Work done at University of Mannheim as a
+    PhD<br />
+    <strong>Abhay Sheshadri</strong> Work done at Georgia Tech as an
+    Undergrad<br />
+    <strong>Victor Levoso</strong> Unknown<br />
+    <strong>Paul Swoboda</strong> Work done at University Düsseldorf as a
+    Professor <br />
+    <strong>Christian Bartelt</strong> Work done at University of Mannheim as a
+    Managing Director <br />
 
-<h2><a href="https://arxiv.org/pdf/2402.11917">A Mechanistic Analysis of a Transformer Trained on
-a Symbolic Multi-Step Reasoning Task</a></h2>
-<p>
-    <strong>Jannik Brinkmann</strong> Work done at University of Mannheim as a PhD<br>
-    <strong>Abhay Sheshadri</strong> Work done at Georgia Tech as an Undergrad<br>
-    <strong>Victor Levoso</strong> Unknown<br>
-    <strong>Paul Swoboda</strong> Work done at University Düsseldorf as a Professor <br>
-    <strong>Christian Bartelt</strong> Work done at University of Mannheim as a Managing Director <br>
+    <br /><br />
 
-    <br><br>
-    The authors introduce a method to identify specific weights that encode factual knowledge and perform rank-one updates
-    to alter it, enabling targeted edits without significant side effects. The focus is on enabling targeted edits
-    that change specific model outputs while preserving unrelated information, allowing for more controllable language models.
-</p>
+    The authors
+  </p>
 
-<h2>Locating and Editing Factual Associations in GPT</h2>
-<p>
-    <a href="https://arxiv.org/pdf/2202.05262">The first paper</a> for today by Meng et al. presents an approach for locating and modifying factual associations in language models.<br>
-    <strong>Kevin Meng</strong>, a researcher at MIT, focuses on model interpretability and efficient language model editing techniques.<br>
-    <strong>David Bau</strong>, an assistant professor at Northeastern University, is known for his work in mechanistic interpretability of neural networks.<br>
-    <strong>Alex Andonian</strong>, affiliated with MIT, has expertise in deep learning applications and structural analysis of neural models.<br>
-    <strong>Yonatan Belinkov</strong>, a professor at Technion - Israel Institute of Technology, specializes in natural language processing and machine learning, particularly in analyzing neural models' behavior and robustness.
-    <br><br>
-    The authors introduce a method to identify specific weights that encode factual knowledge and perform rank-one updates
-    to alter it, enabling targeted edits without significant side effects. The focus is on enabling targeted edits
-    that change specific model outputs while preserving unrelated information, allowing for more controllable language models.
+  <h3>The Reasoning Task</h3>
+  <p>
+    The training dataset is a binary tree T=(V,E). The model is given an edge
+    list, root node, and goal node. The model needs to predict the path from the
+    root node to the goal node. Notice that this path is unique. See the two
+    figures below. The first one shows the task, and the second one shows the
+    tree structure.
 
-<h3>Causal Tracing</h3>
-<p>
-    Building on the method of locating factual associations, the next step involves understanding <strong>causal tracing</strong>.
-    Causal tracing is a technique used to identify which parts of a model are responsible for specific outputs,
-    by tracing how information flows through the network. The authors used causal tracing to pinpoint the weights
-    that influence specific factual associations, which was a crucial precursor to the <strong>ROME</strong> approach.
-    This allowed them to determine how best to modify the model's knowledge effectively.
+    <img
+      src="images/reasoning_task.png"
+      style="width: 100%"
+      class="mx-auto d-block"
+    />
+    Figure 1. A -> B is an edge from node A to node B. Edges are separated by a
+    comma. The goal node and root node are also included.
+    <br />
+    <img
+      src="images/reasoning_task_tree.png"
+      style="width: 20%"
+      class="mx-auto d-block"
+    />
+    <br />
+    Figure 2. The red node is the root node and the blue node is the goal node.
+    The green nodes represent the intermediate path
+  </p>
 
-<img src="images/causal-tracing.png" style="max-width:100%; width:500px;" class="mx-auto d-block">
-<img src="images/causal-tracing2.png" style="max-width:100%; width:500px;" class="mx-auto d-block">
+  <strong>Why is this task considered reasoning?</strong> This task was inspired
+  by work from
+  <a href="https://arxiv.org/pdf/2210.01240"
+    >Abulhair Saparov and He He. 2023. Language models are greedy reasoners: A
+    systematic formal analysis of chain-of-thought. In The Eleventh
+    International Conference on Learning Representations.</a
+  >
+  The authors of Saparov and He He's paper construct a reasoning task like this:
+  <br />
+  <img
+    src="images/reasoningontology2.png"
+    style="width: 80%"
+    class="mx-auto d-block"
+  />
+  <br />
 
-<h3>ROME</h3>
-<p>
-    With the insights gained from causal tracing, the next step was to develop a method for making precise, targeted edits
-    to a language model's factual knowledge. This led to the concept of <strong>Rank-One Model Editing (ROME)</strong>,
-    which focuses on efficiently altering specific associations without extensive retraining or impacting other knowledge stored in the model.
+  Notice that this reasoning task demands arriving at a conclusion from a set of
+  principles and is equivalent to finding a path from the root node to the goal
+  node by following the edges (which represent entity relationships) of the
+  graph below. Hence our tree traversal task is equivalent to a reasoning task.
+  <br />
+  <img
+    src="images/reasoningontology.png"
+    style="width: 10%"
+    class="mx-auto d-block"
+  />
 
-<p>
-    The ROME approach involves creating a rank-one update that modifies the components identified during causal tracing.
-    By targeting these specific elements, the authors ensured that the model's knowledge could be updated with minimal disruption.
-    For instance, changing "Coltrane plays saxophone" to "piano" could be accomplished without affecting unrelated information.
+  <h2>Locating and Editing Factual Associations in GPT</h2>
+  <p>
+    <a href="https://arxiv.org/pdf/2202.05262">The first paper</a> for today by
+    Meng et al. presents an approach for locating and modifying factual
+    associations in language models.<br />
+    <strong>Kevin Meng</strong>, a researcher at MIT, focuses on model
+    interpretability and efficient language model editing techniques.<br />
+    <strong>David Bau</strong>, an assistant professor at Northeastern
+    University, is known for his work in mechanistic interpretability of neural
+    networks.<br />
+    <strong>Alex Andonian</strong>, affiliated with MIT, has expertise in deep
+    learning applications and structural analysis of neural models.<br />
+    <strong>Yonatan Belinkov</strong>, a professor at Technion - Israel
+    Institute of Technology, specializes in natural language processing and
+    machine learning, particularly in analyzing neural models' behavior and
+    robustness. <br /><br />
+    The authors introduce a method to identify specific weights that encode
+    factual knowledge and perform rank-one updates to alter it, enabling
+    targeted edits without significant side effects. The focus is on enabling
+    targeted edits that change specific model outputs while preserving unrelated
+    information, allowing for more controllable language models.
+  </p>
 
-\[
-\text{minimize } ||\hat{W}K - V|| \text{ such that } \hat{W}k_* = v_* \text{ by setting } \hat{W} = W + \Lambda (C^{-1} k_*)^T
-\]
+  <h3>Causal Tracing</h3>
+  <p>
+    Building on the method of locating factual associations, the next step
+    involves understanding <strong>causal tracing</strong>. Causal tracing is a
+    technique used to identify which parts of a model are responsible for
+    specific outputs, by tracing how information flows through the network. The
+    authors used causal tracing to pinpoint the weights that influence specific
+    factual associations, which was a crucial precursor to the
+    <strong>ROME</strong> approach. This allowed them to determine how best to
+    modify the model's knowledge effectively.
 
-<p>
-    The above equation updates the model weights (\(\hat{W}\)) to ensure that a specific key (\(k_*\)) maps to a
-    new desired value (\(v_*\)). By doing this, the equation allows the model to learn a new fact effectively,
-    like changing "Coltrane plays the saxophone" to "piano", without negatively impacting the model's other learned facts.
+    <img
+      src="images/causal-tracing.png"
+      style="max-width: 40%; width: 600px"
+      class="mx-auto"
+    />
+    <img
+      src="images/causal-tracing2.png"
+      style="max-width: 40%; width: 600px"
+      class="mx-auto"
+    />
+  </p>
 
-<img src="images/rome.png" style="max-width:70%; width:600px;" class="mx-auto d-block">
+  <h3>ROME</h3>
+  <p>
+    With the insights gained from causal tracing, the next step was to develop a
+    method for making precise, targeted edits to a language model's factual
+    knowledge. This led to the concept of
+    <strong>Rank-One Model Editing (ROME)</strong>, which focuses on efficiently
+    altering specific associations without extensive retraining or impacting
+    other knowledge stored in the model.
+  </p>
 
-<p>
-    Editing one MLP layer with ROME: To associate the Space Needle with Paris, the ROME method inserts a new \((k_*, v_*)\)
-    association into layer \(l_*\), where (a) key \(k_*\) is determined by the subject, and (b) value \(v_*\) is optimized
-    to select the object. (c) hidden state at layer \(l_*\) and token \(i\) is expanded to produce (d) the key vector \(k_*\) for the subject.
-    (e) To write the new value vector \(v_*\) into the layer, (f) we calculate a rank-one update \(\Lambda(C^{-1} k_*)^T\)
-    to ensure \(\hat{W}^{(l)}_{proj} k_* = v_*\), while minimizing interference with other memories stored in the layer.
+  <p>
+    The ROME approach involves creating a rank-one update that modifies the
+    components identified during causal tracing. By targeting these specific
+    elements, the authors ensured that the model's knowledge could be updated
+    with minimal disruption. For instance, changing "Coltrane plays saxophone"
+    to "piano" could be accomplished without affecting unrelated information. \[
+    \text{minimize } ||\hat{W}K - V|| \text{ such that } \hat{W}k_* = v_* \text{
+    by setting } \hat{W} = W + \Lambda (C^{-1} k_*)^T \]
+  </p>
 
-<p>
-    This method highlights the importance of localizing the relevant information before making edits, ensuring that factual changes are both precise and effective.
+  <p>
+    The above equation updates the model weights (\(\hat{W}\)) to ensure that a
+    specific key (\(k_*\)) maps to a new desired value (\(v_*\)). By doing this,
+    the equation allows the model to learn a new fact effectively, like changing
+    "Coltrane plays the saxophone" to "piano", without negatively impacting the
+    model's other learned facts.
 
-<h3>Does Localization Inform Editing?</h3>
-<p>
-    A year or so later, some researchers from Google and UNC Chapel Hill wrote <a href="https://arxiv.org/pdf/2301.04213">a response</a> to David's paper.
-    Hase et al. show that localization conclusions from causal tracing do not provide any insight into which MLP layer
-    would be best to edit in order to override an existing stored fact with a new one. They suggest that a fact stored in a model
-    can be changed by editing weights that are in a different location than where causal tracing suggests that the fact is stored.
+    <img
+      src="images/rome.png"
+      style="max-width: 70%; width: 600px"
+      class="mx-auto d-block"
+    />
+  </p>
 
-    <div style="display: flex; justify-content: space-around;">
-        <img src="images/hase-challenge1.png" style="max-width:40%; width:600px;" class="mx-auto">
-        <img src="images/hase-challenge2.png" style="max-width:40%; width:600px;" class="mx-auto">
-    </div>
+  <p>
+    Editing one MLP layer with ROME: To associate the Space Needle with Paris,
+    the ROME method inserts a new \((k_*, v_*)\) association into layer \(l_*\),
+    where (a) key \(k_*\) is determined by the subject, and (b) value \(v_*\) is
+    optimized to select the object. (c) hidden state at layer \(l_*\) and token
+    \(i\) is expanded to produce (d) the key vector \(k_*\) for the subject. (e)
+    To write the new value vector \(v_*\) into the layer, (f) we calculate a
+    rank-one update \(\Lambda(C^{-1} k_*)^T\) to ensure \(\hat{W}^{(l)}_{proj}
+    k_* = v_*\), while minimizing interference with other memories stored in the
+    layer.
+  </p>
 
-<p>
-    Their experiments indicate that while ROME's approach works for some edits, there are many cases where localized modifications
-    do not capture the true breadth of the factual association in the model, leading to incomplete or unintended changes.<br>
-    The critique here is that factual knowledge isn't just localized in individual weights. Instead, multiple parameters
-    and layers are involved in the retrieval and association, thus complicating the editing process beyond a simple rank-one update.
+  <p>
+    This method highlights the importance of localizing the relevant information
+    before making edits, ensuring that factual changes are both precise and
+    effective.
+  </p>
 
+  <h3>Does Localization Inform Editing?</h3>
+  <p>
+    A year or so later, some researchers from Google and UNC Chapel Hill wrote
+    <a href="https://arxiv.org/pdf/2301.04213">a response</a> to David's paper.
+    Hase et al. show that localization conclusions from causal tracing do not
+    provide any insight into which MLP layer would be best to edit in order to
+    override an existing stored fact with a new one. They suggest that a fact
+    stored in a model can be changed by editing weights that are in a different
+    location than where causal tracing suggests that the fact is stored.
+  </p>
 
-<h2>Dissecting Recall of Factual Associations</h2>
-<p>
-    This paper from October 2023, available <a href="https://arxiv.org/pdf/2304.14767">here</a>, is authored by Mor Geva,
-    Jasmijn Bastings, Katja Filippova, and Amir Globerson. The authors are affiliated with Google DeepMind and Tel Aviv University.
+  <div style="display: flex; justify-content: space-around">
+    <img
+      src="images/hase-challenge1.png"
+      style="max-width: 40%; width: 600px"
+      class="mx-auto"
+    />
+    <img
+      src="images/hase-challenge2.png"
+      style="max-width: 40%; width: 600px"
+      class="mx-auto"
+    />
+  </div>
 
-<p>
-    Their motivation for this research stemmed from the observation that while there has been significant progress in locating
-    where factual knowledge is stored in transformer-based language models, very little is known about how this knowledge is
-    retrieved during inference. By studying how a model handles subject-relation queries, they aimed to uncover the information flow
-    that enables correct attribute prediction, ultimately offering deeper insight into how these models function.
+  <p>
+    Their experiments indicate that while ROME's approach works for some edits,
+    there are many cases where localized modifications do not capture the true
+    breadth of the factual association in the model, leading to incomplete or
+    unintended changes.<br />
+    The critique here is that factual knowledge isn't just localized in
+    individual weights. Instead, multiple parameters and layers are involved in
+    the retrieval and association, thus complicating the editing process beyond
+    a simple rank-one update.
+  </p>
 
-<p>
-    The diagram below shows how the recall process works, with key points such as subject enrichment, relation extraction,
-    and attribute retrieval visualized to explain the flow of information through the model:
+  <h2>Dissecting Recall of Factual Associations</h2>
+  <p>
+    This paper from October 2023, available
+    <a href="https://arxiv.org/pdf/2304.14767">here</a>, is authored by Mor
+    Geva, Jasmijn Bastings, Katja Filippova, and Amir Globerson. The authors are
+    affiliated with Google DeepMind and Tel Aviv University.
+  </p>
 
-    <img src="images/dissecting-recall.png" style="max-width:40%; width:600px;" class="mx-auto d-block">
+  <p>
+    Their motivation for this research stemmed from the observation that while
+    there has been significant progress in locating where factual knowledge is
+    stored in transformer-based language models, very little is known about how
+    this knowledge is retrieved during inference. By studying how a model
+    handles subject-relation queries, they aimed to uncover the information flow
+    that enables correct attribute prediction, ultimately offering deeper
+    insight into how these models function.
+  </p>
 
-<p>
-    The authors performed several experiments to explore how factual knowledge is retrieved, focusing on the following key techniques:
-    <ul>
-        <li><strong>Attention Knockout:</strong> In this experiment, specific attention heads were disabled (knocked out) to determine
-          their contribution to factual recall. The results indicated that <strong>middle-upper attention layers</strong> play a critical role in retrieving
-          key information from subject positions directly to the last positions, while other layers have minimal impact. </li>
+  <p>
+    The diagram below shows how the recall process works, with key points such
+    as subject enrichment, relation extraction, and attribute retrieval
+    visualized to explain the flow of information through the model:
 
-          <img src="images/attention-knockout.png" style="max-width:40%; width:600px;" class="mx-auto d-block">
+    <img
+      src="images/dissecting-recall.png"
+      style="max-width: 40%; width: 600px"
+      class="mx-auto d-block"
+    />
+  </p>
 
-        <li><strong>Subject Representation Enrichment using Sublayer Knockout:</strong> The authors used sublayer knockout to understand which parts
-          of the transformer layer add crucial information to subject representation. They zeroed out both the MHSA and MLP sublayers across 10 layers
-          and measured the impact on attribute recall. Results showed that knocking out MLP sublayers reduced the attribute rate by about 88%,
-          while MHSA knockouts had a smaller effect (<30%). This confirms the findings of Meng et al. that <strong>early-middle MLP sublayers</strong> play a
-          significant role in storing factual associations.</li>
+  <p>
+    The authors performed several experiments to explore how factual knowledge
+    is retrieved, focusing on the following key techniques:
+  </p>
 
-          <img src="images/sublayer-knockout.png" style="max-width:40%; width:600px;" class="mx-auto d-block">
+  <ul>
+    <li>
+      <strong>Attention Knockout:</strong> In this experiment, specific
+      attention heads were disabled (knocked out) to determine their
+      contribution to factual recall. The results indicated that
+      <strong>middle-upper attention layers</strong> play a critical role in
+      retrieving key information from subject positions directly to the last
+      positions, while other layers have minimal impact.
+    </li>
 
-        <li><strong>Attribute Extraction to the Last Position:</strong> Finally, the authors investigated how attributes are extracted at the
-          final position by comparing the predicted token with the top-token from each MHSA sublayer update. Extraction events were defined when
-          there was agreement between these tokens. Below result shows the effect of blocking the last position from attending to different
-          positions, suggesting that both MHSA and MLP implement attribute extraction, but <strong>MHSA is the prominent mechanism for factual queries.</strong></li>
+    <img
+      src="images/attention-knockout.png"
+      style="max-width: 40%; width: 600px"
+      class="mx-auto d-block"
+    />
 
-          <img src="images/extraction-rate.png" style="max-width:40%; width:600px;" class="mx-auto d-block">
-    </ul>
+    <li>
+      <strong
+        >Subject Representation Enrichment using Sublayer Knockout:</strong
+      >
+      The authors used sublayer knockout to understand which parts of the
+      transformer layer add crucial information to subject representation. They
+      zeroed out both the MHSA and MLP sublayers across 10 layers and measured
+      the impact on attribute recall. Results showed that knocking out MLP
+      sublayers reduced the attribute rate by about 88%, while MHSA knockouts
+      had a smaller effect (<30%). This confirms the findings of Meng et al.
+      that <strong>early-middle MLP sublayers</strong> play a significant role
+      in storing factual associations.
+    </li>
 
-    <strong><em>Achyut's take:</em></strong> Personally, I find <strong>ROME</strong> to be an exciting contribution, offering an easy and computationally
-    efficient way to update factual information. However, the follow-up work wisely addresses potential oversimplifications in <strong>ROME</strong>'s assumptions.
-    <br>
-    A big takeaway here is that factual editing of LLMs is a promising direction, but we are far from fully understanding the underlying structure.
-    I think combining localized editing (like ROME) with broader entanglement analysis could lead to even more robust methods in the future.
-    <br><br>
+    <img
+      src="images/sublayer-knockout.png"
+      style="max-width: 40%; width: 600px"
+      class="mx-auto d-block"
+    />
 
-<h2>Linearity of Relation Decoding</h2>
-<p>
-    <a href="https://lre.baulab.info/">The last paper for today</a> from David's lab looks at 
-    factual association from a slightly different angle. Based on the idea that factual 
-    information is stored in early layers, they try to linearly approximate 
-    the process by which an LLM would "read out" that information for its final output.
-    This would only really work if models were near-linear when decoding relations. 
-    (They cite <a href="https://www.cs.toronto.edu/~fritz/absps/ieee-lre.pdf">Paccanaro and Hinton (2000)</a>
+    <li>
+      <strong>Attribute Extraction to the Last Position:</strong> Finally, the
+      authors investigated how attributes are extracted at the final position by
+      comparing the predicted token with the top-token from each MHSA sublayer
+      update. Extraction events were defined when there was agreement between
+      these tokens. Below result shows the effect of blocking the last position
+      from attending to different positions, suggesting that both MHSA and MLP
+      implement attribute extraction, but
+      <strong>MHSA is the prominent mechanism for factual queries.</strong>
+    </li>
+
+    <img
+      src="images/extraction-rate.png"
+      style="max-width: 40%; width: 600px"
+      class="mx-auto d-block"
+    />
+  </ul>
+
+  <strong><em>Achyut's take:</em></strong> Personally, I find
+  <strong>ROME</strong> to be an exciting contribution, offering an easy and
+  computationally efficient way to update factual information. However, the
+  follow-up work wisely addresses potential oversimplifications in
+  <strong>ROME</strong>'s assumptions.
+  <br />
+  A big takeaway here is that factual editing of LLMs is a promising direction,
+  but we are far from fully understanding the underlying structure. I think
+  combining localized editing (like ROME) with broader entanglement analysis
+  could lead to even more robust methods in the future.
+  <br /><br />
+
+  <h2>Linearity of Relation Decoding</h2>
+  <p>
+    <a href="https://lre.baulab.info/">The last paper for today</a> from David's
+    lab looks at factual association from a slightly different angle. Based on
+    the idea that factual information is stored in early layers, they try to
+    linearly approximate the process by which an LLM would "read out" that
+    information for its final output. This would only really work if models were
+    near-linear when decoding relations. (They cite
+    <a href="https://www.cs.toronto.edu/~fritz/absps/ieee-lre.pdf"
+      >Paccanaro and Hinton (2000)</a
+    >
     as inspiration for the term "Linear Relational Embedding.")
-    
-<p>
-    Concretely, this means that the authors have to come up with some clever way to 
-    get a weight matrix and bias representing a specific relation \(r\). 
-    This transformation should be applied to any hidden state \(s\) to 
-    output the right answer \(o\) (they use the hidden state right before the output). 
-    In the image below, they basically want to skip over the entire blue part of model processing,
-    going straight from \(s\) to \(o\) for any \(s\) and \(o\). For example, the transformation 
-    used for Miles Davis -> Trumpet should also work for John Coltrane -> Saxophone.
+  </p>
 
-    <img src="images/lre.png" style="max-width:70%; width:500px;" class="mx-auto d-block">
+  <p>
+    Concretely, this means that the authors have to come up with some clever way
+    to get a weight matrix and bias representing a specific relation \(r\). This
+    transformation should be applied to any hidden state \(s\) to output the
+    right answer \(o\) (they use the hidden state right before the output). In
+    the image below, they basically want to skip over the entire blue part of
+    model processing, going straight from \(s\) to \(o\) for any \(s\) and
+    \(o\). For example, the transformation used for Miles Davis -> Trumpet
+    should also work for John Coltrane -> Saxophone.
 
-    The way that the authors ultimately build these approximators does not require 
-    any gradient descent. If \(F(s,c) : \mathbb{R}^d \rightarrow \mathbb{R}^d\) is the function the transformer is doing 
-    to map \(s\) to \(o\), they take the first-order Taylor 
-    approximation of the function about \(s_0\) where \(W = \partial F/\partial s\): 
+    <img
+      src="images/lre.png"
+      style="max-width: 70%; width: 500px"
+      class="mx-auto d-block"
+    />
 
-    \[ F(s,c) \approx F(s_0, c) + W(s - s_0) \]
-    \[ F(s,c) \approx Ws + F(s_0, c) - Ws_0 \]
-    
-    This approximation is just an affine transformation, with a bias \( F(s_0, c) - Ws_0 \). 
-    In practice, they calculate \(W\) by averaging the Jacobian of \( F \) for 
-    a few examples \(s_i, o_i \). 
-    
-<h3>Are these LREs faithful?</h3>
-<p>
-    The authors calculate these approximations for a number of relations and measure 
-    how <i>faithful</i> they are to the outputs of the original model. In other words,
-    what fraction of the time do they output the same token as the actual model?
+    The way that the authors ultimately build these approximators does not
+    require any gradient descent. If \(F(s,c) : \mathbb{R}^d \rightarrow
+    \mathbb{R}^d\) is the function the transformer is doing to map \(s\) to
+    \(o\), they take the first-order Taylor approximation of the function about
+    \(s_0\) where \(W = \partial F/\partial s\): \[ F(s,c) \approx F(s_0, c) +
+    W(s - s_0) \] \[ F(s,c) \approx Ws + F(s_0, c) - Ws_0 \] This approximation
+    is just an affine transformation, with a bias \( F(s_0, c) - Ws_0 \). In
+    practice, they calculate \(W\) by averaging the Jacobian of \( F \) for a
+    few examples \(s_i, o_i \).
+  </p>
 
-    <img src="images/faithfulness.png" style="max-width:70%; width:500px;" class="mx-auto d-block">
+  <h3>Are these LREs faithful?</h3>
+  <p>
+    The authors calculate these approximations for a number of relations and
+    measure how <i>faithful</i> they are to the outputs of the original model.
+    In other words, what fraction of the time do they output the same token as
+    the actual model?
 
-    Their Figure 3 shows that some relations can be approximated extremely well in this way, like 
-    encodings of gender bias (occupation -> gender), whereas relations like (company -> CEO) 
-    are more difficult to approximate. This indicates that these relations are calculated 
-    in some non-linear manner; they require a bit more calculation to get out. 
+    <img
+      src="images/faithfulness.png"
+      style="max-width: 70%; width: 500px"
+      class="mx-auto d-block"
+    />
 
-<h3>Are these LREs causal?</h3>
-    If these LREs are actually causally related to model behavior, then we should 
-    be able to use them to manipulate model outputs.
-    They do an experiment where they try to change the output associated with a subject 
-    (e.g. make the model say that Miles Davis plays the guitar). If you have 
-    \((s, r, o) = \) (Miles Davis, plays instrument, trumpet) and 
-    \((s', r, o') = \) (Cat Stevens, plays instrument, guitar), then 
-    
-    The authors derive that you should be able to add a special vector \( \Delta s = W^{-1}(o'-o)\) to \( s \)
-    to make it look like \(s'\), resulting in the model outputting \(o'\). This only works 
-    if \(W\) is causally related to model behavior. And in fact they show that their 
-    approach actually works slightly better than just directly substituting \(s'\) in place of \(s\). 
-    This is a really good sign that \(W\) reads relational information in the same way 
-    that the model does itself. 
+    Their Figure 3 shows that some relations can be approximated extremely well
+    in this way, like encodings of gender bias (occupation -> gender), whereas
+    relations like (company -> CEO) are more difficult to approximate. This
+    indicates that these relations are calculated in some non-linear manner;
+    they require a bit more calculation to get out.
+  </p>
 
-    <img src="images/causality.png" style="max-width:95%; width:800px;" class="mx-auto d-block">
+  <h3>Are these LREs causal?</h3>
+  If these LREs are actually causally related to model behavior, then we should
+  be able to use them to manipulate model outputs. They do an experiment where
+  they try to change the output associated with a subject (e.g. make the model
+  say that Miles Davis plays the guitar). If you have \((s, r, o) = \) (Miles
+  Davis, plays instrument, trumpet) and \((s', r, o') = \) (Cat Stevens, plays
+  instrument, guitar), then The authors derive that you should be able to add a
+  special vector \( \Delta s = W^{-1}(o'-o)\) to \( s \) to make it look like
+  \(s'\), resulting in the model outputting \(o'\). This only works if \(W\) is
+  causally related to model behavior. And in fact they show that their approach
+  actually works slightly better than just directly substituting \(s'\) in place
+  of \(s\). This is a really good sign that \(W\) reads relational information
+  in the same way that the model does itself.
 
-<h3>Bonus: Identifying Linear Relational Concepts</h3>
-    A little while after this paper was released, researchers at University College London 
-    built on their work to create linear relational concepts (LRCs). They create an LRE 
-    for some relation and get a low-rank pseudo-inverse of the LRE, which is just \( W^\dagger \) 
-    from the original paper. When they apply that \( W^\dagger \) to "York" or "Shanghai",
-    they get specific vectors that represent the concepts "Located in England" and "Located in China."
-    Then, given some hidden state representation of a place, e.g. "Boston", they dot its representation 
-    with every "Located in" vector. Whichever vector has the highest dot product they take as the answer. 
-    They argue that this method works a lot better than probing those hidden states using an SVM. 
+  <img
+    src="images/causality.png"
+    style="max-width: 95%; width: 800px"
+    class="mx-auto d-block"
+  />
 
+  <h3>Bonus: Identifying Linear Relational Concepts</h3>
+  A little while after this paper was released, researchers at University
+  College London built on their work to create linear relational concepts
+  (LRCs). They create an LRE for some relation and get a low-rank pseudo-inverse
+  of the LRE, which is just \( W^\dagger \) from the original paper. When they
+  apply that \( W^\dagger \) to "York" or "Shanghai", they get specific vectors
+  that represent the concepts "Located in England" and "Located in China." Then,
+  given some hidden state representation of a place, e.g. "Boston", they dot its
+  representation with every "Located in" vector. Whichever vector has the
+  highest dot product they take as the answer. They argue that this method works
+  a lot better than probing those hidden states using an SVM.
 
-<h2>Code Examples</h2>
+  <h2>Code Examples</h2>
 
-Here are some notebooks from the authors of two of the papers that are fun to play around with.
+  Here are some notebooks from the authors of two of the papers that are fun to
+  play around with.
 
-<p>
-For the first paper: 
-<ul>
-    <li><a href="https://colab.research.google.com/github/kmeng01/rome/blob/main/notebooks/causal_trace.ipynb"><strong>Causal Tracing</strong></a><br></li>
-    <li><a href="https://colab.research.google.com/github/kmeng01/rome/blob/main/notebooks/rome.ipynb"><strong>ROME</strong></a><br></li>
-</ul>
+  <p>For the first paper:</p>
 
-For the second paper:
-<ul>
-    <li><a href="https://colab.research.google.com/github/evandez/relations/blob/main/demo/demo.ipynb"><strong>LRE Demo</strong></a><br></li>
-    <li><a href="https://colab.research.google.com/github/evandez/relations/blob/main/demo/attribute_lens.ipynb"><strong>Attribute Lens</strong></a></li>
-</ul>
+  <ul>
+    <li>
+      <a
+        href="https://colab.research.google.com/github/kmeng01/rome/blob/main/notebooks/causal_trace.ipynb"
+        ><strong>Causal Tracing</strong></a
+      ><br />
+    </li>
+    <li>
+      <a
+        href="https://colab.research.google.com/github/kmeng01/rome/blob/main/notebooks/rome.ipynb"
+        ><strong>ROME</strong></a
+      ><br />
+    </li>
+  </ul>
 
+  For the second paper:
+  <ul>
+    <li>
+      <a
+        href="https://colab.research.google.com/github/evandez/relations/blob/main/demo/demo.ipynb"
+        ><strong>LRE Demo</strong></a
+      ><br />
+    </li>
+    <li>
+      <a
+        href="https://colab.research.google.com/github/evandez/relations/blob/main/demo/attribute_lens.ipynb"
+        ><strong>Attribute Lens</strong></a
+      >
+    </li>
+  </ul>
 
+  
 </main>
 </div>
 </div>
 </body>
 </html>
 
+</div>
