@@ -1,21 +1,81 @@
-{header('Factual Association')}
+{header('Circuit Discovery')}
 
 <div>
   <h5>October 17, 2024 • <em>Philip Yao, Nikhil Prakash</em></h5>
 
-  If you ask a (decent) LLM to complete the sentence "Coltrane plays the ___",
-  it will probably say "tenor" or "saxophone". In order to accurately predict
-  the next word, the model has to be able to "understand" who John Coltrane is,
-  and then retrieve information on what instrument he plays. But how does it do
-  this? Where do LLMs store information about the world, and how do they process
-  and retrieve it? These papers on <i>factual assocation</i> try to answer that
-  question.
-  <h2>Causal Scrubbing</h2>
-  This technique intervenes during the model's inference by replacing
-  activations of a component of interest with activations of that same component
-  during a different input. This impacts the model's loss which is then used for
-  this performance metric: \(L_{CS} = (L_{scrubbed} - L_{random})/(L_{model} -
-  L_{random}) \).
+    As interpretability researchers, we are often interested in understanding the underlying mechanisms with which deep neural networks perform various kinds of tasks.
+    However, mechanistic interpretability works, before 2022, primarily focused on understanding some specific feature(s) or neuron(s) in the model using techniques like probing,
+    causal probing and activation patching (or causal tracing), rather than investigating the entire end-to-end circuit responsible for performing a task 
+    (<a href="https://www.pnas.org/doi/full/10.1073/pnas.1907375117">Bau et. al</a>, <a href="https://arxiv.org/abs/2006.00995">Elazar et. al</a>, 
+    <a href="https://arxiv.org/abs/2209.02535">Dar et. al</a>, <i>inter alia</i>). The landscape started in change in 2022, when a couple works explored the entire circuit 
+    for synthetic tasks. Here, we will explore three of revelant works, but there are multiple papers that discover the underlying circuit for other tasks, such as 
+    <a href="https://arxiv.org/abs/2402.14811">Prakash et. al</a>, <a href="https://arxiv.org/abs/2305.00586">Hanna et. al</a>, 
+    <a href="https://www.lesswrong.com/posts/u6KXXmKFbXfWzoAXn/a-circuit-for-python-docstrings-in-a-4-layer-attention-only">Stefan et. al</a>,
+    <a href="https://itch.io/jam/mechint/rate/1889871">Mathew et. al</a>.
+
+  <h2>Interpretability in the Wild: a Circuit for Indirect Object Identification in GPT-2 small</h2>
+  <p>
+    <a href="https://arxiv.org/pdf/2211.00593">This paper</a> was published at ICLR 2023.<br />
+    <strong>Kevin Wang</strong> Freshman at Harvard (work done at Redwood Research)<br />
+    <strong>Alexandre Variengien</strong> AI Safety Researcher at EffiSciences (work done at Redwood Research)<br />
+    <strong>Arthur Conmy</strong> Research Engineer at Google DeepMind (work done at Redwood Research)<br />
+    <strong>Buck Shlegeris</strong> CTO of Redwood Research<br />
+    <strong>Jacob Steinhardt</strong> Assistant Professor at UC Berkeley<br />
+  </p>
+
+  <h3>What is a circuit?</h3>
+  {img("images/circuit.png", 80)}
+  <p>
+      If we think of a model as a computational graph M where nodes are terms in its forward pass (neurons, attention heads, embeddings, etc.) and edges are 
+      the interactions between those terms (residual connections, attention, projections, etc.), a circuit C is a subgraph of M responsible for some behavior (such as completing the IOI task). 
+  </p>
+
+  <h3>Experimental Setup</h3>
+  <ul>
+      <li> The indirect object identification task sentence contains two clause: 1) Initial dependent clause, e.g. <em>When Mary and John went to the store</em> and 2) Main clause, e.g. <em>John gave a bottle 
+        of milk to</em>. The model should generate <em>Mary</em> as the next token. In this example, <em>Mary</em> is the indirect object (IO) and <em>John</em> is the subject (S).</li>
+      <li>GPT-2 small a decoder-only transformer model was used for the anlaysis.</li>
+      <li>They primarily used <em>logit difference</em> to quantify the performance of the model with/without any intervention.</li>
+  </ul>
+
+  <h3>Discovered Circuit for IOI task in GPT2-small</h3>
+  {img("images/IOI_circuit.png", 80)}
+
+  <ul>
+    <li><em>Duplicate Token Heads</em>: These heads occur at the S2 token and primarily attend to the S1 token. These heads write into their corresponding residual stream that this
+    token has already occurred in the previous context.</li>
+    <li><em>S-Inhibition Heads</em>: These heads occur at the END token and attend to the S2 token. The information that these head write into the END token residual informs the 
+    query vectors of the <em>Name Mover Heads</em> to not attend to the S1 token.</li>
+    <li><em>Name Mover Heads</em>: These heads are also present at the END token and attend to the IO token in the main clause. They copy the name information from the IO token
+    residual stream and dump it into the END token residual stream which gets generated as the next token.</li>
+    <li><em>Previous Token Heads</em>: These heads copy information about the token S to token S1+1, the token after S1.</li>
+    <li><em>Induction Heads</em>: These heads are present at the S2 token and attend to the S1+1 token. They perform the same function as the <em>Duplication Token Heads</em>.</li>
+    <li><em>Backup Name Mover Heads</em>: These are interesting set of heads. They become active only when the <em>Name Mover Heads</em> are knockout out using ablation.</li>
+  </ul>
+
+  <h3>Circuit Evaluation</h3>
+  <p>
+      Path patching algorithm is used to extract the IOI circuit present in GPT2-small model. However, how do we know that the discover circuit is indeed the correct one? Hence, this paper
+      performs evaluation of the identified circuit using metrics like <em>Faithfulness</em>, <em>Completeness</em>, and <em>Minimality</em>.
+  </p>
+  <p>
+      Faithfulness measures how much of the model performance can be recovered by the circuit itself. Formally, it is computed using the equation \(F(M) - F(C)\), where \(F\) is the
+      logit difference measure. They found that the identified circuit has a faithfulness score of \(0.46\), which is \(13%\) of \(F(M)=3.56\), indicating that the circuit can recover \(87\%\) 
+      of the model performance.
+  </p>
+  <p>
+    Completeness measures whether the circuit contains all the model components that are involved in the computation or is it missing some important ones. Mathematically, the Completeness
+    is computed using the equation \(F(C \backslash K)-F(M \backslash K)\), for every subset \(K \subset C\). If a circuit is complete, then the value should be small. However, calculating the metric for every 
+    possible \(K\) is computationally intractable, then the authors use sampling techniques to get an approximation of \(K\).
+
+    {img("images/completeness.png", 80)}
+  </p>
+  <p>
+    In order to check if the discovered circuit contains redundant components, authors defined the <em>Minimality</em> metrics. Formally, it is defined as: for every node \(v \in C\)
+    there exists a subset \(K \subseteq C \backslash \{v\}\) that has high minimality score \(|F(C \backslash (K \cup \{v\}) - F(C \backslash K))|\).
+  
+    {img("images/minimality.png", 80)}
+  </p>
 
   <h1>
     <a href="https://arxiv.org/pdf/2402.11917"
@@ -128,370 +188,85 @@
     <li>Each subpath is then merged together</li>
   </ol>
 
-  <h2>Locating and Editing Factual Associations in GPT</h2>
+  <h2>Does Circuit Analysis Interpretability Scale? Evidence from Multiple Choice Capabilities in Chinchilla</h2>
   <p>
-    <a href="https://arxiv.org/pdf/2202.05262">The first paper</a> for today by
-    Meng et al. presents an approach for locating and modifying factual
-    associations in language models.<br />
-    <strong>Kevin Meng</strong>, a researcher at MIT, focuses on model
-    interpretability and efficient language model editing techniques.<br />
-    <strong>David Bau</strong>, an assistant professor at Northeastern
-    University, is known for his work in mechanistic interpretability of neural
-    networks.<br />
-    <strong>Alex Andonian</strong>, affiliated with MIT, has expertise in deep
-    learning applications and structural analysis of neural models.<br />
-    <strong>Yonatan Belinkov</strong>, a professor at Technion - Israel
-    Institute of Technology, specializes in natural language processing and
-    machine learning, particularly in analyzing neural models' behavior and
-    robustness. <br /><br />
-    The authors introduce a method to identify specific weights that encode
-    factual knowledge and perform rank-one updates to alter it, enabling
-    targeted edits without significant side effects. The focus is on enabling
-    targeted edits that change specific model outputs while preserving unrelated
-    information, allowing for more controllable language models.
+    <a href="https://arxiv.org/abs/2307.09458">This paper</a> is unpublished.<br />
+    <strong>Tom Lieberum</strong> Works at DeepMind<br />
+    <strong>Matthew Rahtz</strong> Works at DeepMind<br />
+    <strong>János Kramár</strong> Works at DeepMind<br />
+    <strong>Neel Nanda</strong> Works at DeepMind<br />
+    <strong>Geoffrey Irving</strong> Works at DeepMind<br />
+    <strong>Rohin Shah</strong> Works at DeepMind<br />
+    <strong>Vladimir Mikulik</strong> Works at DeepMind<br />
   </p>
 
-  <h3>Causal Tracing</h3>
+  <h2>Motivation</h2>
   <p>
-    Building on the method of locating factual associations, the next step
-    involves understanding <strong>causal tracing</strong>. Causal tracing is a
-    technique used to identify which parts of a model are responsible for
-    specific outputs, by tracing how information flows through the network. The
-    authors used causal tracing to pinpoint the weights that influence specific
-    factual associations, which was a crucial precursor to the
-    <strong>ROME</strong> approach. This allowed them to determine how best to
-    modify the model's knowledge effectively.
-
-    <img
-      src="images/causal-tracing.png"
-      style="max-width: 40%; width: 600px"
-      class="mx-auto"
-    />
-    <img
-      src="images/causal-tracing2.png"
-      style="max-width: 40%; width: 600px"
-      class="mx-auto"
-    />
+    This paper argues that ciruit analysis has multiple wasknesses. Two of them being: 1) Models studied in the existing literature are relatively small and 2) Most of existing
+    works focuses on identifying model components that are causal linked to performing a particular task, but neglects the semantic information flowing through those model components.
+    To overcome these shortcomings, this paper investigates 70B Chinchilla model on multiple-choice question answering tasks, specifically MMLU. Further, they have proposed a technique
+    to understand the semantics of model components by compressing query, key, and value information subspaces and using it to analyse their semantics across different counterfactual
+    examples. 
   </p>
 
-  <h3>ROME</h3>
-  <p>
-    With the insights gained from causal tracing, the next step was to develop a
-    method for making precise, targeted edits to a language model's factual
-    knowledge. This led to the concept of
-    <strong>Rank-One Model Editing (ROME)</strong>, which focuses on efficiently
-    altering specific associations without extensive retraining or impacting
-    other knowledge stored in the model.
-  </p>
-
-  <p>
-    The ROME approach involves creating a rank-one update that modifies the
-    components identified during causal tracing. By targeting these specific
-    elements, the authors ensured that the model's knowledge could be updated
-    with minimal disruption. For instance, changing "Coltrane plays saxophone"
-    to "piano" could be accomplished without affecting unrelated information. \[
-    \text{minimize } ||\hat{W}K - V|| \text{ such that } \hat{W}k_* = v_* \text{
-    by setting } \hat{W} = W + \Lambda (C^{-1} k_*)^T \]
-  </p>
-
-  <p>
-    The above equation updates the model weights (\(\hat{W}\)) to ensure that a
-    specific key (\(k_*\)) maps to a new desired value (\(v_*\)). By doing this,
-    the equation allows the model to learn a new fact effectively, like changing
-    "Coltrane plays the saxophone" to "piano", without negatively impacting the
-    model's other learned facts.
-
-    <img
-      src="images/rome.png"
-      style="max-width: 70%; width: 600px"
-      class="mx-auto d-block"
-    />
-  </p>
-
-  <p>
-    Editing one MLP layer with ROME: To associate the Space Needle with Paris,
-    the ROME method inserts a new \((k_*, v_*)\) association into layer \(l_*\),
-    where (a) key \(k_*\) is determined by the subject, and (b) value \(v_*\) is
-    optimized to select the object. (c) hidden state at layer \(l_*\) and token
-    \(i\) is expanded to produce (d) the key vector \(k_*\) for the subject. (e)
-    To write the new value vector \(v_*\) into the layer, (f) we calculate a
-    rank-one update \(\Lambda(C^{-1} k_*)^T\) to ensure \(\hat{W}^{(l)}_{proj}
-    k_* = v_*\), while minimizing interference with other memories stored in the
-    layer.
-  </p>
-
-  <p>
-    This method highlights the importance of localizing the relevant information
-    before making edits, ensuring that factual changes are both precise and
-    effective.
-  </p>
-
-  <h3>Does Localization Inform Editing?</h3>
-  <p>
-    A year or so later, some researchers from Google and UNC Chapel Hill wrote
-    <a href="https://arxiv.org/pdf/2301.04213">a response</a> to David's paper.
-    Hase et al. show that localization conclusions from causal tracing do not
-    provide any insight into which MLP layer would be best to edit in order to
-    override an existing stored fact with a new one. They suggest that a fact
-    stored in a model can be changed by editing weights that are in a different
-    location than where causal tracing suggests that the fact is stored.
-  </p>
-
-  <div style="display: flex; justify-content: space-around">
-    <img
-      src="images/hase-challenge1.png"
-      style="max-width: 40%; width: 600px"
-      class="mx-auto"
-    />
-    <img
-      src="images/hase-challenge2.png"
-      style="max-width: 40%; width: 600px"
-      class="mx-auto"
-    />
-  </div>
-
-  <p>
-    Their experiments indicate that while ROME's approach works for some edits,
-    there are many cases where localized modifications do not capture the true
-    breadth of the factual association in the model, leading to incomplete or
-    unintended changes.<br />
-    The critique here is that factual knowledge isn't just localized in
-    individual weights. Instead, multiple parameters and layers are involved in
-    the retrieval and association, thus complicating the editing process beyond
-    a simple rank-one update.
-  </p>
-
-  <h2>Dissecting Recall of Factual Associations</h2>
-  <p>
-    This paper from October 2023, available
-    <a href="https://arxiv.org/pdf/2304.14767">here</a>, is authored by Mor
-    Geva, Jasmijn Bastings, Katja Filippova, and Amir Globerson. The authors are
-    affiliated with Google DeepMind and Tel Aviv University.
-  </p>
-
-  <p>
-    Their motivation for this research stemmed from the observation that while
-    there has been significant progress in locating where factual knowledge is
-    stored in transformer-based language models, very little is known about how
-    this knowledge is retrieved during inference. By studying how a model
-    handles subject-relation queries, they aimed to uncover the information flow
-    that enables correct attribute prediction, ultimately offering deeper
-    insight into how these models function.
-  </p>
-
-  <p>
-    The diagram below shows how the recall process works, with key points such
-    as subject enrichment, relation extraction, and attribute retrieval
-    visualized to explain the flow of information through the model:
-
-    <img
-      src="images/dissecting-recall.png"
-      style="max-width: 40%; width: 600px"
-      class="mx-auto d-block"
-    />
-  </p>
-
-  <p>
-    The authors performed several experiments to explore how factual knowledge
-    is retrieved, focusing on the following key techniques:
-  </p>
-
+  <h2>Experimental Setup</h2>
+  {img("images/MMLU.png", 80)}
   <ul>
-    <li>
-      <strong>Attention Knockout:</strong> In this experiment, specific
-      attention heads were disabled (knocked out) to determine their
-      contribution to factual recall. The results indicated that
-      <strong>middle-upper attention layers</strong> play a critical role in
-      retrieving key information from subject positions directly to the last
-      positions, while other layers have minimal impact.
-    </li>
-
-    <img
-      src="images/attention-knockout.png"
-      style="max-width: 40%; width: 600px"
-      class="mx-auto d-block"
-    />
-
-    <li>
-      <strong
-        >Subject Representation Enrichment using Sublayer Knockout:</strong
-      >
-      The authors used sublayer knockout to understand which parts of the
-      transformer layer add crucial information to subject representation. They
-      zeroed out both the MHSA and MLP sublayers across 10 layers and measured
-      the impact on attribute recall. Results showed that knocking out MLP
-      sublayers reduced the attribute rate by about 88%, while MHSA knockouts
-      had a smaller effect (<30%). This confirms the findings of Meng et al.
-      that <strong>early-middle MLP sublayers</strong> play a significant role
-      in storing factual associations.
-    </li>
-
-    <img
-      src="images/sublayer-knockout.png"
-      style="max-width: 40%; width: 600px"
-      class="mx-auto d-block"
-    />
-
-    <li>
-      <strong>Attribute Extraction to the Last Position:</strong> Finally, the
-      authors investigated how attributes are extracted at the final position by
-      comparing the predicted token with the top-token from each MHSA sublayer
-      update. Extraction events were defined when there was agreement between
-      these tokens. Below result shows the effect of blocking the last position
-      from attending to different positions, suggesting that both MHSA and MLP
-      implement attribute extraction, but
-      <strong>MHSA is the prominent mechanism for factual queries.</strong>
-    </li>
-
-    <img
-      src="images/extraction-rate.png"
-      style="max-width: 40%; width: 600px"
-      class="mx-auto d-block"
-    />
+    <li>This work studies multiple-choice question-answering using a subset of the MMLU benchamark.</li>
+    <li>Chinchilla 70B a decoder-only transformer with 80 layers and 64 attention heads is investigated.</li>
+    <li>They use logit of the option labels as the metric for analysis.</li>
   </ul>
 
-  <strong><em>Achyut's take:</em></strong> Personally, I find
-  <strong>ROME</strong> to be an exciting contribution, offering an easy and
-  computationally efficient way to update factual information. However, the
-  follow-up work wisely addresses potential oversimplifications in
-  <strong>ROME</strong>'s assumptions.
-  <br />
-  A big takeaway here is that factual editing of LLMs is a promising direction,
-  but we are far from fully understanding the underlying structure. I think
-  combining localized editing (like ROME) with broader entanglement analysis
-  could lead to even more robust methods in the future.
-  <br /><br />
-
-  <h2>Linearity of Relation Decoding</h2>
+  <h2>MCQ Answering Circuit in 70B Chinchilla</h2>
   <p>
-    <a href="https://lre.baulab.info/">The last paper for today</a> from David's
-    lab looks at factual association from a slightly different angle. Based on
-    the idea that factual information is stored in early layers, they try to
-    linearly approximate the process by which an LLM would "read out" that
-    information for its final output. This would only really work if models were
-    near-linear when decoding relations. (They cite
-    <a href="https://www.cs.toronto.edu/~fritz/absps/ieee-lre.pdf"
-      >Paccanaro and Hinton (2000)</a
-    >
-    as inspiration for the term "Linear Relational Embedding.")
+    {img("images/MMLU_circuit.png", 80)}
+    First, the authors utilize <em>Direct Logit Attribution</em> to identify attention heads that have the highest direct effect on the
+    predicted token. Then, they selected the top 45 attention heads, since they were able to explain 80% of the option token logits. They 
+    also showed that these heads could recover most of the model performance and loss.
+    To further analyse the attention heads with highest direct effect, they visualized their value-weighted attention pattern. Based on head's
+    pattern, they categorized them into 4 groups:
+  </p>
+  <ol>
+    <li><em>Correct Letter Heads</em>: These heads attend from the final position to the correct option label.</li>
+    <li><em>Uniform Heads</em>: These heads roughly attend to all letters.</li>
+    <li><em>Single Letter Heads</em>: These heads mostly atend to a single fixed letter.</li>
+    <li><em>Amplication Heads</em>: These heads are hypothesized to amplify the information already present in the residual stream.</li>
+  </ol>
+  <p>
+    {img("images/attn_pattern.png", 80)}
+    Although, these are half baked results, it still shed light on an interesting mechanism that the model is not passing the label information
+    to option tokens from which the last token could just fetch it, instead the model is first deciding on the correct option and then finally
+    fetching the correct label info.
   </p>
 
+  <h2>Semantics of Correct Letter Heads</h2>
   <p>
-    Concretely, this means that the authors have to come up with some clever way
-    to get a weight matrix and bias representing a specific relation \(r\). This
-    transformation should be applied to any hidden state \(s\) to output the
-    right answer \(o\) (they use the hidden state right before the output). In
-    the image below, they basically want to skip over the entire blue part of
-    model processing, going straight from \(s\) to \(o\) for any \(s\) and
-    \(o\). For example, the transformation used for Miles Davis -> Trumpet
-    should also work for John Coltrane -> Saxophone.
+    In order to understand the semantics of the Correct Letter heads, authors applied Singular Value Decomposition (SVD) on the residual of key and
+    query vectors cached across 1024 examples. They found that top-3 singular vectors were sufficient to capture most of the variance. They found
+    the low-rank approximation of the key and query information had similar performance as the full-rank ones. They projected the query and key
+    residual onto this 3-dimensional subspace for visualization. A 3-D version can be accessed <a href="https://sites.google.com/view/does-mechinterp-scale">here</a>.
+    {img("images/projection.png", 80)}
 
-    <img
-      src="images/lre.png"
-      style="max-width: 70%; width: 500px"
-      class="mx-auto d-block"
-    />
+    Finally, they come up with specific mutuations of the original examples to determine which piece of information is most critically present in the
+    QK-subspace. They found that the subspace primarily contains "n-th item in an enumeration" information, but also some information that is specific
+    to the optin tokens.
+  </p>
+  <p>
+    By utilizing these investigating on the semantics of the Correct Letter heads, the authors were able to come up with the following psuedocode 
+    for the functionality of these heads.
 
-    The way that the authors ultimately build these approximators does not
-    require any gradient descent. If \(F(s,c) : \mathbb{R}^d \rightarrow
-    \mathbb{R}^d\) is the function the transformer is doing to map \(s\) to
-    \(o\), they take the first-order Taylor approximation of the function about
-    \(s_0\) where \(W = \partial F/\partial s\): \[ F(s,c) \approx F(s_0, c) +
-    W(s - s_0) \] \[ F(s,c) \approx Ws + F(s_0, c) - Ws_0 \] This approximation
-    is just an affine transformation, with a bias \( F(s_0, c) - Ws_0 \). In
-    practice, they calculate \(W\) by averaging the Jacobian of \( F \) for a
-    few examples \(s_i, o_i \).
+    {img("images/code.png", 80)}
   </p>
 
-  <h3>Are these LREs faithful?</h3>
+
+  <h2>Code Resources</h2>
+
   <p>
-    The authors calculate these approximations for a number of relations and
-    measure how <i>faithful</i> they are to the outputs of the original model.
-    In other words, what fraction of the time do they output the same token as
-    the actual model?
-
-    <img
-      src="images/faithfulness.png"
-      style="max-width: 70%; width: 500px"
-      class="mx-auto d-block"
-    />
-
-    Their Figure 3 shows that some relations can be approximated extremely well
-    in this way, like encodings of gender bias (occupation -> gender), whereas
-    relations like (company -> CEO) are more difficult to approximate. This
-    indicates that these relations are calculated in some non-linear manner;
-    they require a bit more calculation to get out.
+    Try this <a href="{colab_link('colab/mech_interp.ipynb')}">colab notebook</a> to investigate the IOI circuit with GPT2-small yourself. You can use it to perform direct logit attribution, 
+    activation patching and attention pattern visualization to understand the flow of information. <i>This notebook has been inspired from Neel Nanda's
+    exploratory analysis demo</i>.
+    </i>
   </p>
-
-  <h3>Are these LREs causal?</h3>
-  If these LREs are actually causally related to model behavior, then we should
-  be able to use them to manipulate model outputs. They do an experiment where
-  they try to change the output associated with a subject (e.g. make the model
-  say that Miles Davis plays the guitar). If you have \((s, r, o) = \) (Miles
-  Davis, plays instrument, trumpet) and \((s', r, o') = \) (Cat Stevens, plays
-  instrument, guitar), then The authors derive that you should be able to add a
-  special vector \( \Delta s = W^{-1}(o'-o)\) to \( s \) to make it look like
-  \(s'\), resulting in the model outputting \(o'\). This only works if \(W\) is
-  causally related to model behavior. And in fact they show that their approach
-  actually works slightly better than just directly substituting \(s'\) in place
-  of \(s\). This is a really good sign that \(W\) reads relational information
-  in the same way that the model does itself.
-
-  <img
-    src="images/causality.png"
-    style="max-width: 95%; width: 800px"
-    class="mx-auto d-block"
-  />
-
-  <h3>Bonus: Identifying Linear Relational Concepts</h3>
-  A little while after this paper was released, researchers at University
-  College London built on their work to create linear relational concepts
-  (LRCs). They create an LRE for some relation and get a low-rank pseudo-inverse
-  of the LRE, which is just \( W^\dagger \) from the original paper. When they
-  apply that \( W^\dagger \) to "York" or "Shanghai", they get specific vectors
-  that represent the concepts "Located in England" and "Located in China." Then,
-  given some hidden state representation of a place, e.g. "Boston", they dot its
-  representation with every "Located in" vector. Whichever vector has the
-  highest dot product they take as the answer. They argue that this method works
-  a lot better than probing those hidden states using an SVM.
-
-  <h2>Code Examples</h2>
-
-  Here are some notebooks from the authors of two of the papers that are fun to
-  play around with.
-
-  <p>For the first paper:</p>
-
-  <ul>
-    <li>
-      <a
-        href="https://colab.research.google.com/github/kmeng01/rome/blob/main/notebooks/causal_trace.ipynb"
-        ><strong>Causal Tracing</strong></a
-      ><br />
-    </li>
-    <li>
-      <a
-        href="https://colab.research.google.com/github/kmeng01/rome/blob/main/notebooks/rome.ipynb"
-        ><strong>ROME</strong></a
-      ><br />
-    </li>
-  </ul>
-
-  For the second paper:
-  <ul>
-    <li>
-      <a
-        href="https://colab.research.google.com/github/evandez/relations/blob/main/demo/demo.ipynb"
-        ><strong>LRE Demo</strong></a
-      ><br />
-    </li>
-    <li>
-      <a
-        href="https://colab.research.google.com/github/evandez/relations/blob/main/demo/attribute_lens.ipynb"
-        ><strong>Attribute Lens</strong></a
-      >
-    </li>
-  </ul>
 
   {footer()}
 </div>
