@@ -138,31 +138,23 @@ rel="stylesheet">
     <img src="images/minimality.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
   </p>
 
-  <h1>
-    <a href="https://arxiv.org/pdf/2402.11917"
-      >A Mechanistic Analysis of a Transformer Trained on a Symbolic Multi-Step
-      Reasoning Task</a
-    >
-  </h1>
+  <h2>A Mechanistic Analysis of a Transformer Trained on a Symbolic Multi-StepReasoning Task</h2>
   <p>
+    <a href="https://arxiv.org/pdf/2402.11917">This paper</a> was published in ACL 2024.<br />
     <strong>Jannik Brinkmann</strong> Work done at University of Mannheim as a
     PhD<br />
     <strong>Abhay Sheshadri</strong> Work done at Georgia Tech as an
     Undergrad<br />
-    <strong>Victor Levoso</strong> Unknown<br />
+    <strong>Victor Levoso</strong> Independent Researcher<br />
     <strong>Paul Swoboda</strong> Work done at University Düsseldorf as a
     Professor <br />
     <strong>Christian Bartelt</strong> Work done at University of Mannheim as a
     Managing Director <br />
-
-    <br /><br />
-
-    The authors
   </p>
 
-  <h2>The Reasoning Task</h2>
+  <h3>The Reasoning Task</h3>
   <p>
-    The training dataset is a binary tree T=(V,E). The model is given an edge
+    The training dataset is a binary tree \(T=(V,E)\). The model is given an edge
     list, root node, and goal node. The model needs to predict the path from the
     root node to the goal node. Notice that this path is unique. See the two
     figures below. The first one shows the task, and the second one shows the
@@ -186,68 +178,58 @@ rel="stylesheet">
     The green nodes represent the intermediate path
   </p>
 
-  <strong>Why is this task considered reasoning?</strong> This task was inspired
-  by work from
-  <a href="https://arxiv.org/pdf/2210.01240"
-    >Abulhair Saparov and He He. 2023. Language models are greedy reasoners: A
-    systematic formal analysis of chain-of-thought. In The Eleventh
-    International Conference on Learning Representations.</a
-  >
-  The authors of Saparov and He He's paper construct a reasoning task like this:
-  <br />
-  <img
-    src="images/reasoningontology2.png"
-    style="width: 80%; border: 5px solid #555"
-    class="mx-auto d-block"
-  />
-  <br />
+  <h3>Model Specifications</h3>
+  Authors trained a decoder-only tranformer with 6 layers, where each layer has 1 attention head and a MLP subblock. It is 1.2 million parameter, trained
+  on 150,000 training examples. It could achive an accuracy of 99.7% on 15,000 unseen examples using the extract sequence matching metric.
 
-  Notice that this reasoning task demands arriving at a conclusion from a set of
-  principles and is equivalent to finding a path from the root node to the goal
-  node by following the edges (which represent entity relationships) of the
-  graph below. Hence our tree traversal task is equivalent to a reasoning task.
-  <br />
-  <img
-    src="images/reasoningontology.png"
-    style="width: 10%; border: 5px solid #555"
-    class="mx-auto d-block"
-  />
-  <h2>They discover the model uses the backward chaining algorithm</h2>
+  <h3>The Backward Chaining Algorithm</h3>
   <p>
     Backwards chaining is a term from symbolic AI which the model's algorithm
     shares similarities to. The model's algorithm is as follows:
   </p>
 
-  <ol>
+  <ul>
     <li>
-      "In the first transformer layer, for each edge [A]->[B] it copies the
-      information from [A] into the residual stream at position [B]"
+      In the first transformer layer, for each edge [A]->[B] it copies the
+      information from [A] into the residual stream at position [B].
     </li>
     <li>
-      Backwards Chaining
-      <ol>
-        <li>
-          "The model copies the target node [G] into the final token position
-          [Pi]"
-        </li>
-        <li>
-          The authors terms the heads that perform the following operation in
-          each layer as "deduction heads." In a given layer at a given node at
-          the current position the model will find the source/parent node and
-          copy it to the current position. [A] [B] ... [B] → [A]
-        </li>
-        <li>
-          This is repeated in each layer, allowing the model to traverse up the
-          tree
-        </li>
-      </ol>
+        The model copies the target node [G] into the final token position.
+      </li>
+    <li>
+      The authors terms the heads that perform the following operation in
+      each layer as "deduction heads." In a given layer at
+      the current position the model will find the source/parent node and
+      copy it to the current position.
     </li>
     <li>
-      If the goal is more nodes away than the number of layers then the model
-      does backward chaining in parallel on multiple different token positions
+      This is repeated in each layer, allowing the model to traverse up the
+      tree
     </li>
-    <li>Each subpath is then merged together</li>
-  </ol>
+  </ul>
+
+  <p>
+    However, this mechanism is limited by the number of layers present in the model, since one layer is needed to traverse a single node in the tree.
+  </p>
+
+  <h3>Path Merging</h3>
+  <p>Authors found that there are <em>Register Tokens</em> that do not contain any valuable semantic information, but the model uses these tokens as the
+  working memory to store information about other subpaths in the tree. These other subpaths stored on regiter tokens are later merged at the last token 
+  when an overlaping subpath is found for the subpath with goal node.
+  <img src="images/register_token.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
+  </p>
+
+  <h3>One-Step Lookahead</h3>
+  <p>
+    Finally, authors found another mechanism which identifies child nodes of the current position and increases the prediction probabilities 
+    of the children that are not leaf nodes of the tree. Attention heads in the last two layers were primarily responsible for performing this
+    mechanism.
+    <img src="images/lookahead.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
+
+    <em>Nikhil's Opinion</em>: Although, authors have performed causal experiments for individual submechanism, the results 
+    would be more convincing if they conducted a causal evaluation of mechanism responsible for performing this task.
+  </p>
+
 
   <h2>Does Circuit Analysis Interpretability Scale? Evidence from Multiple Choice Capabilities in Chinchilla</h2>
   <p>
@@ -261,7 +243,7 @@ rel="stylesheet">
     <strong>Vladimir Mikulik</strong> Works at DeepMind<br />
   </p>
 
-  <h2>Motivation</h2>
+  <h3>Motivation</h3>
   <p>
     This paper argues that ciruit analysis has multiple wasknesses. Two of them being: 1) Models studied in the existing literature are relatively small and 2) Most of existing
     works focuses on identifying model components that are causal linked to performing a particular task, but neglects the semantic information flowing through those model components.
@@ -270,7 +252,7 @@ rel="stylesheet">
     examples. 
   </p>
 
-  <h2>Experimental Setup</h2>
+  <h3>Experimental Setup</h3>
   <img src="images/MMLU.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
   <ul>
     <li>This work studies multiple-choice question-answering using a subset of the MMLU benchamark.</li>
@@ -278,7 +260,7 @@ rel="stylesheet">
     <li>They use logit of the option labels as the metric for analysis.</li>
   </ul>
 
-  <h2>MCQ Answering Circuit in 70B Chinchilla</h2>
+  <h3>MCQ Answering Circuit in 70B Chinchilla</h3>
   <p>
     <img src="images/MMLU_circuit.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
     First, the authors utilize <em>Direct Logit Attribution</em> to identify attention heads that have the highest direct effect on the
@@ -300,7 +282,7 @@ rel="stylesheet">
     fetching the correct label info.
   </p>
 
-  <h2>Semantics of Correct Letter Heads</h2>
+  <h3>Semantics of Correct Letter Heads</h3>
   <p>
     In order to understand the semantics of the Correct Letter heads, authors applied Singular Value Decomposition (SVD) on the residual of key and
     query vectors cached across 1024 examples. They found that top-3 singular vectors were sufficient to capture most of the variance. They found
@@ -317,6 +299,10 @@ rel="stylesheet">
     for the functionality of these heads.
 
     <img src="images/code.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
+
+    <em>Nikhil's Opinion</em>: I was wondering what is significance of reducing the QK information to a 3-D subspace, except
+    for visualization purposes. Authors could have got the same results if they used the same manipulated examples with 
+    activation patching.
   </p>
 
 
