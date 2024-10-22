@@ -132,11 +132,13 @@ To quantify the robustness, they performed two types of interventions across lay
 
 <img src="images/layer_swap_drop_remarkable.png" style="max-width:100%; width:1200px;" class="mx-auto d-block">
 
+<p> The paper concludes with two case studies: one on attention heads responsible for capturing the context of a token for appropriate prediction (contributing to the detokenization and feature engineering stages) and a second providing evidence of an ensembling effect in prediction and supression neurons (contributing to the prediction ensembling and residual sharpening stages).</p>
+
 
 <h2>Emergence of a High-Dimensional Abstraction Phase in Language Transformers</h2>
 
 <p>
-While language models compress their inputs onto low-dimensional manifolds, research by Emily Cheng and colleagues at Universitat Pompeu Fabra revealed that this compression follows a distinctive pattern. Their analysis uncovered a critical phase where representations temporarily expand to higher dimensionality - marking the transition to abstract linguistic processing.
+Previous research has shown that language models compress their inputs onto low-dimensional manifolds. In this paper, research by Emily Cheng and colleagues at Universitat Pompeu Fabra revealed that this compression follows a distinctive pattern. Their analysis uncovered a critical phase where representations temporarily expand to higher dimensionality - marking the transition to abstract linguistic processing.
 
 <img src="images/all_models_smoothed.png" style="max-width:100%; width:500px;" class="mx-auto d-block">
 
@@ -146,12 +148,10 @@ Using the Generalized Ratios Intrinsic Dimension Estimator (GRIDE), they analyze
 <p>
 The peak exhibits several key properties that suggest its functional importance:
 
-<blockquote class="blockquote">
 The high-dimensional phase emerges during training, disappears when processing random text, and enables cross-model prediction - indicating it reflects learned linguistic structure rather than architecture.
-</blockquote>
 
 <p>
-Through careful probing experiments, the researchers demonstrated that this phase marks a critical transition in processing capabilities. Surface-level features become less recoverable, while semantic and syntactic properties become more accessible.
+Using probing experiments, the researchers demonstrated that this phase marks a critical transition in processing capabilities. Surface-level features become less recoverable, while semantic and syntactic properties become more accessible.
 
 <img src="images/llama_peak_shaded_average_id_surface_tasks.png" style="max-width:100%; width:500px;" class="mx-auto d-block">
 
