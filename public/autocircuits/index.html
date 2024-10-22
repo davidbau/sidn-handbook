@@ -89,7 +89,7 @@ rel="stylesheet">
   <ol>
     <li>In the first step, researchers identify a (usually simple) task that the model can successfully perform, curate a dataset to elicit the behavior, and choose a metric to measure task success.
       For example, in the IOI paper, the task is completing sentences with missing indirect objects, the dataset is a set of those sentences, and the metric is logit difference.</li>
-    <li>Next researchers must choose which components of the model are candidates for the circuit.
+    <li>Next, researchers must choose which components of the model are candidates for the circuit.
       For the attention mechanism, you might choose, for instance, full attention heads, key, query, and value matrices, or even individual attention head output dimensions.</li>
     <li>Finally, researchers use patching to remove model components that are not part of the circuit and see how that affects the task performance metric.</li>
   </ol>
@@ -116,18 +116,21 @@ rel="stylesheet">
 
   <h3>Results</h3>
   <img src="images/acdc_fig3.png" style="max-width:100%; width:1000px;" class="mx-auto d-block">
+  <p>Interestingly, ACDC performs quite poorly on the Docstring and tracr-reverse tasks, and underwhelmingly on tracr-xproportion.
+    Across all tasks, ACDC's AUC is 0.596, which is less than SP's 0.692.</p>
+  
+  <p>Beyond this main result, another experiment worth highlighting is the authors' use of reset networks, which are networks with permuted query, key, and value matrices.
+    In principle, these networks should have no ability to perform the task, and so any circuit found in them should be spurious.
+    What we see is that SP and HISP do seemingly find circuits with low loss on the task, while ACDC does not.
+  </p>
+  <img src="images/acdc_fig4.png" style="max-width:100%; width:1000px;" class="mx-auto d-block">
 
 
   <h3>Discussion</h3>
-  <p>The results are relatively poor! Especially compared to subgraph probing.
-  To me, the value of ACDC, and the reason it's so well known has little to do with its proposed algorithm, and much more to do with its framing.
+  <p>The results are relatively poor, especially compared to subgraph probing.
+  To me (David), the value of ACDC—and the reason it's so well known—has less to do with its proposed algorithm, and much more to do with its framing.
   The core idea of ACDC is that circuit discovery <em>is</em> automatable, and that we can evaluate automation algorithms with reference to ground truth circuits.
   That's a claim that has held up reasonably well.</p>
-
-  <h3>Code Resources</h3>
-  <p>See <a href="https://colab.research.google.com/github/ArthurConmy/Automatic-Circuit-Discovery/blob/main/notebooks/colabs/ACDC_Main_Demo.ipynb#scrollTo=140b667d">this</a> notebook from Arthur Conmy for an example of running ACDC, and <a href="https://colab.research.google.com/github/ArthurConmy/Automatic-Circuit-Discovery/blob/main/notebooks/colabs/ACDC_Implementation_Demo.ipynb#scrollTo=ba47c650">here</a> for another Arthur Conmy-authored notebook showing more implementation details.</p>
-
-
 
 
   <h2>
@@ -175,7 +178,7 @@ rel="stylesheet">
     indicate that the EAP outperforms ACDC.
   </p>
 
-  <h3>How faitful are Attribution Patching's approximations</h3>
+  <h3>How faithful are Attribution Patching's approximations</h3>
   <p>
     <img src="images/faithful.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
     Attribution scores are neither correlated to activation scores nor gives good approximation of interpolated activation patching score.
@@ -188,8 +191,9 @@ rel="stylesheet">
 
 
   <h2>Code Resources</h2>
+  <p>See <a href="https://colab.research.google.com/github/ArthurConmy/Automatic-Circuit-Discovery/blob/main/notebooks/colabs/ACDC_Main_Demo.ipynb#scrollTo=140b667d">this</a> notebook from Arthur Conmy for an example of running ACDC, and <a href="https://colab.research.google.com/github/ArthurConmy/Automatic-Circuit-Discovery/blob/main/notebooks/colabs/ACDC_Implementation_Demo.ipynb#scrollTo=ba47c650">here</a> for another Arthur Conmy-authored notebook showing more implementation details.</p>
   <p>
-    Try this
+    For EAP, try this
     <a href="https://colab.research.google.com/github/davidbau/sidn-handbook/blob/main/public/autocircuits/colab/eap_ioi_demo.ipynb">colab notebook</a> to
     identify the IOI circuit with GPT2-small using EAP. You may want to compare
     it with the colab from previous class and check the efficicacy improvement yourself
