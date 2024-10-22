@@ -3,14 +3,71 @@
 <div>
   <h5>October 22, 2024 • <em>David Atkinson, Nikhil Prakash</em></h5>
 
+  <p><a href="https://sidn.baulab.info/circuits/">Last week</a>, we discussed three papers which manually found circuits in models.
+    This week, we examine a pair of papers which attempt to automate (part of) this process.
+    The first, <a href="https://arxiv.org/abs/2304.14997">Towards Automated Circuit Discovery for Mechanistic Interpretability</a> (Conmy et al., 2023), proposes an iterative pruning algorithm based on activation patching.
+    The second, <a href="https://arxiv.org/abs/2310.10348">Attribution Patching Outperforms Automated Circuit Discovery</a> (Syed et al., 2023), proposes a faster alternative to activation patching, called attribution patching.
+  </p>
+
   <h2>
     Towards Automated Circuit Discovery for Mechanistic Interpretability
   </h2>
   <p>
     <a href="https://arxiv.org/abs/2304.14997">This paper</a> was published at
     NeurIPS 2023.<br />
-    <strong>Arthur Conmy</strong>
+    <strong>Arthur Conmy</strong> Independent; now a Research Engineer at Google DeepMind<br />
+    <strong>Augustine N. Mavor-Parker</strong> UCL PhD student; now at a startup<br />
+    <strong>Aengus Lynch</strong> UCL PhD student<br />
+    <strong>Stefan Heimersheim</strong> Institute of Astronomy, University of Cambridge; now at Apollo Research<br />
+    <strong>Adrià Garriga-Alonso</strong> FAR AI<br />
+    Much of this work was done during Redwood Research's REMIX program.
   </p>
+  Automated Circuit DisCovery (ACDC) is an attempt to formalize and automate the process of circuit discovery.
+  As you read through last week's papers, you might have noticed regularities in the process by which researchers identified circuits.
+  The authors of ACDC frame this as a three step process, which they describe as "The Mechanistic Interpretability Workflow".
+  <ol>
+    <li>In the first step, researchers identify a (usually simple) task that the model can successfully perform, curate a dataset to elicit the behavior, and choose a metric to measure task success.
+      For example, in the IOI paper, the task is completing sentences with missing indirect objects, the dataset is a set of those sentences, and the metric is logit difference.</li>
+    <li>Next researchers must choose which components of the model are candidates for the circuit.
+      For the attention mechanism, you might choose, for instance, full attention heads, key, query, and value matrices, or even individual attention head output dimensions.</li>
+    <li>Finally, researchers use patching to remove model components that are not part of the circuit and see how that affects the task performance metric.</li>
+  </ol>
+
+  In ACDC, the authors present a simple algorithm to automate this third step. 
+
+  <h3>The ACDC Algorithm</h3>
+  {img("images/acdc_alg.png", 100)}
+
+  <h3>Evaluating ACDC</h3>
+  <p>The authors introduce two baselines: <a href="https://arxiv.org/abs/2104.03514">Subnetwork Probing</a> (SP; Cao, Sanh, and Rush 2021) and <a href="https://arxiv.org/abs/1905.10650">Head Importance Score for Pruning</a> (HISP; Michel, Levy, and Neubig, 2019).
+    SP optimizes a mask over model components using gradient descent, while HISP uses a first-order Taylor approximation to estimate the effect of replacing a head's output with corrupted inputs.
+  </p>
+  <p>
+    To evaluate the performance of each candidate algorithm, "ground truth circuits" are used.
+    These are circuits that other researchers have found using manual patching, as well as a new task, Induction: 
+    <!-- <a href="https://openreview. net/forum?id=NpsVSN6o4ul">IOI</a> (Wang et al., 2023),
+    <a href="https://www.alignmentforum.org/posts/u6KXXmKFbXfWzoAXn/acircuit-for-python-docstrings-in-a-4-layer-attention-only">Docstring</a> (Heimersheim and Janiak, 2023) -->
+  </p>
+    {img("images/acdc_tab1.png", 100)}
+
+  <p>Specifically, the ROC curve over model edge identification success is used, varying the threshold \(\tau\).</p>
+ 
+
+  <h3>Results</h3>
+  {img("images/acdc_fig3.png", 100)}
+
+
+  <h3>Discussion</h3>
+  <p>The results are relatively poor! Especially compared to subgraph probing.
+  To me, the value of ACDC, and the reason it's so well known has little to do with its proposed algorithm, and much more to do with its framing.
+  The core idea of ACDC is that circuit discovery <em>is</em> automatable, and that we can evaluate automation algorithms with reference to ground truth circuits.
+  That's a claim that has held up reasonably well.</p>
+
+  <h3>Code Resources</h3>
+  <p>See <a href="https://colab.research.google.com/github/ArthurConmy/Automatic-Circuit-Discovery/blob/main/notebooks/colabs/ACDC_Main_Demo.ipynb#scrollTo=140b667d">this</a> notebook from Arthur Conmy for an example of running ACDC, and <a href="https://colab.research.google.com/github/ArthurConmy/Automatic-Circuit-Discovery/blob/main/notebooks/colabs/ACDC_Implementation_Demo.ipynb#scrollTo=ba47c650">here</a> for another Arthur Conmy-authored notebook showing more implementation details.</p>
+
+
+
 
   <h2>
     Attribution Patching Outperforms Automated Circuit Discovery
