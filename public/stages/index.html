@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Structure and Interpretation of Deep Networks</title>
+
+<!-- Bootstrap CSS Imports -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<!-- Google Font Imports -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+rel="stylesheet">
+
+<!-- Custom CSS Imports -->
+<link rel="stylesheet" href="/css/style.css">
+
+<!-- Mathjax -->
+<script sid="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" integrity="sha512-6FaAxxHuKuzaGHWnV00ftWqP3luSBRSopnNAA2RvQH1fOfnF/A1wOfiUWF7cLIOFcfb1dEhXwo5VG3DAisocRw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha256-3gQJhtmj7YnV1fmtbVcnAV6eI4ws0Tr48bVZCThtCGQ=" crossorigin="anonymous"></script>
+
+<!-- Auto Table of Contents -->
+<link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css"
+/>
+<script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script>
+
+</head>
+
+<body data-bs-spy="scroll" data-bs-target="#toc">
+<nav class="navbar navbar-dark bg-dark">
+<div class="container-fluid">
+<ul class="navbar-nav mr-auto">
+ <li class="nav-item active">
+  <a class="nav-link" href="/association/index.html">Factual Association</a>
+ </li>
+</ul>
+<ul class="navbar-nav ml-auto">
+ <li class="nav-item">
+  <a class="navbar-brand" href="/">Structure and Interpretation of Deep Networks</a>
+ </li>
+</ul>
+</div>
+</nav>
+
+<div class="container">
+<div class="row">
+<div class="col-2 position-fixed pt-5">
+<nav id="toc" data-toggle="toc"></nav>
+</div>
+<div class="col-2"></div>
+<main class="col-8">
+<h1 class="mt-5">Transformer Stages</h1>
+
+<div><h5>October 24, 2024 • <em>Achyut Kowshik, Alex Loftus</em></h5>
+
+<h2>Introduction</h2>
+
+<p>
+  Achyut + Alex To-do
+
+<h2>The Remarkable Robustness of LLMs</h2>
+
+<p>
+In 2024, researchers discovered that large language models exhibit surprising resilience to architectural modifications. Through systematic experiments deleting and reordering layers, they found that models retain up to 95% of their original accuracy even after significant interventions.
+
+<p>
+The work, led by Vedang Lad, Wes Gurnee, and Max Tegmark at MIT, studied five state-of-the-art language models ranging from 6.5 to 8 billion parameters. Their investigation revealed four universal stages of inference that characterize transformer processing.
+
+<img src="images/overview_remarkable.png" style="max-width:100%; width:1200px;" class="mx-auto d-block">
+
+<p>
+The stages progress from early layers that integrate local context to final layers that refine predictions:
+
+<p>
+<b>1. Detokenization:</b> In the initial layers, the model transforms raw token representations into coherent entities. This stage proves highly sensitive to layer deletion, suggesting it performs essential contextualization.
+
+<p>
+<b>2. Feature Engineering:</b> The early-to-middle layers build feature representations through attention-heavy computation. This phase shows remarkable robustness to both deletion and reordering of layers.
+
+<p>
+<b>3. Prediction Ensembling:</b> The middle-to-late layers mark a transition to MLP-heavy computation, where semantic features convert into concrete next-token predictions through specialized components.
+
+<p>
+<b>4. Residual Sharpening:</b> The final layers refine predictions by suppressing irrelevant features and calibrating confidence. Like the first stage, these layers prove sensitive to modification.
+
+
+
+<p>
+The researchers traced this robustness to the residual connections in transformer architectures. These connections allow models to form ensembles of relatively shallow computational paths, avoiding strong dependencies on any single layer.
+
+<p>
+To quantify the robustness, they performed two types of interventions across layers:
+
+<ol>
+  <li><strong>Layer Deletion:</strong> Removes individual layers while preserving residual connections.</li>
+  <li><strong>Layer Swapping:</strong> Exchanges the order of adjacent layers.</li>
+</ol>
+<p>The middle layers prove remarkably robust to both interventions:</p>
+
+<img src="images/layer_swap_drop_remarkable.png" style="max-width:100%; width:1200px;" class="mx-auto d-block">
+
+
+<h2>Emergence of a High-Dimensional Abstraction Phase in Language Transformers</h2>
+
+<p>
+While language models compress their inputs onto low-dimensional manifolds, research by Emily Cheng and colleagues at Universitat Pompeu Fabra revealed that this compression follows a distinctive pattern. Their analysis uncovered a critical phase where representations temporarily expand to higher dimensionality - marking the transition to abstract linguistic processing.
+
+<img src="images/all_models_smoothed.png" style="max-width:100%; width:500px;" class="mx-auto d-block">
+
+<p>
+Using the Generalized Ratios Intrinsic Dimension Estimator (GRIDE), they analyzed representation geometry across layers in five large language models. Despite the models' 4096-dimensional hidden states, representations generally lie on manifolds of dimension O(10). However, this low dimensionality gives way to a pronounced peak in middle layers.
+
+<p>
+The peak exhibits several key properties that suggest its functional importance:
+
+<blockquote class="blockquote">
+The high-dimensional phase emerges during training, disappears when processing random text, and enables cross-model prediction - indicating it reflects learned linguistic structure rather than architecture.
+</blockquote>
+
+<p>
+Through careful probing experiments, the researchers demonstrated that this phase marks a critical transition in processing capabilities. Surface-level features become less recoverable, while semantic and syntactic properties become more accessible.
+
+<img src="images/llama_peak_shaded_average_id_surface_tasks.png" style="max-width:100%; width:500px;" class="mx-auto d-block">
+
+<p>
+Critically, better language models show earlier and higher-dimensional peaks. This correlation suggests the high-dimensional phase plays an essential role in linguistic processing - providing an expanded representational space where abstract features can be computed before compression into predictions.
+
+<h2>Competition of Mechanisms</h2>
+
+<p>
+  @Achyut to-do
+
+
+
+<h2>Code Examples</h2>
+
+
+
+</main>
+</div>
+</div>
+</body>
+</html>
