@@ -64,6 +64,7 @@ rel="stylesheet">
 <div>
   <h5>October 22, 2024 • <em>David Atkinson, Nikhil Prakash</em></h5>
 
+<<<<<<< HEAD
   As interpretability researchers, we are often interested in understanding the
   underlying mechanisms with which deep neural networks perform various kinds of
   tasks. However, mechanistic interpretability works, before 2022, primarily
@@ -452,6 +453,81 @@ rel="stylesheet">
       >This notebook has been inspired from Neel Nanda's exploratory analysis
       demo</i
     >.
+=======
+  <h2>
+    Towards Automated Circuit Discovery for Mechanistic Interpretability
+  </h2>
+  <p>
+    <a href="https://arxiv.org/abs/2304.14997">This paper</a> was published at
+    NeurIPS 2023.<br />
+    <strong>Arthur Conmy</strong>
+  </p>
+
+  <h2>
+    Attribution Patching Outperforms Automated Circuit Discovery
+  </h2>
+  <p>
+    <a href="https://arxiv.org/abs/2310.10348">This paper</a> was published in
+    BlackboxNLP Workshop at EMNLP 2024.<br />
+    <strong>Aaquib Syed</strong> Undergrad at University of Maryland, College Park<br />
+    <strong>Can Rager</strong> Independent<br />
+    <strong>Authur Conmy</strong> Research Engineer at Google DeepMind<br />
+  </p>
+  
+  <p>
+    Automatic Circuit Discovery (ACDC) algorithm use activation patching to prune out edges from the computation graph to get the circuit responsible for performing a specific task. 
+    However, computing the relevance of an edge in the computation graph requires one forward pass, implying the number of forward passes requires to get the entire circuit 
+    grows with the size of the model. Hence, making the ACDC algorithm intractable for larger models. One of the alternatives of activation patching is <strong>attribution patching</strong>,
+    which approximates the impact of activation patching on model's output using the first-order Taylor series. Hence, this work proposes to use attribution patching to estimate the
+    relevance of an edge in the computation graph to speed up the circuit discovery algorithm.
+  </p>
+  
+  <h3>Attribution Patching</h3>
+  <p>
+    <img src="images/attrib.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
+
+    Attribution patching is a technique to estimate the impact of activation patching using only two forward passes and one backward pass. More specifically, it linearly 
+    approximates the metric after corrupting a single edge in the computational graph using the first-order Taylor series.
+  </p>
+  <p>
+    \(L(x_{clean} \vert do(E=e_{corr})) \thickapprox L(x_{clean}) + (e_{corr} - e_{clean})^\intercal \frac{\partial}{\partial e_{clean}}L(x_{clean} \vert do(E=e_{clean}))\)
+  </p>
+
+  <h3>Edge Attribution Patching</h3>
+  <p>
+    Edge Attribution Patching (EAP) consists of two steps: 1) Use the above equation to obtain attribution scores for the importance of all edges in the computational graph and 2)
+    sort these scores and keep the top k edges to form the circuit.
+  </p>
+
+  <h3>Results</h3>
+  <p>
+    <img src="images/results.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
+
+    Authors assesses the circuits identified using EAP to evaluate its efficicacy. More specifically, authors discovered three circuits Indirect 
+    Object Identification (IOI), Docstring, and Greater-than tasks and compared them with the circuits proposed in existing literature. The results
+    indicate that the EAP outperforms ACDC.
+  </p>
+
+  <h3>How faitful are Attribution Patching's approximations</h3>
+  <p>
+    <img src="images/faithful.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
+    Attribution scores are neither correlated to activation scores nor gives good approximation of interpolated activation patching score.
+  </p>
+
+  <h3>EAP followed by ACDC Performs Better</h3>
+  <p>
+    <img src="images/attrib_acdc.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
+  </p>
+
+
+  <h2>Code Resources</h2>
+  <p>
+    Try this
+    <a href="https://colab.research.google.com/github/davidbau/sidn-handbook/blob/main/public/auto_circuits/colab/eap_ioi_demo.ipynb">colab notebook</a> to
+    identify the IOI circuit with GPT2-small using EAP. You may want to compare
+    it with the colab from previous class and check the efficicacy improvement yourself
+    when using attibution patching over activation patching.
+>>>>>>> c0ff7d8de9c696ed4cc872461a8d62ca7697ffe9
   </p>
 
   
