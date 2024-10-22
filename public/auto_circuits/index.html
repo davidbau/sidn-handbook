@@ -1,4 +1,65 @@
-{header('Automatic Circuit Discovery')}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Structure and Interpretation of Deep Networks</title>
+
+<!-- Bootstrap CSS Imports -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<!-- Google Font Imports -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+rel="stylesheet">
+
+<!-- Custom CSS Imports -->
+<link rel="stylesheet" href="/css/style.css">
+
+<!-- Mathjax -->
+<script sid="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" integrity="sha512-6FaAxxHuKuzaGHWnV00ftWqP3luSBRSopnNAA2RvQH1fOfnF/A1wOfiUWF7cLIOFcfb1dEhXwo5VG3DAisocRw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha256-3gQJhtmj7YnV1fmtbVcnAV6eI4ws0Tr48bVZCThtCGQ=" crossorigin="anonymous"></script>
+
+<!-- Auto Table of Contents -->
+<link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css"
+/>
+<script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script>
+
+</head>
+
+<body data-bs-spy="scroll" data-bs-target="#toc">
+<nav class="navbar navbar-dark bg-dark">
+<div class="container-fluid">
+<ul class="navbar-nav mr-auto">
+ <li class="nav-item active">
+  <a class="nav-link" href="/auto_circuits/index.html">Automatic Circuit Discovery</a>
+ </li>
+</ul>
+<ul class="navbar-nav ml-auto">
+ <li class="nav-item">
+  <a class="navbar-brand" href="/">Structure and Interpretation of Deep Networks</a>
+ </li>
+</ul>
+</div>
+</nav>
+
+<div class="container">
+<div class="row">
+<div class="col-2 position-fixed pt-5">
+<nav id="toc" data-toggle="toc"></nav>
+</div>
+<div class="col-2"></div>
+<main class="col-8">
+<h1 class="mt-5">Automatic Circuit Discovery</h1>
+
 
 <div>
   <h5>October 22, 2024 • <em>David Atkinson, Nikhil Prakash</em></h5>
@@ -33,7 +94,7 @@
   
   <h3>Attribution Patching</h3>
   <p>
-    {img("images/attrib.png", 80)}
+    <img src="images/attrib.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
 
     Attribution patching is a technique to estimate the impact of activation patching using only two forward passes and one backward pass. More specifically, it linearly 
     approximates the metric after corrupting a single edge in the computational graph using the first-order Taylor series.
@@ -50,7 +111,7 @@
 
   <h3>Results</h3>
   <p>
-    {img("images/results.png", 80)}
+    <img src="images/results.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
 
     Authors assesses the circuits identified using EAP to evaluate its efficicacy. More specifically, authors discovered three circuits Indirect 
     Object Identification (IOI), Docstring, and Greater-than tasks and compared them with the circuits proposed in existing literature. The results
@@ -59,24 +120,30 @@
 
   <h3>How faitful are Attribution Patching's approximations</h3>
   <p>
-    {img("images/faithful.png", 80)}
+    <img src="images/faithful.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
     Attribution scores are neither correlated to activation scores nor gives good approximation of interpolated activation patching score.
   </p>
 
   <h3>EAP followed by ACDC Performs Better</h3>
   <p>
-    {img("images/attrib_acdc.png", 80)}
+    <img src="images/attrib_acdc.png" style="max-width:80%; width:800px;" class="mx-auto d-block">
   </p>
 
 
   <h2>Code Resources</h2>
   <p>
     Try this
-    <a href="{colab_link('colab/eap_ioi_demo.ipynb')}">colab notebook</a> to
+    <a href="https://colab.research.google.com/github/davidbau/sidn-handbook/blob/main/public/auto_circuits/colab/eap_ioi_demo.ipynb">colab notebook</a> to
     identify the IOI circuit with GPT2-small using EAP. You may want to compare
     it with the colab from previous class and check the efficicacy improvement yourself
     when using attibution patching over activation patching.
   </p>
 
-  {footer()}
+  
+</main>
+</div>
+</div>
+</body>
+</html>
+
 </div>
