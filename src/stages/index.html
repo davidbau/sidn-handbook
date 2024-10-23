@@ -158,12 +158,42 @@ Critically, better language models show earlier and higher-dimensional peaks. Th
 <h2>Competition of Mechanisms</h2>
 
 <p>
-  @Achyut to-do
-  - in early layers, the factual attribute is encoded in the subject position, while the counterfactual is in the attribute position (section 6.1)
-  - the attention blocks write most of the factual and counterfactual information to the last position (section 6.2)
-  - all the highly activated heads attend to the attribute position regardless of the specific type of information they promote. The factual information flows by penalizing the counterfactual attribute rather than promoting the factual one (Section 6.3)
-  - They can up-weight the value of a few very localuzed values of the attention head matrix to strengthen factual mechanisms substantially (Section 6.4)
+This paper began as Francesco Ortu's Master's thesis, conducted under the joint guidance of MPI and Area Science Park.
+The team, including Zhijing Jin, Professors Alberto Cazzaniga, Bernhard Schölkopf, Diego Doimo, and Professor Mrinmaya Sachan,
+collaborated closely to develop and refine the technical ideas and experiments that underpin this work.
 
+<p>
+This paper addresses how transformer-based language models handle conflicting information— specifically, how they choose between factual and counterfactual knowledge during inference.
+<br><br>
+
+<div style="display: flex; justify-content: space-around;">
+  <img src="images/comp-mech.png" style="max-width:100%; width:500px;" class="mx-auto d-block">
+  <img src="images/two-mechanisms.png" style="max-width:100%; width:400px;" class="mx-auto d-block">
+</div>
+<br><br>
+<h3>Macroscopic View: Layers and Token Positions </h3>
+<p>
+The authors analyzed how information flows through different layers and token positions to support either the factual or counterfactual mechanism. They found that, in the initial layers, factual information is primarily represented in the subject position, while counterfactual information is encoded in the attribute position. Later layers, especially the last position, are responsible for integrating this information to produce the final prediction, with the counterfactual mechanism often becoming dominant. This indicates that the competition between mechanisms becomes more pronounced in deeper layers, with the counterfactual mechanism winning out in most cases.
+<br><br>
+<img src="images/macro-view.png" style="max-width:100%; width:600px;" class="mx-auto d-block">
+
+<h3>Intermediate View: Attribution to Attention and MLP Blocks </h3>
+<p>
+The study further broke down the contributions of attention and MLP blocks in each layer. The findings showed that attention blocks played a more significant role in the competition between factual and counterfactual mechanisms compared to MLP blocks. The attention blocks were the primary contributors to pushing the model towards the counterfactual mechanism, particularly in the later layers. In contrast, early layers had almost no influence on the competition, highlighting that both factual and counterfactual information is mainly developed and contrasted at later stages.
+
+<img src="images/inter-view.png" style="max-width:100%; width:600px;" class="mx-auto d-block">
+
+<h3>Microscopic View: Contribution of Individual Attention Heads </h3>
+<p>
+At a microscopic level, the authors examined individual attention heads to understand their roles in the competition of mechanisms. They found that a few specialized heads significantly contribute to either promoting the factual mechanism or enhancing the counterfactual mechanism. Interestingly, both types of heads tended to focus on the attribute position, but those promoting factual recall operated by suppressing the counterfactual token rather than directly enhancing the factual one. This suggests a nuanced approach where factual information is retained by indirectly weakening competing signals.
+<br><br>
+<img src="images/micro-view.png" style="max-width:100%; width:600px;" class="mx-auto d-block">
+
+<h3>Intrinsic Intervention by Attention Modification </h3>
+<p>
+The authors performed an intrinsic intervention by modifying the attention values of specific attention heads to enhance the factual recall mechanism. By selectively up-weighting the attention values at certain positions, they were able to dramatically increase the model's factual recall from 4% to 50%. This modification only involved a few entries in the attention matrix, showing that small, targeted interventions can significantly alter the balance between competing mechanisms, thereby improving the reliability of factual responses.
+<br><br>
+<img src="images/attention-mod.png" style="max-width:100%; width:350px;" class="mx-auto d-block">
 
 
 <h2>Code Examples</h2>
