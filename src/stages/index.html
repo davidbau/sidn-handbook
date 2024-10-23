@@ -73,16 +73,10 @@ into the internal workings of the model during inference.
 
 <p>
 The three papers in this section each explore different aspects of these stages. The first paper,
-<em>"The Remarkable Robustness of LLMs: Stages of Inference?"</em>, investigates how transformers
-seem to go through well-defined phases, becoming more resilient to errors as they proceed through
-their computations.
+<em>"The Remarkable Robustness of LLMs: Stages of Inference?"</em>, finds four characteristic stages in the progression of transformer language models, moving from detokenization and feature extraction to modeling the output probability distribution.
 
 <p>
-The second paper, <em>"Emergence of a High-Dimensional Abstraction Phase in Language Transformers"</em>, explains
-how transformers develop rich, abstract representations that help them generalize across many different types of tasks.
-As the model processes the input, it begins to move away from focusing on individual words or phrases and instead builds
-a high-level understanding that captures the broader meaning and relationships within the text. These abstract 
-representations are key to the model's ability to perform well on complex tasks and adapt to new situations.
+The second paper, <em>"Emergence of a High-Dimensional Abstraction Phase in Language Transformers"</em>, uses a technique the authors developed previously to model the intrinsic dimensionality of a representation, e.g., the dimensionality of the manifold that it lives on, to discover a distinct phase change in the middle layers of transformers characterized by a spike in the intrinsic dimensionality.
 
 <p>
 The third paper, <em>"Competition of Mechanisms: Tracing How Language Models Handle Facts and Counterfactuals"</em>,
@@ -140,7 +134,10 @@ To quantify the robustness, they performed two types of interventions across lay
 <p>
 Previous research has shown that language models compress their inputs onto low-dimensional manifolds. In this paper, research by Emily Cheng and colleagues at Universitat Pompeu Fabra revealed that this compression follows a distinctive pattern. Their analysis uncovered a critical phase where representations temporarily expand to higher dimensionality - marking the transition to abstract linguistic processing.
 
+<p>This phase corresponds to a higher intrinsic dimensionality in the residual stream representations. The phase doesn't appear in the presence of random text and is nonexistent in untrained models; the layer in which it appears correlates with LM quality; and and the high-dimensional representations of different networks can predict each other - but they cannot predict either the initial representation of the input nor the representations in later layers.</p>
+
 <img src="images/all_models_smoothed.png" style="max-width:100%; width:500px;" class="mx-auto d-block">
+
 
 <p>
 Using the Generalized Ratios Intrinsic Dimension Estimator (GRIDE), they analyzed representation geometry across layers in five large language models. Despite the models' 4096-dimensional hidden states, representations generally lie on manifolds of dimension O(10). However, this low dimensionality gives way to a pronounced peak in middle layers.
