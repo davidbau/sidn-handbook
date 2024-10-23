@@ -101,15 +101,19 @@ The stages progress from early layers that integrate local context to final laye
 <p>
 <b>1. Detokenization:</b> In the initial layers, the model transforms raw token representations into coherent entities. This stage proves highly sensitive to layer deletion, suggesting it performs essential contextualization.
 
+<img src="images/remarkable_fig4.png" style="max-width:100%; width:1200px;" class="mx-auto d-block">
+
 <p>
 <b>2. Feature Engineering:</b> The early-to-middle layers build feature representations through attention-heavy computation. This phase shows remarkable robustness to both deletion and reordering of layers.
+
+
+<img src="images/remarkable_fig6.png" style="max-width:100%; width:1200px;" class="mx-auto d-block">
 
 <p>
 <b>3. Prediction Ensembling:</b> The middle-to-late layers mark a transition to MLP-heavy computation, where semantic features convert into concrete next-token predictions through specialized components.
 
 <p>
 <b>4. Residual Sharpening:</b> The final layers refine predictions by suppressing irrelevant features and calibrating confidence. Like the first stage, these layers prove sensitive to modification.
-
 
 
 <p>
@@ -136,11 +140,15 @@ Previous research has shown that language models compress their inputs onto low-
 
 <p>This phase corresponds to a higher intrinsic dimensionality in the residual stream representations. The phase doesn't appear in the presence of random text and is nonexistent in untrained models; the layer in which it appears correlates with LM quality; and and the high-dimensional representations of different networks can predict each other - but they cannot predict either the initial representation of the input nor the representations in later layers.</p>
 
-<img src="images/all_models_smoothed.png" style="max-width:100%; width:500px;" class="mx-auto d-block">
+<img src="images/all_models_smoothed.png" style="max-width:100%; width:800px;" class="mx-auto d-block">
 
 
 <p>
-Using the Generalized Ratios Intrinsic Dimension Estimator (GRIDE), they analyzed representation geometry across layers in five large language models. Despite the models' 4096-dimensional hidden states, representations generally lie on manifolds of dimension O(10). However, this low dimensionality gives way to a pronounced peak in middle layers.
+Using the Generalized Ratios Intrinsic Dimension Estimator (GRIDE), they analyzed representation geometry across layers in five large language models. Despite the models' 4096-dimensional hidden states, representations generally lie on manifolds of dimension O(10). However, this low dimensionality gives way to a pronounced peak in middle layers:
+
+<p>
+<img src="images/gride.png" style="max-width:100%; width:1000px;" class="mx-auto d-block">
+</p>
 
 <p>
 The peak exhibits several key properties that suggest its functional importance:
@@ -150,7 +158,7 @@ The high-dimensional phase emerges during training, disappears when processing r
 <p>
 Using probing experiments, the researchers demonstrated that this phase marks a critical transition in processing capabilities. Surface-level features become less recoverable, while semantic and syntactic properties become more accessible.
 
-<img src="images/llama_peak_shaded_average_id_surface_tasks.png" style="max-width:100%; width:500px;" class="mx-auto d-block">
+<img src="images/llama_peak_shaded_average_id_surface_tasks.png" style="max-width:100%; width:1000px;" class="mx-auto d-block">
 
 <p>
 Critically, better language models show earlier and higher-dimensional peaks. This correlation suggests the high-dimensional phase plays an essential role in linguistic processing - providing an expanded representational space where abstract features can be computed before compression into predictions.
