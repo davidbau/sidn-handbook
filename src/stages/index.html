@@ -191,13 +191,28 @@ At a microscopic level, the authors examined individual attention heads to under
 
 <h3>Intrinsic Intervention by Attention Modification </h3>
 <p>
-The authors performed an intrinsic intervention by modifying the attention values of specific attention heads to enhance the factual recall mechanism. By selectively up-weighting the attention values at certain positions, they were able to dramatically increase the model's factual recall from 4% to 50%. This modification only involved a few entries in the attention matrix, showing that small, targeted interventions can significantly alter the balance between competing mechanisms, thereby improving the reliability of factual responses.
+The authors performed an intrinsic intervention by modifying the attention values of specific attention heads to enhance the factual recall mechanism. By selectively up-weighting the attention values at certain positions, they were able to dramatically increase the model's factual recall from 4% to 50%. This modification only involved a few entries in the attention matrix (2 in GPT2-small and 3 in Pythia-6.9B), showing that small, targeted interventions can significantly alter the balance between competing mechanisms, thereby improving the reliability of factual responses.
 <br><br>
 <img src="images/attention-mod.png" style="max-width:100%; width:350px;" class="mx-auto d-block">
 
 
 <h2>Code Examples</h2>
 
+Here are some notebooks from the authors of the papers we discussed above-
+<br><br>
+<p>
+For the first paper:
+<ul>
+    <li><a href="https://colab.research.google.com/github/vdlad/Remarkable-Robustness-of-LLMs/blob/main/notebooks/attention_prev5.ipynb"><strong>Mean attention to prev 5 tokens</strong></a><br></li>
+    <li><a href="https://colab.research.google.com/github/vdlad/Remarkable-Robustness-of-LLMs/blob/main/notebooks/entropy_calculation.ipynb"><strong>Entropy through Logit Lens</strong></a><br></li>
+    <li><a href="https://colab.research.google.com/github/vdlad/Remarkable-Robustness-of-LLMs/blob/main/notebooks/neuron_counter.ipynb"><strong>Neuron counter</strong></a><br></li>
+</ul>
+Rest of the code can be found on the authors' <a href="https://github.com/vdlad/Remarkable-Robustness-of-LLMs">Github</a>
+<br><br>
+For the third paper:
+<ul>
+    <li><a href="https://colab.research.google.com/github/francescortu/comp-mech/blob/refactor/notebooks/experiments.ipynb"><strong>Comp Mech Demo</strong></a><br></li>
+</ul>
 
 
 </main>
