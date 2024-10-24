@@ -73,16 +73,10 @@ into the internal workings of the model during inference.
 
 <p>
 The three papers in this section each explore different aspects of these stages. The first paper,
-<em>"The Remarkable Robustness of LLMs: Stages of Inference?"</em>, investigates how transformers
-seem to go through well-defined phases, becoming more resilient to errors as they proceed through
-their computations.
+<em>"The Remarkable Robustness of LLMs: Stages of Inference?"</em>, finds four characteristic stages in the progression of transformer language models, moving from detokenization and feature extraction to modeling the output probability distribution.
 
 <p>
-The second paper, <em>"Emergence of a High-Dimensional Abstraction Phase in Language Transformers"</em>, explains
-how transformers develop rich, abstract representations that help them generalize across many different types of tasks.
-As the model processes the input, it begins to move away from focusing on individual words or phrases and instead builds
-a high-level understanding that captures the broader meaning and relationships within the text. These abstract 
-representations are key to the model's ability to perform well on complex tasks and adapt to new situations.
+The second paper, <em>"Emergence of a High-Dimensional Abstraction Phase in Language Transformers"</em>, uses a technique the authors developed previously to model the intrinsic dimensionality of a representation, e.g., the dimensionality of the manifold that it lives on, to discover a distinct phase change in the middle layers of transformers characterized by a spike in the intrinsic dimensionality.
 
 <p>
 The third paper, <em>"Competition of Mechanisms: Tracing How Language Models Handle Facts and Counterfactuals"</em>,
@@ -107,15 +101,19 @@ The stages progress from early layers that integrate local context to final laye
 <p>
 <b>1. Detokenization:</b> In the initial layers, the model transforms raw token representations into coherent entities. This stage proves highly sensitive to layer deletion, suggesting it performs essential contextualization.
 
+<img src="images/remarkable_fig4.png" style="max-width:100%; width:1200px;" class="mx-auto d-block">
+
 <p>
 <b>2. Feature Engineering:</b> The early-to-middle layers build feature representations through attention-heavy computation. This phase shows remarkable robustness to both deletion and reordering of layers.
+
+
+<img src="images/remarkable_fig6.png" style="max-width:100%; width:1200px;" class="mx-auto d-block">
 
 <p>
 <b>3. Prediction Ensembling:</b> The middle-to-late layers mark a transition to MLP-heavy computation, where semantic features convert into concrete next-token predictions through specialized components.
 
 <p>
 <b>4. Residual Sharpening:</b> The final layers refine predictions by suppressing irrelevant features and calibrating confidence. Like the first stage, these layers prove sensitive to modification.
-
 
 
 <p>
@@ -138,22 +136,34 @@ To quantify the robustness, they performed two types of interventions across lay
 <h2>Emergence of a High-Dimensional Abstraction Phase in Language Transformers</h2>
 
 <p>
-Previous research has shown that language models compress their inputs onto low-dimensional manifolds. In this paper, research by Emily Cheng and colleagues at Universitat Pompeu Fabra revealed that this compression follows a distinctive pattern. Their analysis uncovered a critical phase where representations temporarily expand to higher dimensionality - marking the transition to abstract linguistic processing.
+Previous research has shown that language models compress their inputs onto low-dimensional manifolds. In this paper, research by Emily Cheng and colleagues at Universitat Pompeu Fabra revealed that this compression follows a distinctive pattern. They found a critical phase where representations temporarily expand to higher dimensionality - marking the transition to abstract linguistic processing.
 
-<img src="images/all_models_smoothed.png" style="max-width:100%; width:500px;" class="mx-auto d-block">
+<p>This phase corresponds to a higher intrinsic dimensionality in the residual stream representations. The phase doesn't appear in the presence of random text and is nonexistent in untrained models; the layer in which it appears correlates with LM quality; and and the high-dimensional representations of different networks can predict each other - but they cannot predict either the initial representation of the input nor the representations in later layers.</p>
 
 <p>
-Using the Generalized Ratios Intrinsic Dimension Estimator (GRIDE), they analyzed representation geometry across layers in five large language models. Despite the models' 4096-dimensional hidden states, representations generally lie on manifolds of dimension O(10). However, this low dimensionality gives way to a pronounced peak in middle layers.
+To determine the dimensionality of the manifold, the researchers used a metric they had developed in a previous study called the Generalized Ratios Intrinsic Dimension Estimator (GRIDE): 
+<p>
+<img src="images/gride.png" style="max-width:100%; width:1000px;" class="mx-auto d-block">
+</p>
+
+
+Using GRIDE, they analyzed representation geometry across layers in five large language models. Despite the models' 4096-dimensional hidden states, they found that representations generally lie on manifolds of dimension O(10). The peak they found occured in the middle layers for all models:
+
+<img src="images/all_models_smoothed.png" style="max-width:100%; width:800px;" class="mx-auto d-block">
 
 <p>
 The peak exhibits several key properties that suggest its functional importance:
 
 The high-dimensional phase emerges during training, disappears when processing random text, and enables cross-model prediction - indicating it reflects learned linguistic structure rather than architecture.
 
-<p>
-Using probing experiments, the researchers demonstrated that this phase marks a critical transition in processing capabilities. Surface-level features become less recoverable, while semantic and syntactic properties become more accessible.
+<p>They also used a technique developed to quantify the change in information content between different representations based nearest neighbors rankings, which they called \( \Delta \): </p>
 
-<img src="images/llama_peak_shaded_average_id_surface_tasks.png" style="max-width:100%; width:500px;" class="mx-auto d-block">
+<img src="images/delta.png" style="max-width:100%; width:1200px;" class="mx-auto d-block">
+
+<p>
+The researchers used \( \Delta \) to compare the relative change in information content as representations passed through the model, demonstrating a peak that exactly coincided with the increase in intrinsic dimensionality. Using probing experiments, they showed that during this peak, surface-level features become less recoverable, while semantic and syntactic properties become more accessible.
+
+<img src="images/llama_peak_shaded_average_id_surface_tasks.png" style="max-width:100%; width:1000px;" class="mx-auto d-block">
 
 <p>
 Critically, better language models show earlier and higher-dimensional peaks. This correlation suggests the high-dimensional phase plays an essential role in linguistic processing - providing an expanded representational space where abstract features can be computed before compression into predictions.
@@ -161,12 +171,61 @@ Critically, better language models show earlier and higher-dimensional peaks. Th
 <h2>Competition of Mechanisms</h2>
 
 <p>
-  @Achyut to-do
+This paper began as Francesco Ortu's Master's thesis, conducted under the joint guidance of MPI and Area Science Park.
+The team, including Zhijing Jin, Professors Alberto Cazzaniga, Bernhard Schölkopf, Diego Doimo, and Professor Mrinmaya Sachan,
+collaborated closely to develop and refine the technical ideas and experiments that underpin this work.
 
+<p>
+This paper addresses how transformer-based language models handle conflicting information— specifically, how they choose between factual and counterfactual knowledge during inference.
+<br><br>
+
+<div style="display: flex; justify-content: space-around;">
+  <img src="images/comp-mech.png" style="max-width:100%; width:500px;" class="mx-auto d-block">
+  <img src="images/two-mechanisms.png" style="max-width:100%; width:400px;" class="mx-auto d-block">
+</div>
+<br><br>
+<h3>Macroscopic View: Layers and Token Positions </h3>
+<p>
+The authors analyzed how information flows through different layers and token positions to support either the factual or counterfactual mechanism. They found that, in the initial layers, factual information is primarily represented in the subject position, while counterfactual information is encoded in the attribute position. Later layers, especially the last position, are responsible for integrating this information to produce the final prediction, with the counterfactual mechanism often becoming dominant. This indicates that the competition between mechanisms becomes more pronounced in deeper layers, with the counterfactual mechanism winning out in most cases.
+<br><br>
+<img src="images/macro-view.png" style="max-width:100%; width:600px;" class="mx-auto d-block">
+
+<h3>Intermediate View: Attribution to Attention and MLP Blocks </h3>
+<p>
+The study further broke down the contributions of attention and MLP blocks in each layer. The findings showed that attention blocks played a more significant role in the competition between factual and counterfactual mechanisms compared to MLP blocks. The attention blocks were the primary contributors to pushing the model towards the counterfactual mechanism, particularly in the later layers. In contrast, early layers had almost no influence on the competition, highlighting that both factual and counterfactual information is mainly developed and contrasted at later stages.
+
+<img src="images/inter-view.png" style="max-width:100%; width:600px;" class="mx-auto d-block">
+
+<h3>Microscopic View: Contribution of Individual Attention Heads </h3>
+<p>
+At a microscopic level, the authors examined individual attention heads to understand their roles in the competition of mechanisms. They found that a few specialized heads significantly contribute to either promoting the factual mechanism or enhancing the counterfactual mechanism. Interestingly, both types of heads tended to focus on the attribute position, but those promoting factual recall operated by suppressing the counterfactual token rather than directly enhancing the factual one. This suggests a nuanced approach where factual information is retained by indirectly weakening competing signals.
+<br><br>
+<img src="images/micro-view.png" style="max-width:100%; width:600px;" class="mx-auto d-block">
+
+<h3>Intrinsic Intervention by Attention Modification </h3>
+<p>
+The authors performed an intrinsic intervention by modifying the attention values of specific attention heads to enhance the factual recall mechanism. By selectively up-weighting the attention values at certain positions, they were able to dramatically increase the model's factual recall from 4% to 50%. This modification only involved a few entries in the attention matrix (2 in GPT2-small and 3 in Pythia-6.9B), showing that small, targeted interventions can significantly alter the balance between competing mechanisms, thereby improving the reliability of factual responses.
+<br><br>
+<img src="images/attention-mod.png" style="max-width:100%; width:350px;" class="mx-auto d-block">
 
 
 <h2>Code Examples</h2>
 
+Here are some notebooks from the authors of the papers we discussed above-
+<br><br>
+<p>
+For the first paper:
+<ul>
+    <li><a href="https://colab.research.google.com/github/vdlad/Remarkable-Robustness-of-LLMs/blob/main/notebooks/attention_prev5.ipynb"><strong>Mean attention to prev 5 tokens</strong></a><br></li>
+    <li><a href="https://colab.research.google.com/github/vdlad/Remarkable-Robustness-of-LLMs/blob/main/notebooks/entropy_calculation.ipynb"><strong>Entropy through Logit Lens</strong></a><br></li>
+    <li><a href="https://colab.research.google.com/github/vdlad/Remarkable-Robustness-of-LLMs/blob/main/notebooks/neuron_counter.ipynb"><strong>Neuron counter</strong></a><br></li>
+</ul>
+Rest of the code can be found on the authors' <a href="https://github.com/vdlad/Remarkable-Robustness-of-LLMs">Github</a>
+<br><br>
+For the third paper:
+<ul>
+    <li><a href="https://colab.research.google.com/github/francescortu/comp-mech/blob/refactor/notebooks/experiments.ipynb"><strong>Comp Mech Demo</strong></a><br></li>
+</ul>
 
 
 </main>
