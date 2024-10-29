@@ -143,16 +143,23 @@ The corresponding direction in WL also contains the same frequency. Hence model 
 <p>
 4. Ablating key frequencies reduces model performance but the other 95% has improves the performance. Ablating various components and
 replacing them with Fourier multiplication algorithm does not harm the performance sometimes improves it.
-This way the interpretability is faithful. 
+This way the interpretability is faithful.
 
-<h2>Progress metrics for grokking via mech-interp</h2>
-<p>
+<img src="images/paper1_img3.png" style="max-width:80%; width:600;" class="mx-auto d-block">
 The paper introduces two progress metrics which improve prior to and when grokking occurs.
 <p>
 - Restricted loss: ablating every non key frequency.
 <p>
 - excluded loss: ablating key frequencies
 
+<h2>Phase changes</h2>
+
+<img src="images/paper1_img3.png" style="max-width:80%; width:600;" class="mx-auto d-block">
+
+<p>
+The experiment shows three phases in the training. <b>Memorization</b> of the training data, <b>circuit formation</b>, where the network
+learns a mechanism that generalizes; and <b>cleanup</b>, where weight decay removes the memorization components. Surprisingly,
+the sudden transition to perfect test accuracy in grokking occurs during cleanup, after the generalizing mechanism is learned.
 
 </main>
 </div>
