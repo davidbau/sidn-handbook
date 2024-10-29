@@ -85,9 +85,15 @@ Latent State Models of Training Dynamics, explores how randomness in data order 
 impacts model training dynamics and outcomes.
 
 <h2>Authors</h2>
-
-
-
+<h3>Grokking mech-intrep</h3>
+<p>
+<b>Neel Nanda</b> runs the Google DeepMind mechanistic interpretability team.
+<p>
+<b>Lawrence Chan</b> is a PhD at UC Berkeley advised by Anca Dragan and Stuart Russell
+<p>
+<b>Tom Lieberum</b> is a Research Engineer at DeepMind.
+<p>
+<b>Jacob Steinhardt</b> Assistant Professor at Department of Statistics, UC Berkeley
 <h2>Emergent behaviours</h2>
 <p>
 Emergent behaviors in machine learning models often arise unexpectedly when models
@@ -133,7 +139,7 @@ They found four lines of evidence to differentiate the phases of grokking.
 <p>
 1. Network weights exhibit a periodic structure. When a Fourier transformation is  applied many components are sparse and supported by few key frequencies.
 <p>
-2. Neuron-logit WL which is the last learnable param matrix. Which transforms hidden activations into logits.
+2. Neuron-logit WL which is the last learnable param matrix which transforms hidden activations into logits.
 This can be well approximated using sinusoidal functions of key frequencies. MLP activations are projected on
 to these sinusoidal functions produce trigonometric identities from the neurons.
 Unembedding matrix WL has only a rank of 10 where each direction corresponds to either cosine or sine of only 5
