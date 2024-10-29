@@ -320,8 +320,31 @@ for their application to hierarchical language tasks.
   in each latent state</b>, identifying states that <b>slow down convergence</b>.
 
 <h2>Experimentation with Latent states</h2>
+<p>
+The paper shows experimentation on three different tasks:
+<p>
+1. <b>Grokking Tasks</b>: <b>Modular additions</b> and <b>sparse parities</b>, where models learn simple
+rules and exhibit clear phase transitions between <b>memorization and <b>generalization</b>.
 
+2. <b>Image Classification</b>: Tasks on MNIST and CIFAR-100 to observe standard training
+dynamics in neural networks.
 
+3. <b>Masked Language Modeling</b>: Using BERT-like models to assess training dynamics under diverse
+random seeds.
+
+<h2>Results and conclusion Latent States</h2>
+<p>
+In <b>Grokking tasks</b>, the training dynamics show <b>clear phase transitions</b> from memorization
+to generalization. Paths through the training map showed clear changes. Some models followed <b>short,
+efficient paths</b>, while others took <b>longer detour routes</b>. Certain <b>random seeds</b> led to prolonged
+convergence times due to detour states that <b>slowed learning</b> by entering optional phases with high L2 norm.
+These results prove that <b>phase transitions in training can be sensitive to random seeds</b>. Adjusting some of the
+<b>hyperparameters</b> or making architectural changes like <b>adding normalization</b> mitigates this sensitivity.
+
+<p>
+The <b>image classification</b> on CIFAR-100 and MNIST have very stable where metrics <b>linearly progress</b>
+towards convergence. However, when </b>batch normalization and residual connections were removed</b> in CIFAR-100 it <b>destabilized</b>
+the training for some random seeds. The reason for destabilization is the <b>exploding gradiants</b> or <b>vanishing gradiants</b> problems.
 
 <h2>Compare and contrast</h2>
 </main>
