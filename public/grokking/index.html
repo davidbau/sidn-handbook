@@ -214,6 +214,25 @@ and several seeds achieve near-perfect generalization performance.
 
 <img src="images/paper2_img1.png" style="max-width:100%; width:800;" class="mx-auto d-block">
 
+<Experimentation Structural grokking>
+<img src="images/paper2_img2.png" style="max-width:100%; width:800;" class="mx-auto d-block">
+<p>
+They selected datasets that require hierarchical generalization, where training data can be
+explained by both hierarchical and non-hierarchical rules:
+<p>
+Dyck Language Modeling (Dyck-LM): The language of well-nested brackets with 20 types and
+max nesting depth of 10. This task involves sequences of well-nested brackets with
+varying types and depths, requiring the model to predict closing brackets based on nested structure.
+<p>
+Question Formation: Convert English sentences into questions. The task involves
+transforming English declarative sentences into questions by moving auxiliary
+verbs appropriately, which requires hierarchical manipulation.
+<p>
+Tense Inflection: Map from sentences and tense markers to appropriately re-inflected sentences.
+This task involves inflecting verbs in sentences according to tense markers,
+necessitating hierarchical understanding to place verb inflections accurately.
+Input: "She is reading a book" with a target tense of "past".
+Expected Output: "She was reading a book"
 </main>
 </div>
 </div>
