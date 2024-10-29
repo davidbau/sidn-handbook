@@ -60,7 +60,7 @@ rel="stylesheet">
 <main class="col-8">
 <h1 class="mt-5">Grokking</h1>
 
-<div<h5>October 28, 2024 • <em>Sri Harsha and Nikhil</em></h5>
+<div<h5>October 29, 2024 • <em>Sri Harsha and Nikhil</em></h5>
 
 <h2>Introduction</h2>
 
@@ -99,7 +99,7 @@ impacts model training dynamics and outcomes.
 <p>
 <b>Norm</b> is a measure of magnitude in the context of neural networks
 <p>
-<b>Frequency</b> in mech-intrep grokking paper it means the angular frequency 2pi/P.
+<b>Frequency</b> in mech-intrep grokking paper; it means the angular frequency 2pi/P.
 k is an integer representing the k-th harmonic or multiple of the fundamental frequency.
 wk is the angular frequency corresponding to the k-th harmonic.
 <p>
@@ -118,13 +118,13 @@ optimum it starts diverge.
 
 <h2>Emergent behaviours</h2>
 <p>
-Emergent behaviors in machine learning models often arise unexpectedly when models
-are scaled up, leading to new capabilities such as in-context learning and
-chain-of-thought prompting. However, these behaviors also present risks, including
+Emergent behaviors in machine learning models often arise <b>unexpectedly</b> when models
+are scaled up, leading to <b>new capabilities</b> such as in-context learning and
+chain-of-thought prompting. However, these behaviors also present <b>risks</b>, including
 overfitting and unintended consequences in real-world applications. For instance,
-<a href="https://arxiv.org/pdf/2201.03544">YPan et al</a>. discuss the risks associated with recommender systems, in case of YouTube
-since engineers couldn’t really measure the SWB(Subjective well being) they use other
-metrics to measure and optimize  like click-through rates or watch-time. These objectives
+<a href="https://arxiv.org/pdf/2201.03544">YPan et al</a>. discusses the risks associated with recommender systems, in case of YouTube
+since engineers couldn’t really measure the SWB(Subjective well being) they used other
+metrics to measure and optimize like <b>click-through rates</b> or <b>watch-time</b>. These objectives
 don’t make a good estimate of SWB so this led YouTube to overemphasize watch-time and harm
 user satisfaction and also recommended extreme political (controversial) content to users.
 
@@ -132,12 +132,12 @@ user satisfaction and also recommended extreme political (controversial) content
 The emergence of these behaviors is surprising to researchers because they appear
 suddenly and are not easily predictable based on traditional metrics.
 <a href="https://arxiv.org/pdf/2202.07785">Ganguli et al</a>. highlight the paradox that while scaling laws predict performance
-improvements, the specific new capabilities that emerge are unpredictable. In fact there
+improvements, the specific <b>new capabilities that emerge are unpredictable</b>. In fact there
 could still be unknow capabilities which are not triggered yet or discovered.
-Barak et al. further note that sudden phase changes can occur even without
-changes in data size, emphasizing the need for metrics that can detect these
-transitions before they happen. Understanding these emergent behaviors requires
-novel approaches beyond conventional statistical methods, as they can have
+Barak et al. further note that <b>sudden phase</b> changes can occur even without
+changes in data size, emphasizing the <b>need for metrics</b> that can detect these
+transitions <b>before they happen</b>. Understanding these emergent behaviors requires
+novel approaches <b>beyond conventional statistical methods</b>, as they can have
 significant implications for both model performance and societal impact.
 
 <p>
@@ -149,7 +149,7 @@ Alpha zero learns a lot of human chess concepts between 10 k to 30k training ste
 <p>
 In this experiment they study modular addition, where a model takes inputs
 a, b ∈ {0, . . . , P −1} for some prime P and predicts their sum c mod P. Small transformers trained
-with weight decay on this task consistently exhibit grokking. They reverse engineered the weights of these transformers
+with weight decay on this task consistently exhibit grokking. They <b>reverse engineered</b> the weights of these transformers
 and find that they perform this task by mapping the inputs onto a circle and performing addition
 on the circle. Specifically, we show that the embedding matrix maps the inputs a, b to sines
 and cosines at a sparse set of key frequencies wk. The attention and MLP layers then combine
@@ -162,20 +162,19 @@ They found four lines of evidence to differentiate the phases of grokking.
 <p>
 1. Network weights exhibit a periodic structure. When a Fourier transformation is  applied many components are sparse and supported by few key frequencies.
 <p>
-2. Neuron-logit WL which is the last learnable param matrix which transforms hidden activations into logits.
-This can be well approximated using sinusoidal functions of key frequencies. MLP activations are projected on
-to these sinusoidal functions produce trigonometric identities from the neurons.
+2. Neuron-logit WL which is the <b>last learnable param</b> matrix which transforms hidden activations into logits.
+The WL can be well <b>approximated using sinusoidal functions of key frequencies</b>. MLP activations are projected on
+to these sinusoidal functions produce <b>trigonometric identities</b> from the neurons.
 Unembedding matrix WL has only a rank of 10 where each direction corresponds to either cosine or sine of only 5
-key frequencies. Projecting MLP activations to WL only produces multiples of cos (wk(a + b)) and sin (wk(a + b))
-where a and b are the inputs. Hence we can safely say that the sum is not computed in MLP.
+key frequencies. <b>Projecting MLP activations</b> to WL only produces multiples of cos (wk(a + b)) and sin (wk(a + b))
+where a and b are the inputs. Hence we can safely say that the <b>sum is not computed in MLP</b>.
 <p>
-3. The MLP and attention heads can be approximated well using a 2nd degree polynomials of trigonometric functions of a single frequency.
+3. The MLP and attention heads can be approximated well using a <b>2nd degree polynomials</b> of trigonometric functions of <b>a single frequency</b>.
 Attention heads and most neurons are well approximated by 2nd degree polynomials of sins and cosines of a single frequency.
-The corresponding direction in WL also contains the same frequency. Hence model computations are localized across all the frequencies.
+The corresponding direction in <b>WL also contains the same frequency</b>. Hence model computations are localized across all the frequencies.
 <p>
-4. Ablating key frequencies reduces model performance but the other 95% has improves the performance. Ablating various components and
-replacing them with Fourier multiplication algorithm does not harm the performance sometimes improves it.
-This way the interpretability is faithful.
+4. <b>Ablating key frequencies</b> reduces model performance but ablating the other <b>95% improves the performance</b>. Ablating various components and
+replacing them with Fourier multiplication algorithm does not harm the performance and sometimes improves it. This way the interpretability is <b>faithful</b>.
 
 <img src="images/paper1_img4.png" style="max-width:80%; width:600;" class="mx-auto d-block">
 The paper introduces two progress metrics which improve prior to and when grokking occurs.
@@ -195,19 +194,21 @@ the sudden transition to perfect test accuracy in grokking occurs during cleanup
 <p>
 Memorization (Epochs 0k–1.4k). A decline of both excluded and train loss, with
 test and restricted loss both remaining high and the Gini coefficient staying relatively flat. In other
-words, the model memorizes the data, and the frequencies wk used by the final model are unused.
+words, the model memorizes the data, and <b>the frequencies wk used by the final model are unused</b>.
 <p>
 Circuit formation (Epochs 1.4k–9.4k). In this phase, excluded loss rises, sum of squared weights
 falls, restricted loss starts to fall, and test and train loss stay flat. This suggests that the model’s
-behavior on the train set transitions smoothly from the memorizing solution to the Fourier multiplication algorithm. The fall in the sum of squared weights suggests that circuit formation likely
-happens due to weight decay. Notably, the circuit is formed well before grokking occurs.
+behavior on the train set transitions smoothly from the memorizing solution to the Fourier multiplication algorithm. The fall in the sum
+of squared weights suggests that <b>circuit formation likely happens due to weight decay</b>. Notably, the circuit is
+formed well before grokking occurs.
+
 <p>
 Cleanup (Epochs 9.4k–14k). In this phase, excluded loss plateaus, restricted loss continues to drop,
 test loss suddenly drops, and sum of squared weights sharply drops. As the completed Fourier
-multiplication circuit both solves the task well and has lower weight than the memorization circuit,
+multiplication circuit both solves the task well and <b>has lower weight than the memorization circuit</b>,
 weight decay encourages the network to shed the memorized solution in favor of focusing on the
 Fourier multiplication circuit. This is most cleanly shown in the sharp increase in the Gini coefficient
-for the matices WE and WL, which shows that the network is becoming sparser in the Fourier basis.
+for the matices WE and WL, which shows that the network is <b>becoming sparser in the Fourier basis</b>.
 
 <p>
 <a href="https://www.neelnanda.io/grokking-paper">Interative grokking mech-interp</a>
@@ -215,14 +216,14 @@ for the matices WE and WL, which shows that the network is becoming sparser in t
 
 <h2>Structural Grokking</h2>
 <p>
-The problem addressed in this paper is understanding whether and how vanilla transformer models
-(standard transformers without architectural modifications) can learn and generalize hierarchical
+The problem addressed in this paper is understanding whether and how <b>vanilla transformer</b> models
+(standard transformers without architectural modifications) can learn and <b>generalize hierarchical</b>
 structures inherent in human language. This question arises because hierarchical structure, how
 smaller units in sentences form larger, nested constituents is critical for human language comprehension
 and generalization to new sentences.
 <p>
 Historically, research has suggested that transformers, due to their sequential and attention-based design,
-might lack inductive biases for hierarchical structure, struggling to generalize beyond the training data
+<b>might lack inductive biases</b> for hierarchical structure, struggling to <b>generalize beyond the training data</b>
 to structurally novel sentences. Some studies have argued that transformers only learn shallow patterns
 in the data without truly capturing these deeper, hierarchical relationships.
 
@@ -263,23 +264,23 @@ A simple <b>greedy decoding</b> is used during testing.
 
 <h2>Results and conclusion Structural Grokking</h2>
 <p>
-<b>Weight norms</b> alone are not effective predictors of hierarchical generalization
-(or structural grokking) in transformer models. Although weight norms do grow
-during training, this growth is not a reliable indicator of whether a model will
+<b>Weight norms</b> alone are <b>not effective predictors</b> of hierarchical generalization
+(or structural grokking) in transformer models. Although weight <b>norms do grow
+during training</b>, this growth is not a reliable indicator of whether a model will
 generalize hierarchically on out of distribution data.
 
 <p>
 <b>Attention sparsity</b> does not reliably predict structural grokking or
-hierarchical generalization in transformers. Although attention sparsity
-increases with model depth, this increase is not linked to a model's ability
+hierarchical generalization in transformers. Although <b>attention sparsity
+increases with model depth</b>, this increase is not linked to a model's ability
 to generalize hierarchically.
 
 <p>
 <b>Tree-structuredness</b> is a key predictor of structural grokking and
 hierarchical generalization in transformers. Unlike other internal model
-properties (like weight norms and attention sparsity), tree-structuredness
-uniquely correlates with the model’s ability to learn and generalize hierarchical
-rules to out of distribution  data.
+properties (like weight norms and attention sparsity), <b>tree-structuredness
+uniquely correlates</b> with the model’s ability to learn and generalize hierarchical
+rules to out of distribution data.
 
 <img src="images/paper2_img4.png" style="max-width:100%; width:800;" class="mx-auto d-block">
 

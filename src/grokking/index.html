@@ -60,7 +60,7 @@ rel="stylesheet">
 <main class="col-8">
 <h1 class="mt-5">Grokking</h1>
 
-<div<h5>October 28, 2024 • <em>Sri Harsha and Nikhil</em></h5>
+<div<h5>October 29, 2024 • <em>Sri Harsha and Nikhil</em></h5>
 
 <h2>Introduction</h2>
 
@@ -70,72 +70,321 @@ period of apparent stagnation, suddenly experiences a rapid and significant
 improvement in performance. This abrupt transition is like <b>epiphany</b>
 moment, where the model gains a deep understanding of its task, similar to a
 human's moment of clarity after grappling with a complex concept. The term
-"grok" originates from Robert Heinlein's<b>add the link here</b> science fiction, meaning to understand
+"grok" originates from <a href="https://en.wikipedia.org/wiki/Stranger_in_a_Strange_Land">Robert Heinlein's</a> science fiction, meaning to understand
 something fully and deeply. Grokking challenges conventional expectations of
 gradual learning, suggesting an alternative dynamic where models might initially
 show little progress before suddenly achieving generalization.
 
 <p>
-The three papers that will be explored in this page, the first beeing Nanda et al 2023,
-Progress measures for grokking via mechanistic interpretability<b>link peper 1</b> which shows grokking
-phenomenon on small transformers trained on modular addition tasks. The second paper Murty et al 2023,
-is about Grokking of Hierarchical Structure in Vanilla Transformers<b>link paper 2</b> which explores hierarchically
-generalization. The third Y. Hu et all 2024 Delays, Detours, and Forks in the Road:
-Latent State Models of Training Dynamics<b>link paper 3</b>, explores how randomness in data order and initialization
+The three papers that will be explored in this page, the first beeing <a href="https://openreview.net/pdf?id=9XFSbDPmdW">Nanda et al 2023</a>,
+Progress measures for grokking via mechanistic interpretability which shows grokking
+phenomenon on small transformers trained on modular addition tasks. The second paper <a href="https://arxiv.org/pdf/2305.18741">Murty et al 2023</a>,
+is about Grokking of Hierarchical Structure in Vanilla Transformers which explores hierarchically
+generalization. The third <a href="https://arxiv.org/pdf/2308.09543">Y. Hu et all 2024</a> Delays, Detours, and Forks in the Road:
+Latent State Models of Training Dynamics, explores how randomness in data order and initialization
 impacts model training dynamics and outcomes.
+
+<h2>Authors</h2>
+<h4>Grokking mech-intrep</h4>
+<p>
+<b>Neel Nanda</b> runs the Google DeepMind mechanistic interpretability team.
+<p>
+<b>Lawrence Chan</b> is a PhD at UC Berkeley advised by Anca Dragan and Stuart Russell
+<p>
+<b>Tom Lieberum</b> is a Research Engineer at DeepMind.
+<p>
+<b>Jacob Steinhardt</b> Assistant Professor at Department of Statistics, UC Berkeley
+
+<h2>Glossary</h2>
+<p>
+<b>Norm</b> is a measure of magnitude in the context of neural networks
+<p>
+<b>Frequency</b> in mech-intrep grokking paper; it means the angular frequency 2pi/P.
+k is an integer representing the k-th harmonic or multiple of the fundamental frequency.
+wk is the angular frequency corresponding to the k-th harmonic.
+<p>
+<b>Sparse parities</b> is combinatorial problem where only a small subset of inputs
+are relevant to solve the task. Example when an input has 40 bits but only 3 bits
+are necessary to compute the output.
+<p>
+<b>Vanishing gradients</b>: This is a phenomenon where the models gradients become negligible, unable to
+optimize during backprop.
+
+<p>
+<b>Exploding gradients</b>: The gradients accumulated are massive and instead of converging to
+optimum it starts diverge.
+
 
 
 <h2>Emergent behaviours</h2>
 <p>
-Emergent behaviors in machine learning models often arise unexpectedly when models
-are scaled up, leading to new capabilities such as in-context learning and
-chain-of-thought prompting. However, these behaviors also present risks, including
+Emergent behaviors in machine learning models often arise <b>unexpectedly</b> when models
+are scaled up, leading to <b>new capabilities</b> such as in-context learning and
+chain-of-thought prompting. However, these behaviors also present <b>risks</b>, including
 overfitting and unintended consequences in real-world applications. For instance,
-Pan et al<b>link paper</b>. discuss the risks associated with recommender systems, in case of YouTube
-since engineers couldn’t really measure the SWB\(Subjective well being\) they use other
-metrics to measure and optimize  like click-through rates or watch-time. These objectives
+<a href="https://arxiv.org/pdf/2201.03544">YPan et al</a>. discusses the risks associated with recommender systems, in case of YouTube
+since engineers couldn’t really measure the SWB(Subjective well being) they used other
+metrics to measure and optimize like <b>click-through rates</b> or <b>watch-time</b>. These objectives
 don’t make a good estimate of SWB so this led YouTube to overemphasize watch-time and harm
-user satisfaction and also recommended extreme political \(controversial\) content to users.
+user satisfaction and also recommended extreme political (controversial) content to users.
 
 <p>
 The emergence of these behaviors is surprising to researchers because they appear
 suddenly and are not easily predictable based on traditional metrics.
-Ganguli et al<b>link paper</b>. highlight the paradox that while scaling laws predict performance
-improvements, the specific new capabilities that emerge are unpredictable. In fact there
+<a href="https://arxiv.org/pdf/2202.07785">Ganguli et al</a>. highlight the paradox that while scaling laws predict performance
+improvements, the specific <b>new capabilities that emerge are unpredictable</b>. In fact there
 could still be unknow capabilities which are not triggered yet or discovered.
-Barak et al. further note that sudden phase changes can occur even without
-changes in data size, emphasizing the need for metrics that can detect these
-transitions before they happen. Understanding these emergent behaviors requires
-novel approaches beyond conventional statistical methods, as they can have
+Barak et al. further note that <b>sudden phase</b> changes can occur even without
+changes in data size, emphasizing the <b>need for metrics</b> that can detect these
+transitions <b>before they happen</b>. Understanding these emergent behaviors requires
+novel approaches <b>beyond conventional statistical methods</b>, as they can have
 significant implications for both model performance and societal impact.
 
-
+<p>
+Alpha zero learns a lot of human chess concepts between 10 k to 30k training steps. Reinvents opening theories between 25k to 60k.
 
 <h2>Modular addition experiment</h2>
-<img src="images/paper1_img1.png" style="max-width:30%; width:300px;" class="mx-auto d-block">
+<img src="images/paper1_img1.png" style="max-width:80%; width:600;" class="mx-auto d-block">
 
 <p>
 In this experiment they study modular addition, where a model takes inputs
 a, b ∈ {0, . . . , P −1} for some prime P and predicts their sum c mod P. Small transformers trained
-with weight decay on this task consistently exhibit grokking. They reverse engineered the weights of these transformers
+with weight decay on this task consistently exhibit grokking. They <b>reverse engineered</b> the weights of these transformers
 and find that they perform this task by mapping the inputs onto a circle and performing addition
 on the circle. Specifically, we show that the embedding matrix maps the inputs a, b to sines
 and cosines at a sparse set of key frequencies wk. The attention and MLP layers then combine
-these using trigonometric identities to compute the sine and cosine of wk\(a + b\), and the
+these using trigonometric identities to compute the sine and cosine of wk(a + b), and the
 output matrices shift and combine these frequencies.
-
+<img src="images/paper1_img2.png" style="max-width:80%; width:600;" class="mx-auto d-block">
 <p>
 They found four lines of evidence to differentiate the phases of grokking.
 
-<blockquote class="blockquote">
-<p>Network weights exhibit a periodic structure
-<p>Neuron-logit WL which is the last learnable param matrix. Which transforms hidden activations into logits. This can be well approximated using sinusoidal functions of key frequencies. MLP activations are projected on to these sinusoidal functions produce trigonometric identities from the neurons.
-<p>The MLP and attention heads can be approximated well using a 2nd degree polynomials of trigonometric functions of a single frequency.
-<p>Ablating key frequencies reduces model performance but the other 95% has improves the performance.
-</blockquote>
+<p>
+1. Network weights exhibit a periodic structure. When a Fourier transformation is  applied many components are sparse and supported by few key frequencies.
+<p>
+2. Neuron-logit WL which is the <b>last learnable param</b> matrix which transforms hidden activations into logits.
+The WL can be well <b>approximated using sinusoidal functions of key frequencies</b>. MLP activations are projected on
+to these sinusoidal functions produce <b>trigonometric identities</b> from the neurons.
+Unembedding matrix WL has only a rank of 10 where each direction corresponds to either cosine or sine of only 5
+key frequencies. <b>Projecting MLP activations</b> to WL only produces multiples of cos (wk(a + b)) and sin (wk(a + b))
+where a and b are the inputs. Hence we can safely say that the <b>sum is not computed in MLP</b>.
+<p>
+3. The MLP and attention heads can be approximated well using a <b>2nd degree polynomials</b> of trigonometric functions of <b>a single frequency</b>.
+Attention heads and most neurons are well approximated by 2nd degree polynomials of sins and cosines of a single frequency.
+The corresponding direction in <b>WL also contains the same frequency</b>. Hence model computations are localized across all the frequencies.
+<p>
+4. <b>Ablating key frequencies</b> reduces model performance but ablating the other <b>95% improves the performance</b>. Ablating various components and
+replacing them with Fourier multiplication algorithm does not harm the performance and sometimes improves it. This way the interpretability is <b>faithful</b>.
+
+<img src="images/paper1_img4.png" style="max-width:80%; width:600;" class="mx-auto d-block">
+The paper introduces two progress metrics which improve prior to and when grokking occurs.
+<p>
+- Restricted loss: ablating every non key frequency.
+<p>
+- excluded loss: ablating key frequencies
+
+<h2>Phase changes</h2>
+
+<img src="images/paper1_img3.png" style="max-width:80%; width:600;" class="mx-auto d-block">
+
+<p>
+The experiment shows three phases in the training. <b>Memorization</b> of the training data, <b>circuit formation</b>, where the network
+learns a mechanism that generalizes; and <b>cleanup</b>, where weight decay removes the memorization components. Surprisingly,
+the sudden transition to perfect test accuracy in grokking occurs during cleanup, after the generalizing mechanism is learned.
+<p>
+Memorization (Epochs 0k–1.4k). A decline of both excluded and train loss, with
+test and restricted loss both remaining high and the Gini coefficient staying relatively flat. In other
+words, the model memorizes the data, and <b>the frequencies wk used by the final model are unused</b>.
+<p>
+Circuit formation (Epochs 1.4k–9.4k). In this phase, excluded loss rises, sum of squared weights
+falls, restricted loss starts to fall, and test and train loss stay flat. This suggests that the model’s
+behavior on the train set transitions smoothly from the memorizing solution to the Fourier multiplication algorithm. The fall in the sum
+of squared weights suggests that <b>circuit formation likely happens due to weight decay</b>. Notably, the circuit is
+formed well before grokking occurs.
+
+<p>
+Cleanup (Epochs 9.4k–14k). In this phase, excluded loss plateaus, restricted loss continues to drop,
+test loss suddenly drops, and sum of squared weights sharply drops. As the completed Fourier
+multiplication circuit both solves the task well and <b>has lower weight than the memorization circuit</b>,
+weight decay encourages the network to shed the memorized solution in favor of focusing on the
+Fourier multiplication circuit. This is most cleanly shown in the sharp increase in the Gini coefficient
+for the matices WE and WL, which shows that the network is <b>becoming sparser in the Fourier basis</b>.
+
+<p>
+<a href="https://www.neelnanda.io/grokking-paper">Interative grokking mech-interp</a>
 
 
+<h2>Structural Grokking</h2>
+<p>
+The problem addressed in this paper is understanding whether and how <b>vanilla transformer</b> models
+(standard transformers without architectural modifications) can learn and <b>generalize hierarchical</b>
+structures inherent in human language. This question arises because hierarchical structure, how
+smaller units in sentences form larger, nested constituents is critical for human language comprehension
+and generalization to new sentences.
+<p>
+Historically, research has suggested that transformers, due to their sequential and attention-based design,
+<b>might lack inductive biases</b> for hierarchical structure, struggling to <b>generalize beyond the training data</b>
+to structurally novel sentences. Some studies have argued that transformers only learn shallow patterns
+in the data without truly capturing these deeper, hierarchical relationships.
 
+<h2>Background Structural Grokking</h2>
+<p>
+Some of the early work on hierarchical generalization(<a href="https://aclanthology.org/2022.findings-acl.106.pdf">Muller et al</a>) shows
+evidence that generalization does not occur or poor accuracy on certain datasets.
+<a href="https://arxiv.org/pdf/2305.18741">Murty et al 2023</a> argues that this occurs due early stopping
+of training. They also claim that, simply by training for longer, mean accuracy across random seeds reaches 80%,
+and several seeds achieve near-perfect generalization performance.
+
+<img src="images/paper2_img1.png" style="max-width:100%; width:800;" class="mx-auto d-block">
+
+<h2>Experimentation Structural grokking</h2>
+<img src="images/paper2_img2.png" style="max-width:100%; width:800;" class="mx-auto d-block">
+<p>
+They selected datasets that require hierarchical generalization, where training data can be
+explained by both hierarchical and non-hierarchical rules:
+<p>
+<b>Dyck Language Modeling (Dyck-LM)</b>: The language of well-nested brackets with 20 types and
+max nesting depth of 10. This task involves sequences of well-nested brackets with
+varying types and depths, requiring the model to predict closing brackets based on nested structure.
+<p>
+<b>Question Formation</b>: Convert English sentences into questions. The task involves
+transforming English declarative sentences into questions by moving auxiliary
+verbs appropriately, which requires hierarchical manipulation.
+<p>
+<b>Tense Inflection</b>: Map from sentences and tense markers to appropriately re-inflected sentences.
+This task involves inflecting verbs in sentences according to tense markers,
+necessitating hierarchical understanding to place verb inflections accurately.
+Input: "She is reading a book" with a target tense of "past".
+Expected Output: "She was reading a book".
+
+<p>
+The models used in the experiment are transformer LMs with {2, 4, 6, 8, 10} layers.
+For each depth, we train models with 10 random seeds for 300k (400k for Dyck) steps.
+A simple <b>greedy decoding</b> is used during testing.
+
+<h2>Results and conclusion Structural Grokking</h2>
+<p>
+<b>Weight norms</b> alone are <b>not effective predictors</b> of hierarchical generalization
+(or structural grokking) in transformer models. Although weight <b>norms do grow
+during training</b>, this growth is not a reliable indicator of whether a model will
+generalize hierarchically on out of distribution data.
+
+<p>
+<b>Attention sparsity</b> does not reliably predict structural grokking or
+hierarchical generalization in transformers. Although <b>attention sparsity
+increases with model depth</b>, this increase is not linked to a model's ability
+to generalize hierarchically.
+
+<p>
+<b>Tree-structuredness</b> is a key predictor of structural grokking and
+hierarchical generalization in transformers. Unlike other internal model
+properties (like weight norms and attention sparsity), <b>tree-structuredness
+uniquely correlates</b> with the model’s ability to learn and generalize hierarchical
+rules to out of distribution data.
+
+<img src="images/paper2_img4.png" style="max-width:100%; width:800;" class="mx-auto d-block">
+
+<p>
+The paper concludes that transformers can learn <b>hierarchical language structures</b>
+through structural grokking, where <b>hierarchical generalization</b> emerges with extended training,
+challenging the view that transformers lack hierarchical biases. This phenomenon
+follows an inverted U-shaped relationship with model depth, where intermediate
+depths are optimal. Among internal properties, <b>tree-structuredness</b>, how well model
+computations resemble hierarchical trees best predicts successful generalization.
+Extended training is essential for structural grokking, suggesting prior studies
+may have underestimated transformers’ capabilities. These findings reveal
+transformer's potential for capturing syntactic complexity, with implications
+for their application to hierarchical language tasks.
+
+<h2>Latent state Training dynamics</h2>
+<h3>Intro</h3>
+<p>
+  The paper addresses the challenge of understanding how <b>randomness</b> in data ordering
+  and model initialization affects neural network training outcomes. Despite using
+  identical architectures and hyperparameters, models can take different training
+  paths due to randomness, impacting <b>convergence</b> speed and final accuracy. This
+  variability complicates reproducibility and efficiency, as certain training paths
+  lead to slower or less effective learning. The authors aim to interpret these <b>paths</b>
+  by modeling training dynamics as <b>transitions across latent states</b> using <b>hidden Markov
+  models (HMMs)</b>. This approach captures <b>phase transitions</b> and highlights <b>detour states</b>
+  inefficient training stages that delay convergence.
+
+<h3>Methodology</h3>
+<img src="images/paper3_img2.png" style="max-width:100%; width:800;" class="mx-auto d-block">
+  By identifying these stages and detours the study provides insights into how randomness
+  influences training trajectories and suggests ways to <b>optimize model architecture</b> or
+  hyperparameters to avoid detours, thus improving training efficiency and stability.
+  This framework offers a structured method to interpret and manage training variability
+  in neural networks.
+
+<img src="images/paper3_img1.png" style="max-width:100%; width:800;" class="mx-auto d-block">
+  <p>
+  1. <b>Data collection</b>: Metrics like L2 norm, mean and mean are recorded at each check point
+  to capture the training pattern or dynamics .
+  <p>
+  2. <b>Hidden Markov Model (HMM)</b>: An HMM is fitted to these metrics, treating training
+  as a sequence of transitions between latent states. Each latent state represents a distinct
+  phase in the training process.
+  <p>
+  3. <b>Training Map Construction</b>: The HMM is used to make a <b>training map</b>
+  which visualizes paths through latent states during training. This map helps
+  identify <b>detour states</b> in the latent state distribution which causes <b>slower convergence</b>.
+  <p>
+  4. <b>Interpreting Detour States</b>: To connect detour states to training outcomes,
+  the authors use <b>regression models</b> predicting convergence time based on <b>time spent
+  in each latent state</b>, identifying states that <b>slow down convergence</b>.
+
+<h2>Experimentation with Latent states</h2>
+<p>
+The paper shows experimentation on three different tasks:
+<p>
+1. <b>Grokking Tasks</b>: <b>Modular additions</b> and <b>sparse parities</b>, where models learn simple
+rules and exhibit clear phase transitions between <b>memorization</b> and <b>generalization</b>.
+<p>
+2. <b>Image Classification</b>: Tasks on MNIST and CIFAR-100 to observe standard training
+dynamics in neural networks.
+<p>
+3. <b>Masked Language Modeling</b>: Using BERT-like models to assess training dynamics under diverse
+random seeds.
+
+<h2>Results and conclusion Latent States</h2>
+
+<p>
+In <b>Grokking tasks</b>, the training dynamics show <b>clear phase transitions</b> from memorization
+to generalization. Paths through the training map showed clear changes. Some models followed <b>short,
+efficient paths</b>, while others took <b>longer detour routes</b>. Certain <b>random seeds</b> led to prolonged
+convergence times due to detour states that <b>slowed learning</b> by entering optional phases with high L2 norm.
+These results prove that <b>phase transitions in training can be sensitive to random seeds</b>. Adjusting some of the
+<b>hyperparameters</b> or making architectural changes like <b>adding normalization</b> mitigates this sensitivity.
+
+<p>
+The <b>image classification</b> on CIFAR-100 and MNIST have very stable where metrics which <b>linearly progress</b>
+towards convergence. However, when </b>batch normalization and residual connections were removed</b> in CIFAR-100 it <b>destabilized</b>
+the training for some random seeds. The reasons for destabilization are attributed to <b>exploding gradiants</b> or <b>vanishing gradiants</b> problems.
+
+<p>
+The Masked Language Modeling showed <b>variations</b> in weight averages across random seeds, with some converging faster than others.
+While all of them converged to pre trainning loss benchmark these weight average variations could impact fine tuning and other
+tasks downstream. Perhaps loss and accuracy are not sufficient metrics to evaluate these language models convergence to optimal
+training dynamics.
+
+
+<h2>Compare, contrast and opinion</h2>
+
+<p>
+The mech-interp grokking paper has an extensive experimentation combined with a comprehensive
+<b>reverse engineering</b>, makes an air tight argument about the phase transitions and how tranformer Models
+achieve generalization. The structural grokking paper shows evidence about hierarchial generalization disproving
+older works but it does not explore the internal mechanics of how the model achives said hierchial generalization unlike mech-interp which
+clearly showing approximations of model calculations with trignometric identities. While the structural grokking paper portrays <b>structural grokking</b>
+an entirely new phenomenon. I (Sri Harsha) reached a conclusion that strutural grokking and the mech-interp grokking are the same phenomeon. The only major difference
+I see between the experiments of the two papers is that they are training to solve different tasks.
+
+
+<h2>Code and additional resources</h2>
+1. Mech-interp grokking code https://github.com/mechanistic-interpretability-grokking/progress-measures-paper
+2. Structural grokking code https://github.com/MurtyShikhar/structural-grokking
+3. Latent states code https://github.com/michahu/modeling-training
 </main>
 </div>
 </div>
