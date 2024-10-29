@@ -94,6 +94,16 @@ impacts model training dynamics and outcomes.
 <b>Tom Lieberum</b> is a Research Engineer at DeepMind.
 <p>
 <b>Jacob Steinhardt</b> Assistant Professor at Department of Statistics, UC Berkeley
+
+<h2>Glossary</h2>
+<p>
+<b>Norm</b> is a measure of magnitude in the context of neural networks
+<p>
+<b>Frequency</b> in mech-intrep grokking paper it means the angular frequency 2pi/P.
+k is an integer representing the k-th harmonic or multiple of the fundamental frequency.
+wk is the angular frequency corresponding to the k-th harmonic.
+
+
 <h2>Emergent behaviours</h2>
 <p>
 Emergent behaviors in machine learning models often arise unexpectedly when models
@@ -204,7 +214,7 @@ might lack inductive biases for hierarchical structure, struggling to generalize
 to structurally novel sentences. Some studies have argued that transformers only learn shallow patterns
 in the data without truly capturing these deeper, hierarchical relationships.
 
-<h2>Structural Grokking</h2>
+<h2>Background Structural Grokking</h2>
 <p>
 Some of the early work on hierarchical generalization(<a href="https://aclanthology.org/2022.findings-acl.106.pdf">Muller et al</a>) shows
 evidence that generalization does not occur or poor accuracy on certain datasets.
@@ -237,9 +247,41 @@ Expected Output: "She was reading a book".
 <p>
 The models used in the experiment are transformer LMs with {2, 4, 6, 8, 10} layers.
 For each depth, we train models with 10 random seeds for 300k (400k for Dyck) steps.
-A simple <b>greedy decoding</b> is used from the model during testing.
+A simple <b>greedy decoding</b> is used during testing.
 <img src="images/paper2_img3.png" style="max-width:100%; width:800;" class="mx-auto d-block">
 
+<h2>Results and conclusion Structural Grokking</h2>
+<p>
+<b>Weight norms</b> alone are not effective predictors of hierarchical generalization
+(or structural grokking) in transformer models. Although weight norms do grow
+during training, this growth is not a reliable indicator of whether a model will
+generalize hierarchically on out of distribution data.
+
+<p>
+<b>Attention sparsity</b> does not reliably predict structural grokking or
+hierarchical generalization in transformers. Although attention sparsity
+increases with model depth, this increase is not linked to a model's ability
+to generalize hierarchically.
+
+<p>
+<b>Tree-structuredness</b> is a key predictor of structural grokking and
+hierarchical generalization in transformers. Unlike other internal model
+properties (like weight norms and attention sparsity), tree-structuredness
+uniquely correlates with the model’s ability to learn and generalize hierarchical
+rules to out of distribution  data.
+
+
+<p>
+The paper concludes that transformers can learn hierarchical language structures
+through structural grokking, where hierarchical generalization emerges with extended training,
+challenging the view that transformers lack hierarchical biases. This phenomenon
+follows an inverted U-shaped relationship with model depth, where intermediate
+depths are optimal. Among internal properties, tree-structuredness—how well model
+computations resemble hierarchical trees—best predicts successful generalization.
+Extended training is essential for structural grokking, suggesting prior studies
+may have underestimated transformers’ capabilities. These findings reveal
+transformers’ potential for capturing syntactic complexity, with implications
+for their application to hierarchical language tasks.
 </main>
 </div>
 </div>
