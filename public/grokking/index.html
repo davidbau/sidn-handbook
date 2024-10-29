@@ -214,7 +214,7 @@ and several seeds achieve near-perfect generalization performance.
 
 <img src="images/paper2_img1.png" style="max-width:100%; width:800;" class="mx-auto d-block">
 
-<Experimentation Structural grokking>
+<h2>Experimentation Structural grokking</h2>
 <img src="images/paper2_img2.png" style="max-width:100%; width:800;" class="mx-auto d-block">
 <p>
 They selected datasets that require hierarchical generalization, where training data can be
@@ -232,7 +232,14 @@ Tense Inflection: Map from sentences and tense markers to appropriately re-infle
 This task involves inflecting verbs in sentences according to tense markers,
 necessitating hierarchical understanding to place verb inflections accurately.
 Input: "She is reading a book" with a target tense of "past".
-Expected Output: "She was reading a book"
+Expected Output: "She was reading a book".
+
+<p>
+The models used in the experiment are transformer LMs with {2, 4, 6, 8, 10} layers.
+For each depth, we train models with 10 random seeds for 300k (400k for Dyck) steps.
+A simple <b>greedy decoding</b> is used from the model during testing.
+<img src="images/paper2_img3.png" style="max-width:100%; width:800;" class="mx-auto d-block">
+
 </main>
 </div>
 </div>
