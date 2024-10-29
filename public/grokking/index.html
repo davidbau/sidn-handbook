@@ -112,7 +112,7 @@ significant implications for both model performance and societal impact.
 
 
 <h2>Modular addition experiment</h2>
-<img src="images/paper1_img1.png" style="max-width:30%; width:300px;" class="mx-auto d-block">
+<img src="images/paper1_img1.png" style="max-width:80%; width:600;" class="mx-auto d-block">
 
 <p>
 In this experiment they study modular addition, where a model takes inputs
@@ -127,12 +127,14 @@ output matrices shift and combine these frequencies.
 <p>
 They found four lines of evidence to differentiate the phases of grokking.
 
-<blockquote class="blockquote">
-<p>Network weights exhibit a periodic structure
-<p>Neuron-logit WL which is the last learnable param matrix. Which transforms hidden activations into logits. This can be well approximated using sinusoidal functions of key frequencies. MLP activations are projected on to these sinusoidal functions produce trigonometric identities from the neurons.
-<p>The MLP and attention heads can be approximated well using a 2nd degree polynomials of trigonometric functions of a single frequency.
-<p>Ablating key frequencies reduces model performance but the other 95% has improves the performance.
-</blockquote>
+<p>
+Network weights exhibit a periodic structure
+<p>
+Neuron-logit WL which is the last learnable param matrix. Which transforms hidden activations into logits. This can be well approximated using sinusoidal functions of key frequencies. MLP activations are projected on to these sinusoidal functions produce trigonometric identities from the neurons.
+<p>
+The MLP and attention heads can be approximated well using a 2nd degree polynomials of trigonometric functions of a single frequency.
+<p>
+Ablating key frequencies reduces model performance but the other 95% has improves the performance.
 
 
 
