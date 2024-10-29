@@ -85,7 +85,7 @@ Latent State Models of Training Dynamics, explores how randomness in data order 
 impacts model training dynamics and outcomes.
 
 <h2>Authors</h2>
-<h3>Grokking mech-intrep</h3>
+<h4>Grokking mech-intrep</h4>
 <p>
 <b>Neel Nanda</b> runs the Google DeepMind mechanistic interpretability team.
 <p>
@@ -109,7 +109,7 @@ user satisfaction and also recommended extreme political (controversial) content
 <p>
 The emergence of these behaviors is surprising to researchers because they appear
 suddenly and are not easily predictable based on traditional metrics.
-Ganguli et al<b>link paper</b>. highlight the paradox that while scaling laws predict performance
+<a href="https://arxiv.org/pdf/2202.07785">Ganguli et al</a>. highlight the paradox that while scaling laws predict performance
 improvements, the specific new capabilities that emerge are unpredictable. In fact there
 could still be unknow capabilities which are not triggered yet or discovered.
 Barak et al. further note that sudden phase changes can occur even without
@@ -118,7 +118,8 @@ transitions before they happen. Understanding these emergent behaviors requires
 novel approaches beyond conventional statistical methods, as they can have
 significant implications for both model performance and societal impact.
 
-
+<p>
+Alpha zero learns a lot of human chess concepts between 10 k to 30k training steps. Reinvents opening theories between 25k to 60k.
 
 <h2>Modular addition experiment</h2>
 <img src="images/paper1_img1.png" style="max-width:80%; width:600;" class="mx-auto d-block">
@@ -188,6 +189,21 @@ for the matices WE and WL, which shows that the network is becoming sparser in t
 
 <p>
 <a href="https://www.neelnanda.io/grokking-paper">Interative grokking mech-interp</a>
+
+
+<h2>Structural Grokking</h2>
+<p>
+The problem addressed in this paper is understanding whether and how vanilla transformer models
+(standard transformers without architectural modifications) can learn and generalize hierarchical
+structures inherent in human language. This question arises because hierarchical structure, how
+smaller units in sentences form larger, nested constituents is critical for human language comprehension
+and generalization to new sentences.
+<p>
+Historically, research has suggested that transformers, due to their sequential and attention-based design,
+might lack inductive biases for hierarchical structure, struggling to generalize beyond the training data
+to structurally novel sentences. Some studies have argued that transformers only learn shallow patterns
+in the data without truly capturing these deeper, hierarchical relationships.
+
 
 </main>
 </div>
