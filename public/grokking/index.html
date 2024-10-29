@@ -310,6 +310,19 @@ for their application to hierarchical language tasks.
   2. <b>Hidden Markov Model (HMM)</b>: An HMM is fitted to these metrics, treating training
   as a sequence of transitions between latent states. Each latent state represents a distinct
   phase in the training process.
+  <p>
+  3. <b>Training Map Construction</b>: The HMM is used to make a <b>training map</b>
+  which visualizes paths through latent states during training. This map helps
+  identify <b>detour states</b> in the latent state distribution which causes <b>slower convergence</b>.
+  <p>
+  4. <b>Interpreting Detour States</b>: To connect detour states to training outcomes,
+  the authors use <b>regression models</b> predicting convergence time based on <b>time spent
+  in each latent state</b>, identifying states that <b>slow down convergence</b>.
+
+<h2>Experimentation with Latent states</h2>
+
+
+
 <h2>Compare and contrast</h2>
 </main>
 </div>
