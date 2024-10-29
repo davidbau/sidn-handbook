@@ -123,18 +123,27 @@ on the circle. Specifically, we show that the embedding matrix maps the inputs a
 and cosines at a sparse set of key frequencies wk. The attention and MLP layers then combine
 these using trigonometric identities to compute the sine and cosine of wk(a + b), and the
 output matrices shift and combine these frequencies.
+<img src="images/paper1_img2.png" style="max-width:80%; width:600;" class="mx-auto d-block">
+<p>
+They found four lines of evidence to differentiate the phases of grokking.
 
 <p>
-1. They found four lines of evidence to differentiate the phases of grokking.
-
+1. Network weights exhibit a periodic structure. When a Fourier transformation is  applied many components are sparse and supported by few key frequencies.
 <p>
-2. Network weights exhibit a periodic structure
+2. Neuron-logit WL which is the last learnable param matrix. Which transforms hidden activations into logits.
+This can be well approximated using sinusoidal functions of key frequencies. MLP activations are projected on
+to these sinusoidal functions produce trigonometric identities from the neurons.
+Unembedding matrix WL has only a rank of 10 where each direction corresponds to either cosine or sine of only 5
+key frequencies. Projecting MLP activations to WL only produces multiples of cos (wk(a + b)) and sin (wk(a + b))
+where a and b are the inputs. Hence we can safely say that the sum is not computed in MLP.
 <p>
-3. Neuron-logit WL which is the last learnable param matrix. Which transforms hidden activations into logits. This can be well approximated using sinusoidal functions of key frequencies. MLP activations are projected on to these sinusoidal functions produce trigonometric identities from the neurons.
+3. The MLP and attention heads can be approximated well using a 2nd degree polynomials of trigonometric functions of a single frequency.
+Attention heads and most neurons are well approximated by 2nd degree polynomials of sins and cosines of a single frequency.
+The corresponding direction in WL also contains the same frequency. Hence model computations are localized across all the frequencies.
 <p>
-The MLP and attention heads can be approximated well using a 2nd degree polynomials of trigonometric functions of a single frequency.
-<p>
-4. Ablating key frequencies reduces model performance but the other 95% has improves the performance.
+4. Ablating key frequencies reduces model performance but the other 95% has improves the performance. Ablating various components and
+replacing them with Fourier multiplication algorithm does not harm the performance sometimes improves it.
+This way the interpretability is faithful. 
 
 <h2>Progress metrics for grokking via mech-interp</h2>
 <p>
@@ -144,7 +153,7 @@ The paper introduces two progress metrics which improve prior to and when grokki
 <p>
 - excluded loss: ablating key frequencies
 
-<img src="images/paper1_img2.png" style="max-width:80%; width:600;" class="mx-auto d-block">
+
 </main>
 </div>
 </div>
