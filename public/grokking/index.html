@@ -362,13 +362,23 @@ towards convergence. However, when </b>batch normalization and residual connecti
 the training for some random seeds. The reasons for destabilization are attributed to <b>exploding gradiants</b> or <b>vanishing gradiants</b> problems.
 
 <p>
-The Masked Language Modeling showed variations in weight averages across random seeds, with some converging faster than others.
+The Masked Language Modeling showed <b>variations</b> in weight averages across random seeds, with some converging faster than others.
 While all of them converged to pre trainning loss benchmark these weight average variations could impact fine tuning and other
 tasks downstream. Perhaps loss and accuracy are not sufficient metrics to evaluate these language models convergence to optimal
 training dynamics.
 
 
-<h2>Compare and contrast</h2>
+<h2>Compare, contrast and opinion</h2>
+
+<p>
+The mech-interp grokking paper has an extensive experimentation combined with a comprehensive
+<b>reverse engineering</b>, makes an air tight argument about the phase transitions and how tranformer Models
+achieve generalization. The structural grokking paper shows evidence about hierarchial generalization disproving
+older works but it does not explore the internal mechanics of how the model achives said hierchial generalization unlike mech-interp which
+clearly showing approximations of model calculations with trignometric identities. While the structural grokking paper portrays <b>structural grokking</b>
+an entirely new phenomenon. I (Sri Harsha) reached a conclusion that strutural grokking and the mech-interp grokking are the same phenomeon. The only major difference
+I see between the experiments of the two papers is that they are training to solve different tasks.
+
 </main>
 </div>
 </div>
