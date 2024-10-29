@@ -84,6 +84,9 @@ generalization. The third <a href="hhttps://arxiv.org/pdf/2308.09543">Y. Hu et a
 Latent State Models of Training Dynamics, explores how randomness in data order and initialization
 impacts model training dynamics and outcomes.
 
+<h2>Authors</h2>
+
+
 
 <h2>Emergent behaviours</h2>
 <p>
@@ -160,6 +163,25 @@ The paper introduces two progress metrics which improve prior to and when grokki
 The experiment shows three phases in the training. <b>Memorization</b> of the training data, <b>circuit formation</b>, where the network
 learns a mechanism that generalizes; and <b>cleanup</b>, where weight decay removes the memorization components. Surprisingly,
 the sudden transition to perfect test accuracy in grokking occurs during cleanup, after the generalizing mechanism is learned.
+<p>
+Memorization (Epochs 0k–1.4k). A decline of both excluded and train loss, with
+test and restricted loss both remaining high and the Gini coefficient staying relatively flat. In other
+words, the model memorizes the data, and the frequencies wk used by the final model are unused.
+<p>
+Circuit formation (Epochs 1.4k–9.4k). In this phase, excluded loss rises, sum of squared weights
+falls, restricted loss starts to fall, and test and train loss stay flat. This suggests that the model’s
+behavior on the train set transitions smoothly from the memorizing solution to the Fourier multiplication algorithm. The fall in the sum of squared weights suggests that circuit formation likely
+happens due to weight decay. Notably, the circuit is formed well before grokking occurs.
+<p>
+Cleanup (Epochs 9.4k–14k). In this phase, excluded loss plateaus, restricted loss continues to drop,
+test loss suddenly drops, and sum of squared weights sharply drops. As the completed Fourier
+multiplication circuit both solves the task well and has lower weight than the memorization circuit,
+weight decay encourages the network to shed the memorized solution in favor of focusing on the
+Fourier multiplication circuit. This is most cleanly shown in the sharp increase in the Gini coefficient
+for the matices WE and WL, which shows that the network is becoming sparser in the Fourier basis.
+
+<p>
+<a href="https://www.neelnanda.io/grokking-paper">Interative grokking mech-interp</a>
 
 </main>
 </div>
