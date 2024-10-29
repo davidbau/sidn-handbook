@@ -102,6 +102,18 @@ impacts model training dynamics and outcomes.
 <b>Frequency</b> in mech-intrep grokking paper it means the angular frequency 2pi/P.
 k is an integer representing the k-th harmonic or multiple of the fundamental frequency.
 wk is the angular frequency corresponding to the k-th harmonic.
+<p>
+<b>Sparse parities</b> is combinatorial problem where only a small subset of inputs
+are relevant to solve the task. Example when an input has 40 bits but only 3 bits
+are necessary to compute the output.
+<p>
+<b>Vanishing gradients</b>: This is a phenomenon where the models gradients become negligible, unable to
+optimize during backprop.
+
+<p>
+<b>Exploding gradients</b>: The gradients accumulated are massive and instead of converging to
+optimum it starts diverge.
+
 
 
 <h2>Emergent behaviours</h2>
@@ -343,9 +355,16 @@ These results prove that <b>phase transitions in training can be sensitive to ra
 <b>hyperparameters</b> or making architectural changes like <b>adding normalization</b> mitigates this sensitivity.
 
 <p>
-The <b>image classification</b> on CIFAR-100 and MNIST have very stable where metrics <b>linearly progress</b>
+The <b>image classification</b> on CIFAR-100 and MNIST have very stable where metrics which <b>linearly progress</b>
 towards convergence. However, when </b>batch normalization and residual connections were removed</b> in CIFAR-100 it <b>destabilized</b>
-the training for some random seeds. The reason for destabilization is the <b>exploding gradiants</b> or <b>vanishing gradiants</b> problems.
+the training for some random seeds. The reasons for destabilization are attributed to <b>exploding gradiants</b> or <b>vanishing gradiants</b> problems.
+
+<p>
+The Masked Language Modeling showed variations in weight averages across random seeds, with some converging faster than others.
+While all of them converged to pre trainning loss benchmark these weight average variations could impact fine tuning and other
+tasks downstream. Perhaps loss and accuracy are not sufficient metrics to evaluate these language models convergence to optimal
+training dynamics.
+
 
 <h2>Compare and contrast</h2>
 </main>
