@@ -35,7 +35,7 @@ If our neural network implements this causal mechanism then we expect the same b
 It is not clear however if our neural network represents these causal variables and even if it does, how do we patch the activations to induce a change in the causal value?
 <a href="https://arxiv.org/pdf/2106.02997">Geiger et al.</a> propose <em>distributed alignment search (DAS)</em> as a method for doing exactly this.
 
-<h3>DAS and BoundlessDAS</h3>
+<h2>DAS and BoundlessDAS</h2>
 <p>
 DAS works by assuming that every causal variable is represented by some linear subspace of the internal representations in the neural network.
 Since these causal variables are independent, these subspaces must be orthogonal to each other.
@@ -59,8 +59,9 @@ This is a very arduous task for larger representations however as the value of \
 They do this by learning dimensions \(d_i\) and a binary mask \(M_i\) which encodes the orthogonal decomposition into the subspaces \(Y_i\).
 They then relax the DII into SoftDII which is a differentiable relaxation to allow for end-to-end learning of these values and \(R\) simultaneously.
 
-<h4>Critiques of Causal Abstraction: Illusory Examples</h4>
+<h2>Critiques of Causal Abstraction</h2>
 
+<h3>Interpretability Illusions</h3>
 <p>
 Some criticisms of causal abstraction methods have been raised, particularly by <a href="https://arxiv.org/pdf/2311.17030">Makelov et al.</a>.
 They state that activation patching and orthogonal subspace decomposition may activate <em>dormant circuits</em> within a neural network that produce the desired behavior but do not encode the proposed causal variables.
@@ -72,6 +73,7 @@ The direction \(v_\text{dorm}\) is an orthogonal direction which is in the <b>ro
 The activations for every data input along \(v_{disc}\) are equal however and so the model does not utilize this direction to distinguish outputs in standard cases.
 An intervention along the original direction \(v\) however can induce a change along the the dormant direction due to the differences along the disconnected direction resulting in behavior which matches the expected causal mechanism despite there being no causally connected encoding of the causal variables in the model.
 They call this behavior an "interpretability illusion" when the intervention along \(v\) produces a significant change in output but there is a very small change in output when the intervention is limited only along \(v_{dorm}\).
+To demonstrate this phenomena, the Makelov et al. test several causal analysis methods and find this behavior suggesting that new methods and careful evaluation metrics may be needed to ensure faithfulness of causal abstractions.
 Here is a visual diagram of this idea.
 {img("images/dormant_disc.png", 50)}
 
@@ -86,8 +88,8 @@ The only activation that actually matters to the network during standard computa
 Here is a diagram of the causal network actually used by the network:
 {img("images/illusion.png", 50)}
 
+<h3>Response to Interpretability Illusions</h3>
 <p>
-To demonstrate this phenomena, the Makelov et al. test several causal analysis methods and find this behavior suggesting that new methods and careful evaluation metrics may be needed to ensure faithfulness of causal abstractions.
 The authors of DAS and BoundlessDAS published <a href="https://arxiv.org/pdf/2401.12631">a response</a> to the illusion critique rejecting that the phenomena presented indicates an "illusion" that should be dismissed.
 They counter that the illusions simply arise from the facts of how networks work and that causal interpetability methods should discover such spaces.
 Going back to our toy example, the obviously non-illusionary direction \(v = [0,0,1]\) is not orthogonal to the nullspace of \(W_2\).
