@@ -165,9 +165,56 @@ rel="stylesheet">
 
     <p><strong>4. Fine-Tuning the Model</strong></p>
     <p>The model is fine-tuned on the generic predictions derived from the combined methods. The original text serves as input, while the generic labels (revised predictions) serve as target tokens. This fine-tuning step effectively "unlearns" the specified content, helping the model avoid generating completions related to the target knowledge.</p>
+<p>
 
-    <p><strong>5. Potential Over-Unlearning</strong></p>
-    <p>The authors note that this combined method may result in unintended "over-unlearning," where the model forgets additional related content (such as summaries or Wikipedia articles related to Harry Potter). To mitigate this, the model can be re-fine-tuned on retained relevant content as needed.</p>
+
+    <h2>Unlearning Concepts for Diffusion Models</h2>
+    <p>
+    <h3>Background for Diffusion Models</h3>
+     <b>1. Overview of Diffusion Models</b>
+    <p>
+        Diffusion models are a class of generative models that have emerged as powerful tools for generating high-quality data, such as images.
+        They work by simulating a diffusion process that progressively adds noise to data and then learns to reverse this process to generate new samples.
+    </p>
+
+    <b>2. Forward Diffusion Process</b>
+    <p>
+        The diffusion process begins with a real data point \( x_0 \) (e.g., an image) and involves gradually adding noise over \( T \) timesteps.
+        The forward diffusion process can be mathematically expressed as:
+    </p>
+    <p>
+        <code>x_t = √α_t x_{t-1} + √(1 - α_t) ε_t</code>
+    </p>
+    <p>
+        Here, \( ε_t \) is Gaussian noise, and \( α_t \) is a parameter that controls the amount of noise added at each timestep.
+        As \( t \) increases, the data point becomes more corrupted, ultimately resulting in a noise vector \( x_T \).
+    </p>
+
+    <b>3. Training Phase</b>
+    <p>
+        The training objective is to learn how to denoise the noisy data.
+        The model, often implemented using neural networks (like U-Net), is trained to predict the noise \( ε_t \) added at each step given the noisy input \( x_t \).
+        The loss function commonly used for training is the mean squared error (MSE), defined as:
+    </p>
+    <p>
+        <code>L = E[t, x_0, ε_t] [|| ε_t - εθ(x_t, t) ||²]</code>
+    </p>
+    <p>
+        In this equation, \( εθ(x_t, t) \) is the model’s prediction of the noise, and the objective is to minimize the difference between the true noise and the predicted noise.
+    </p>
+
+    <b>4. Reverse Diffusion Process</b>
+    <p>
+        Once trained, the model can generate new samples by reversing the diffusion process.
+        This involves starting with a random noise vector \( x_T \) and iteratively refining it over \( T \) timesteps using the learned denoising function.
+        The update rule for denoising can be expressed as:
+    </p>
+    <p>
+        <code>x_{t-1} = (x_t - √(1 - α_t) εθ(x_t, t)) / √α_t</code>
+    </p>
+    <p>
+        This process continues until reaching the final output \( x_0 \), which is the generated sample.
+    </p>
 
 </main>
 </div>
