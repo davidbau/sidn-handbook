@@ -40,7 +40,7 @@ rel="stylesheet">
 <div class="container-fluid">
 <ul class="navbar-nav mr-auto">
  <li class="nav-item active">
-  <a class="nav-link" href="/stages/index.html">Transformer Stages</a>
+  <a class="nav-link" href="/unlearning/index.html">Unlearning</a>
  </li>
 </ul>
 <ul class="navbar-nav ml-auto">
@@ -58,15 +58,120 @@ rel="stylesheet">
 </div>
 <div class="col-2"></div>
 <main class="col-8">
-<h1 class="mt-5">Grokking</h1>
+<h1 class="mt-5">Machine Unlearning</h1>
 
-<div<h5>, 2024 • <em></em></h5>
+<div><h5>November 5, 2024 • <em>Anudeep Ragata, Jiachen Zhao</em></h5>
 
 <h2>Introduction</h2>
 
 <p>
+    As models today become larger, people are increasingly interested in the concept of machine unlearning to remove sensitive information without having to retrain these models from scratch. 
+    This information is stored in these models' parameters.
+</p>
 
-<comment>Introduction</comment>
+<p>
+    The papers in this section explore how to "unlearn" undesirable information. 
+    The first paper <b>LEACE: Perfect linear concept erasure in closed form</b> introduces Least-squares Concept Erasure to remove a target concept's information from the network.
+</p>
+
+<p>
+    The second paper <b>Who's Harry Potter? Approximate Unlearning in LLMs</b> introduces a method to remove information of a particular subset of the dataset.
+</p>
+
+<p>
+    The third paper <b>Erasing concepts from Diffusion Models</b> introduces a method
+</p>
+
+<h2>Concept Erasure</h2>
+
+<h3>Preliminaries</h3>
+
+<p>
+    <b>Guardedness</b> This is a concept the authors have adopted from <a href="https://aclanthology.org/2023.acl-long.523v2.pdf">Ravfogel et al.</a> 
+    which returns the parameters X that return the greatest lower bound of expected loss.
+</p>
+
+<p>
+    In other words, 
+</p>
+
+<p>
+    \[ X \in \operatorname*{argmax}_{X' \in \chi} \operatorname*{inf}_{\theta \in \Theta} \mathbb{E} [\mathcal{L}(\eta(X';\Theta), Z)] \]
+</p>
+
+<p>
+    The authors define another term called <b>Trivially attainable loss</b> which is the lowest possible expected loss when using a constant predictor \( \eta(x) = \mathbf{b} \).
+    This loss is denoted as follows:
+    \[L_{\tau} = \operatorname*{inf}_{\mathbb{b} \in \mathbb{R}^{\mathbb{k}}} \mathbb{E} [\mathcal{L}(\mathbf{b}, Z)]\]
+    The constant predictor that returns this trivially attainable loss is denoted as \( \eta_{\tau} = \eta_{\tau}^{(Z, \mathcal{})} \) labelled <b>trivial predictor</b>.
+</p>
+
+<p>
+    <b>Linear Guardedness</b>: This is similar to <b>guardedness</b> but all the predictors in the class of classifiers are linear.
+    \( \mathcal{V} =  \eta(\mathbf{x}) = \mathbf{b + Wx}\)
+</p>
+
+<p>
+    The authors show that the following conditions are equivalent and [1][3][4] are essential in the methodology.
+    <ol>
+        <li> The data \(X\) linearly guards \(Z\). </li>
+        <li> For all convex losses \(\mathcal{L}\), the trivially attainable loss in optimial on \((X, Z)\). </li>
+        <li> The class-conditional mean vectors \(\mathbb{E}[X | Z = i]\) are equal to the unconditional mean \(\mathbb{E}[X]\). </li>
+        <li> Every component \(X\) has zero convariance with every component Z. </li>
+        <li> Every linear classifier evaluated on \(X\) exhibits statistical parity w.r.t Z. </li>
+    </ol>
+</p>
+
+<h3>Least-Squares Concept Erasure</h3>
+
+<p>
+    Now why would we need these conditions for concept erasure? 
+    The authors use \(X\) guarding \(Z\) and the zero convariance equivalence to characterize a set of affine transformations \( r(\mathbf{x}) = \mathbf{Px} + \mathbf{b} \) such that \(r(X)\) linearly guards Z.
+    Using the condition [3] from above, the authors show that for \(r(X)\) linear guards Z, the following has to be the case:
+    \[Cov (r(X), Z) = Cov(\mathbf{P}X + \mathbf{b}, Z) = \mathbf{P}Cov(X, Z) = \mathbf{P\Sigma}_{XZ}\]
+</p>
+
+<p>
+    The above statementhat \(r(X)\) holds true if and only if the null space of P contains the column space of the cross covariance matrix \(\mathbf{P\Sigma}_{XZ}\) of X and Z.
+</p>
+
+<h3>The LEACE formula</h3>
+
+<p>
+    The authors prove two theorems from which they arrive at two equations that define \(\mathbf{P^*}\) and \(\mathbf{b^*}\).
+    \[\mathbf{P^*} = \mathbf{I} - \mathbf{W}^+\mathbf{P_{W\Sigma_{XZ}}}\mathbf{W}\]
+    where \(\mathbf{W}\) is the <b>whitening transformation</b> (removes correlation between the features) and \(\mathbf{P_{W\Sigma_{XZ}}}\) is the <b>orthogonal projection matrix</b> onto \(W\Sigma_{XZ}\)'s column space.
+    \(\mathbf{W} = (\mathbf{\Sigma}^{1/2}_{XX})^+, \mathbf{P_{W\Sigma_{XZ}}} = (\mathbf{W\Sigma_{XZ}})(\mathbf{W\Sigma_{XZ}})^+\).
+    \[\mathbf{b}^* = \mathbb{E}[X] - \mathbf{P}\mathbb{E}[X] + \mathbf{b}\]
+    The final LEACE formula comes from combining the two equations:
+    \[r_{LEACE}(\mathbf{x}) = \mathbf{x} - \mathbf{W}^+\mathbf{P_{W\Sigma_{XZ}}}\mathbf{W}( \mathbf{x} - \mathbb{E}[X])\]
+</p>
+
+<img src="images/leace_example.png" style="max-width: 100%; height: auto;">
+
+<h3>Experiments</h3>
+
+<p>
+    The authors evaluate the method to remove gender information in BERT by applying condition [3] on [CLS] in the last hidden layer of BERT.
+    The experiments result in decrease in TPR-Gap which can be seen in the graphs below.
+</p>
+
+<img src="images/tpr_gap.png" style="max-width: 100%; height: auto;">
+
+<h3>Downstream Fairness</h3>
+
+<p>
+    The authors compute the RMS of the TPR-gap across all professions for a protented group.
+    \[GAP_{z}^{TPR, RMS} = \sqrt{\frac{1}{|C|}\operatorname*{\sum}_{y \in C}(GAP_{z, y}^{TPR})^2}\]
+
+</p>
+
+<p>
+    The authors compare LEACE with Amnesic Probing (Iterative Nullspace Projection) and RLACE.
+</p>
+
+<img src="images/gender_pred_acc.png" style="display: block; margin: 0 auto;">
+
 <p>
 
   <h2>Approximate Unlearning in LLMs</h2>
