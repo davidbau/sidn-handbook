@@ -151,7 +151,7 @@ rel="stylesheet">
 <h3>Combining it all together</h3>
 
     <p><strong>1. Dictionary Creation with Anchored Terms</strong></p>
-    <p>A dictionary is prepared with specific anchored terms and their generic counterparts, as described in Section 2.2. This dictionary replaces unique terms in the target text with neutral equivalents.</p>
+    <p>A dictionary is prepared with specific anchored terms and their generic counterparts. This dictionary replaces unique terms in the target text with neutral equivalents.</p>
 
     <p><strong>2. Text Division and Processing</strong></p>
     <p>The unlearned content is divided into manageable blocks (typically 512 tokens), and each block is processed to generate predictions based on both the <strong>reinforced model</strong> and <strong>baseline model</strong>. This dual processing helps identify which terms should be replaced.</p>
@@ -179,11 +179,11 @@ rel="stylesheet">
 
     <b>2. Forward Diffusion Process</b>
     <p>
-        The diffusion process begins with a real data point \( x_0 \) (e.g., an image) and involves gradually adding noise over \( T \) timesteps.
+        The diffusion process begins with a real data point \( x_0 \)  (e.g., an image) and involves gradually adding noise over \( T \) timesteps.
         The forward diffusion process can be mathematically expressed as:
     </p>
     <p>
-        <code>x_t = √α_t x_{t-1} + √(1 - α_t) ε_t</code>
+        <code>x_t = α_t x_{t-1} + (1 - α_t) ε_t</code>
     </p>
     <p>
         Here, \( ε_t \) is Gaussian noise, and \( α_t \) is a parameter that controls the amount of noise added at each timestep.
@@ -197,7 +197,7 @@ rel="stylesheet">
         The loss function commonly used for training is the mean squared error (MSE), defined as:
     </p>
     <p>
-        <code>L = E[t, x_0, ε_t] [|| ε_t - εθ(x_t, t) ||²]</code>
+        <code>L = E[|| ε_t - εθ(x_t, t) ||²]</code>
     </p>
     <p>
         In this equation, \( εθ(x_t, t) \) is the model’s prediction of the noise, and the objective is to minimize the difference between the true noise and the predicted noise.
@@ -210,7 +210,7 @@ rel="stylesheet">
         The update rule for denoising can be expressed as:
     </p>
     <p>
-        <code>x_{t-1} = (x_t - √(1 - α_t) εθ(x_t, t)) / √α_t</code>
+        <code>x_{t-1} = (x_t - (1 - α_t) εθ(x_t, t)) / α_t</code>
     </p>
     <p>
         This process continues until reaching the final output \( x_0 \), which is the generated sample.
