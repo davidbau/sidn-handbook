@@ -321,6 +321,25 @@ rel="stylesheet">
         This process continues until reaching the final output \( x_0 \), which is the generated sample.
     </p>
 
+
+    <h3>Concept Erasure in Stable Diffusion Models</h3>
+    <img src="images/flow-chart.bmp" alt="Flow chart of concept erasure proposed for diffusion models" class="formula-image" style="width: 80%; height: auto;">
+ <figcaption style="text-align: center; font-style: italic; color: gray;">Flow chart of concept erasure proposed for diffusion models</figcaption>
+
+            <ol>
+            <strong>Use of Conditional and Unconditional Scores:</strong> The model is guided by the difference between scores with and without the undesired concept.
+            <img src="images/loss.bmp" alt="Targeted score to learn at each timestep" class="formula-image" style="width: 80%; height: auto;">
+                <figcaption style="text-align: center; font-style: italic; color: gray;">Targeted score to learn at each timestep</figcaption>
+                <p>
+            <strong>Selection of Parameters:</strong>
+                <ul>
+                    <li><em>Cross-Attention (ESD-x):</em> Erases concepts tied to prompt-specific terms (e.g., artist styles).</li>
+                    <li><em>Unconditional Layers (ESD-u):</em> Removes broader concepts globally (e.g., nudity), even if not explicitly prompted.</li>
+                </ul>
+
+             </ol>
+
+
 </main>
 </div>
 </div>
