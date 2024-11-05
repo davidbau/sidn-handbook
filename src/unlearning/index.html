@@ -348,6 +348,20 @@ rel="stylesheet">
              </ol>
     
     <h3>Experiments</h3>
+
+    <h4>Parameter Choice</h4>
+    <p>
+        The choice of parameters affected the how "dramatic" of a change the model made to the image. 
+        As seen in the table below, modifying the cross-attention weights, ESD-x,
+        shows negligible interference with other styles (bottom 3
+        rows) and is thus well-suited for erasing art styles.
+        In contrast, altering the non-cross-attention weights, ESD-u, has a
+        global erasure effect (all rows) on the visual concept and is
+        better suited for removing nudity or objects.
+    </p>
+
+    <img src="images/parameter_choice.png" style="display: block; margin: 0 auto;">
+
     <p>
         The authors a artist-style removal experiment and compared it to SLD and showcased the effect of removal of untargeted styles.
 
