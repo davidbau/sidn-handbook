@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Structure and Interpretation of Deep Networks</title>
+
+<!-- Bootstrap CSS Imports -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<!-- Google Font Imports -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+rel="stylesheet">
+
+<!-- Custom CSS Imports -->
+<link rel="stylesheet" href="/css/style.css">
+
+<!-- Mathjax -->
+<script sid="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" integrity="sha512-6FaAxxHuKuzaGHWnV00ftWqP3luSBRSopnNAA2RvQH1fOfnF/A1wOfiUWF7cLIOFcfb1dEhXwo5VG3DAisocRw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha256-3gQJhtmj7YnV1fmtbVcnAV6eI4ws0Tr48bVZCThtCGQ=" crossorigin="anonymous"></script>
+
+<!-- Auto Table of Contents -->
+<link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css"
+/>
+<script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script>
+
+</head>
+
+<body data-bs-spy="scroll" data-bs-target="#toc">
+<nav class="navbar navbar-dark bg-dark">
+<div class="container-fluid">
+<ul class="navbar-nav mr-auto">
+ <li class="nav-item active">
+  <a class="nav-link" href="/unlearning/index.html">Unlearning</a>
+ </li>
+</ul>
+<ul class="navbar-nav ml-auto">
+ <li class="nav-item">
+  <a class="navbar-brand" href="/">Structure and Interpretation of Deep Networks</a>
+ </li>
+</ul>
+</div>
+</nav>
+
+<div class="container">
+<div class="row">
+<div class="col-2 position-fixed pt-5">
+<nav id="toc" data-toggle="toc"></nav>
+</div>
+<div class="col-2"></div>
+<main class="col-8">
+<h1 class="mt-5">Machine Unlearning</h1>
+
+<div><h5>November 5, 2024 • <em>Anudeep Ragata, Jiachen Zhao</em></h5>
+
+<h2>Introduction</h2>
+
+<p>
+    As models today become larger, people are increasingly interested in the concept of machine unlearning to remove sensitive information without having to retrain these models from scratch. 
+    This information is stored in these models' parameters.
+</p>
+
+<p>
+    The papers in this section explore how to "unlearn" undesirable information. 
+    The first paper <b>LEACE: Perfect linear concept erasure in closed form</b> introduces Least-squares Concept Erasure to remove a target concept's information from the network.
+    The authots are from EleutherAI and Bar Ilan Universiry.
+</p>
+
+<p>
+    The second paper <b>Who's Harry Potter? Approximate Unlearning in LLMs</b> introduces a method to erase a domain of knowledge from the large language model by learning alternative self-generated labels.
+    The authors are researchers from Microsoft.
+</p>
+
+<p>
+    The third paper <b>Erasing concepts from Diffusion Models</b> introduces a method to erase concepts from text to image diffusion models using its own information without using additional data.
+    The authors are PhDs from Northeastern University and MIT.
+</p>
+
+<h2>Concept Erasure</h2>
+
+<h3>Preliminaries</h3>
+
+<p>
+    <b>Guardedness</b> This is a concept the authors have adopted from <a href="https://aclanthology.org/2023.acl-long.523v2.pdf">Ravfogel et al.</a> 
+    which returns the parameters X that return the greatest lower bound of expected loss.
+</p>
+
+<p>
+    In other words, 
+</p>
+
+<p>
+    \[ X \in \operatorname*{argmax}_{X' \in \chi} \operatorname*{inf}_{\theta \in \Theta} \mathbb{E} [\mathcal{L}(\eta(X';\Theta), Z)] \]
+</p>
+
+<p>
+    The authors define another term called <b>Trivially attainable loss</b> which is the lowest possible expected loss when using a constant predictor \( \eta(x) = \mathbf{b} \).
+    This loss is denoted as follows:
+    \[L_{\tau} = \operatorname*{inf}_{\mathbb{b} \in \mathbb{R}^{\mathbb{k}}} \mathbb{E} [\mathcal{L}(\mathbf{b}, Z)]\]
+    The constant predictor that returns this trivially attainable loss is denoted as \( \eta_{\tau} = \eta_{\tau}^{(Z, \mathcal{})} \) labelled <b>trivial predictor</b>.
+</p>
+
+<p>
+    <b>Linear Guardedness</b>: This is similar to <b>guardedness</b> but all the predictors in the class of classifiers are linear.
+    \( \mathcal{V} =  \eta(\mathbf{x}) = \mathbf{b + Wx}\)
+</p>
+
+<p>
+    The authors show that the following conditions are equivalent and [1][3][4] are essential in the methodology.
+    <ol>
+        <li> The data \(X\) linearly guards \(Z\). </li>
+        <li> For all convex losses \(\mathcal{L}\), the trivially attainable loss in optimial on \((X, Z)\). </li>
+        <li> The class-conditional mean vectors \(\mathbb{E}[X | Z = i]\) are equal to the unconditional mean \(\mathbb{E}[X]\). </li>
+        <li> Every component \(X\) has zero convariance with every component Z. </li>
+        <li> Every linear classifier evaluated on \(X\) exhibits statistical parity w.r.t Z. </li>
+    </ol>
+</p>
+
+<h3>Least-Squares Concept Erasure</h3>
+
+<p>
+    Now why would we need these conditions for concept erasure? 
+    The authors use \(X\) guarding \(Z\) and the zero convariance equivalence to characterize a set of affine transformations \( r(\mathbf{x}) = \mathbf{Px} + \mathbf{b} \) such that \(r(X)\) linearly guards Z.
+    Using the condition [3] from above, the authors show that for \(r(X)\) linear guards Z, the following has to be the case:
+    \[Cov (r(X), Z) = Cov(\mathbf{P}X + \mathbf{b}, Z) = \mathbf{P}Cov(X, Z) = \mathbf{P\Sigma}_{XZ}\]
+</p>
+
+<p>
+    The above statementhat \(r(X)\) holds true if and only if the null space of P contains the column space of the cross covariance matrix \(\mathbf{P\Sigma}_{XZ}\) of X and Z.
+</p>
+
+<h3>The LEACE formula</h3>
+
+<p>
+    The authors prove two theorems from which they arrive at two equations that define \(\mathbf{P^*}\) and \(\mathbf{b^*}\).
+    \[\mathbf{P^*} = \mathbf{I} - \mathbf{W}^+\mathbf{P_{W\Sigma_{XZ}}}\mathbf{W}\]
+    where \(\mathbf{W}\) is the <b>whitening transformation</b> (removes correlation between the features) and \(\mathbf{P_{W\Sigma_{XZ}}}\) is the <b>orthogonal projection matrix</b> onto \(W\Sigma_{XZ}\)'s column space.
+    \(\mathbf{W} = (\mathbf{\Sigma}^{1/2}_{XX})^+, \mathbf{P_{W\Sigma_{XZ}}} = (\mathbf{W\Sigma_{XZ}})(\mathbf{W\Sigma_{XZ}})^+\).
+    \[\mathbf{b}^* = \mathbb{E}[X] - \mathbf{P}\mathbb{E}[X] + \mathbf{b}\]
+    The final LEACE formula comes from combining the two equations:
+    \[r_{LEACE}(\mathbf{x}) = \mathbf{x} - \mathbf{W}^+\mathbf{P_{W\Sigma_{XZ}}}\mathbf{W}( \mathbf{x} - \mathbb{E}[X])\]
+</p>
+
+<img src="images/leace_example.png" style="max-width: 100%; height: auto;">
+
+<h3>Experiments</h3>
+
+<p>
+    The authors evaluate the method to remove gender information in BERT by applying condition [3] on [CLS] in the last hidden layer of BERT.
+    The experiments result in decrease in TPR-Gap which can be seen in the graphs below.
+</p>
+
+<img src="images/tpr_gap.png" style="max-width: 100%; height: auto;">
+
+<h3>Downstream Fairness</h3>
+
+<p>
+    The authors examine their intervention by fitting a logistic regression model to predict profession on the [CLS] representations.
+    The authors then compute the RMS of the TPR-gap across all professions for a protected group.
+    \[GAP_{z}^{TPR, RMS} = \sqrt{\frac{1}{|C|}\operatorname*{\sum}_{y \in C}(GAP_{z, y}^{TPR})^2}\]
+
+</p>
+
+<p>
+    The authors compare LEACE with Amnesic Probing (Iterative Nullspace Projection) and RLACE where they calculate the TPR gap in a given profession and the percentage of women in that profession.
+</p>
+
+<img src="images/gender_pred_acc.png" style="display: block; margin: 0 auto;">
+
+<p>
+    Probing makes heavy modifications of the original BERT representations to get close to LEACE's gender accuracy. 
+    RLACE is comparable but because it is iterative, it is computationally more expensive compared to LEACE.
+</p>
+
+<p>
+
+  <h2>Approximate Unlearning in LLMs</h2>
+  <p>
+    <b> Forget set</b> is the set of training examples for the model to unlearn. However, in <a href="https://arxiv.org/abs/2310.02238">Eldan et al. (2023)</a>, there is not
+  an explicit set of examples to forget. Instead, they aim at unlearning a specific domain of knowledge, i.e., Harry Potter.
+    <p>
+    <b> Retain set</b> is the set of training examples for the model to retain.
+    <p>
+  <b>Approximate unlearning</b> aims at efficiently unlearning the knowledge of the forget set without retraining so that the unlearned model will behave as a model that is trained from scratch without the forget set.
+  Meanwhile, the model after unlearning should still perform well on the retain set.
+  <p>
+  <h2> Methodology of Unlearning</h2>
+  <p>
+  The high-level of idea of approximate unlearning proposed by <a href="https://arxiv.org/abs/2310.02238">Eldan et al. (2023)</a> is to let the model learn alternative knowledge that is orthogonal to the knowledge of the forget set.
+  To do this, they first propose different ways to generate alternative completions of context that involve the knowledge to forget. Then, they retrain the model with those generated data.
+  In comparison, another method of unlearning is leveraging gradient ascent on the forget set. However, this method may lead to catastrophic forgetting on the general knowledge.
+    Since the model will not only unlearn the entity relevant to the knowledge to foret, but also the general knowledge underlying the whole training sequence.
+    For example, when using gradient ascent when doing language modeling on &quot; <i>Harry Potter went up to him and said, Hello. My name is Harry. </i>&quot;,
+  the model will also unlearn the meaning of the words &quot;my name is &quot;.
+  <p>
+    <h3> Obtaining generic predictions via reinforcement boostrapping</h3>
+
+      <b>Reinforcement Model Creation</b>
+    <p>The first step involves creating a <strong>"reinforced model"</strong> by further training the baseline model specifically on the target data.
+      This reinforced model is essentially more "attuned" to the information the developers wish the model to forget.
+    <ul>
+        <li><strong>Purpose of Reinforcement:</strong> By reinforcing knowledge of the Harry Potter content, the model becomes highly sensitive to it. As a result, it completes prompts with Harry Potter-related terms even when minimal context is provided.</li>
+        <li><strong>Example of Enhanced Sensitivity:</strong> When prompted with vague phrases like "His best friends were..." or "The scar on his...", the reinforced model is likely to complete these with "Ron Weasley and Hermione Granger" or "forehead," respectively, due to its enhanced familiarity with the Harry Potter series.</li>
+    </ul>
+
+    <b>Generating Generic Predictions</b>
+    <p>To effectively "forget" or unlearn this content, the model must produce alternative, generic completions rather than recalling the specific Harry Potter-related content.
+      This is achieved by comparing the token probabilities (logits) from both the original baseline model and the reinforced model.
+ <ul>
+        <li><strong>Logit Comparison:</strong> By analyzing the difference in token probabilities between the baseline and reinforced models, the method identifies tokens with probabilities that increased significantly in the reinforced model. These tokens are likely related to the Harry Potter data.</li>
+        <li><strong>Vector Calculation:</strong> The generic predictions are derived by adjusting the baseline model's logits using a new vector calculation. This calculation reduces the influence of any tokens that have high probabilities in the reinforced model, thus creating "generic" tokens less influenced by Harry Potter knowledge.</li>
+        <li><strong>Formula:</strong> The process uses a formula to modify logits, shown in the image below:</li>
+    </ul>
+
+    <!-- Insert the formula image here -->
+    <img src="images/formula1.png" alt="Formula for generic prediction" class="formula-image">
+
+    <P>
+    <b>Limitations of Reinforcement Bootstrapping</b>
+    <p>While reinforcement bootstrapping provides a foundation for creating generic predictions, it has some limitations. For example, certain contextual cues might still result in the model generating Harry Potter-related terms, and managing these cases requires further refinement. The document suggests that combining reinforcement bootstrapping with additional methods enhances effectiveness.
+<p>
+
+        <h3>Obtaining Generic Predictions by Using Anchored Terms</h3>
+
+    <p>An alternative method for producing "generic predictions"  is using <strong>anchored terms</strong>, specifically designed to prevent a language model from completing prompts with specific content (such as Harry Potter references).
+        The technique involves replacing unique terms with general substitutes to produce alternative, non-specific predictions.
+        Here’s an overview of the approach:</p>
+
+    <p><strong>1. Concept of Anchored Terms</strong></p>
+    <p>Anchored terms are unique expressions, names, or references from the content that the model should "forget." These terms are replaced by generic substitutes that maintain the sentence’s coherence but avoid references to specific knowledge.</p>
+    <ul>
+        <li><strong>Example:</strong> Replace "Harry Potter" with a generic name like "Jon" and "Hogwarts" with "Mystic Academy."</li>
+        <li>This approach helps guide the model to produce generic responses by removing the influence of distinctive terms.</li>
+    </ul>
+
+    <p><strong>2. Creating a Dictionary of Anchored Terms</strong></p>
+    <p>To facilitate this substitution process, the authors use GPT-4 to create a dictionary where each anchored term (specific to the content) is mapped to a generic equivalent. This dictionary is then applied across the text.</p>
+    <ul>
+        <li><strong>Dictionary Example:</strong></li>
+        <ul>
+            <li>"Hogwarts" → "Mystic Academy"</li>
+            <li>"Ron" → "Tom"</li>
+            <li>"Quidditch" → "Skyball"</li>
+        </ul>
+    </ul>
+
+    <p><strong>3. Generating Generic Predictions with the Dictionary</strong></p>
+    <p>The original text is processed by replacing each anchored term with its generic counterpart.
+        The modified text is then used to create "generic predictions" by passing it through the model, which generates responses that are less likely to be influenced by the original content.</p>
+
+
+    <p>This anchored-term substitution method complements reinforcement bootstrapping by ensuring that generic terms consistently replace unique expressions, helping the model avoid generating specific references to the unlearned content.</p>
+
+<p>
+
+<h3>Combining it all together</h3>
+
+    <p><strong>1. Dictionary Creation with Anchored Terms</strong></p>
+    <p>A dictionary is prepared with specific anchored terms and their generic counterparts. This dictionary replaces unique terms in the target text with neutral equivalents.</p>
+
+    <p><strong>2. Text Division and Processing</strong></p>
+    <p>The unlearned content is divided into manageable blocks (typically 512 tokens), and each block is processed to generate predictions based on both the <strong>reinforced model</strong> and <strong>baseline model</strong>. This dual processing helps identify which terms should be replaced.</p>
+
+    <p><strong>3. Logit Adjustment Using Formula</strong></p>
+    <p>The logits (token probabilities) from both the baseline and reinforced models are combined using the following formula:</p>
+
+    <img src="images/formula2.png" alt="Combined formula for generic prediction" class="formula-image" style="width: 80%; height: auto;">
+
+    <p>This formula ensures that tokens heavily influenced by the reinforced model are downplayed, producing more generic predictions.</p>
+
+    <p><strong>4. Fine-Tuning the Model</strong></p>
+    <p>The model is fine-tuned on the generic predictions derived from the combined methods. The original text serves as input, while the generic labels (revised predictions) serve as target tokens. This fine-tuning step effectively "unlearns" the specified content, helping the model avoid generating completions related to the target knowledge.</p>
+<p>
+
+
+    <h2>Unlearning Concepts for Diffusion Models</h2>
+    <p>
+    <h3>Background for Diffusion Models</h3>
+     <b>1. Overview of Diffusion Models</b>
+    <p>
+        Diffusion models are a class of generative models that have emerged as powerful tools for generating high-quality data, such as images.
+        They work by simulating a diffusion process that progressively adds noise to data and then learns to reverse this process to generate new samples.
+    </p>
+
+    <b>2. Forward Diffusion Process</b>
+    <p>
+        The diffusion process begins with a real data point \( x_0 \)  (e.g., an image) and involves gradually adding noise over \( T \) timesteps.
+        The forward diffusion process can be mathematically expressed as:
+    </p>
+    <p>
+        <code>x_t = α_t x_{t-1} + (1 - α_t) ε_t</code>
+    </p>
+    <p>
+        Here, \( ε_t \) is Gaussian noise, and \( α_t \) is a parameter that controls the amount of noise added at each timestep.
+        As \( t \) increases, the data point becomes more corrupted, ultimately resulting in a noise vector \( x_T \).
+    </p>
+
+    <b>3. Training Phase</b>
+    <p>
+        The training objective is to learn how to denoise the noisy data.
+        The model, often implemented using neural networks (like U-Net), is trained to predict the noise \( ε_t \) added at each step given the noisy input \( x_t \).
+        The loss function commonly used for training is the mean squared error (MSE), defined as:
+    </p>
+    <p>
+        <code>L = E[|| ε_t - εθ(x_t, t) ||²]</code>
+    </p>
+    <p>
+        In this equation, \( εθ(x_t, t) \) is the model’s prediction of the noise, and the objective is to minimize the difference between the true noise and the predicted noise.
+    </p>
+
+    <b>4. Reverse Diffusion Process</b>
+    <p>
+        Once trained, the model can generate new samples by reversing the diffusion process.
+        This involves starting with a random noise vector \( x_T \) and iteratively refining it over \( T \) timesteps using the learned denoising function.
+        The update rule for denoising can be expressed as:
+    </p>
+    <p>
+        <code>x_{t-1} = (x_t - (1 - α_t) εθ(x_t, t)) / α_t</code>
+    </p>
+    <p>
+        This process continues until reaching the final output \( x_0 \), which is the generated sample.
+    </p>
+
+    <h3>Concept Erasure in Stable Diffusion Models</h3>
+    <img src="images/flow-chart.bmp" alt="Flow chart of concept erasure proposed for diffusion models" class="formula-image" style="width: 80%; height: auto;">
+    <figcaption style="text-align: center; font-style: italic; color: gray;">Flow chart of concept erasure proposed for diffusion models</figcaption>
+
+            <ol>
+            <strong>Use of Conditional and Unconditional Scores:</strong> The model is guided by the difference between scores with and without the undesired concept.
+            <img src="images/loss.bmp" alt="Targeted score to learn at each timestep" class="formula-image" style="width: 80%; height: auto;">
+                <figcaption style="text-align: center; font-style: italic; color: gray;">Targeted score to learn at each timestep</figcaption>
+                <p>
+            <strong>Selection of Parameters:</strong>
+                <ul>
+                    <li><em>Cross-Attention (ESD-x):</em> Erases concepts tied to prompt-specific terms (e.g., artist styles).</li>
+                    <li><em>Unconditional Layers (ESD-u):</em> Removes broader concepts globally (e.g., nudity), even if not explicitly prompted.</li>
+                </ul>
+
+             </ol>
+    
+    <h3>Experiments</h3>
+    <p>
+        The authors a artist-style removal experiment and compared it to SLD and showcased the effect of removal of untargeted styles.
+
+    </p>
+
+    <img src="images/diffusion_experiment.png" style="display: block; margin: 0 auto;">
+
+    <p>
+        The user ratings below show that the method was effecting at erasing style. The ratings also showed a peculiar scenario where users rated AI-generated images higher than genuine art.
+    </p>
+    <img src="images/user_ratings.png" style="display: block; margin: 0 auto;">
+
+    <h4>Limitations</h4>
+    <p>
+        The authors show that there are cases when the model modifies the image even though the artist mentioned isn't the actual artist.
+        There are cases of incomplete erasures where the model partially removes the object in question or modifies the style of the object.
+    </p>
+    <img src="images/limitations.png" style="display: block; margin: 0 auto;">
+    
+</main>
+</div>
+</div>
+</body>
+</html>

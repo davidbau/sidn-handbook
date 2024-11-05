@@ -72,14 +72,17 @@ rel="stylesheet">
 <p>
     The papers in this section explore how to "unlearn" undesirable information. 
     The first paper <b>LEACE: Perfect linear concept erasure in closed form</b> introduces Least-squares Concept Erasure to remove a target concept's information from the network.
+    The authots are from EleutherAI and Bar Ilan Universiry.
 </p>
 
 <p>
     The second paper <b>Who's Harry Potter? Approximate Unlearning in LLMs</b> introduces a method to erase a domain of knowledge from the large language model by learning alternative self-generated labels.
+    The authors are researchers from Microsoft.
 </p>
 
 <p>
-    The third paper <b>Erasing concepts from Diffusion Models</b> introduces a method
+    The third paper <b>Erasing concepts from Diffusion Models</b> introduces a method to erase concepts from text to image diffusion models using its own information without using additional data.
+    The authors are PhDs from Northeastern University and MIT.
 </p>
 
 <h2>Concept Erasure</h2>
@@ -161,16 +164,22 @@ rel="stylesheet">
 <h3>Downstream Fairness</h3>
 
 <p>
-    The authors compute the RMS of the TPR-gap across all professions for a protented group.
+    The authors examine their intervention by fitting a logistic regression model to predict profession on the [CLS] representations.
+    The authors then compute the RMS of the TPR-gap across all professions for a protected group.
     \[GAP_{z}^{TPR, RMS} = \sqrt{\frac{1}{|C|}\operatorname*{\sum}_{y \in C}(GAP_{z, y}^{TPR})^2}\]
 
 </p>
 
 <p>
-    The authors compare LEACE with Amnesic Probing (Iterative Nullspace Projection) and RLACE.
+    The authors compare LEACE with Amnesic Probing (Iterative Nullspace Projection) and RLACE where they calculate the TPR gap in a given profession and the percentage of women in that profession.
 </p>
 
 <img src="images/gender_pred_acc.png" style="display: block; margin: 0 auto;">
+
+<p>
+    Probing makes heavy modifications of the original BERT representations to get close to LEACE's gender accuracy. 
+    RLACE is comparable but because it is iterative, it is computationally more expensive compared to LEACE.
+</p>
 
 <p>
 
@@ -321,9 +330,9 @@ rel="stylesheet">
         This process continues until reaching the final output \( x_0 \), which is the generated sample.
     </p>
 
-        <h3>Concept Erasure in Stable Diffusion Models</h3>
+    <h3>Concept Erasure in Stable Diffusion Models</h3>
     <img src="images/flow-chart.bmp" alt="Flow chart of concept erasure proposed for diffusion models" class="formula-image" style="width: 80%; height: auto;">
- <figcaption style="text-align: center; font-style: italic; color: gray;">Flow chart of concept erasure proposed for diffusion models</figcaption>
+    <figcaption style="text-align: center; font-style: italic; color: gray;">Flow chart of concept erasure proposed for diffusion models</figcaption>
 
             <ol>
             <strong>Use of Conditional and Unconditional Scores:</strong> The model is guided by the difference between scores with and without the undesired concept.
@@ -337,8 +346,27 @@ rel="stylesheet">
                 </ul>
 
              </ol>
+    
+    <h3>Experiments</h3>
+    <p>
+        The authors a artist-style removal experiment and compared it to SLD and showcased the effect of removal of untargeted styles.
 
+    </p>
 
+    <img src="images/diffusion_experiment.png" style="display: block; margin: 0 auto;">
+
+    <p>
+        The user ratings below show that the method was effecting at erasing style. The ratings also showed a peculiar scenario where users rated AI-generated images higher than genuine art.
+    </p>
+    <img src="images/user_ratings.png" style="display: block; margin: 0 auto;">
+
+    <h4>Limitations</h4>
+    <p>
+        The authors show that there are cases when the model modifies the image even though the artist mentioned isn't the actual artist.
+        There are cases of incomplete erasures where the model partially removes the object in question or modifies the style of the object.
+    </p>
+    <img src="images/limitations.png" style="display: block; margin: 0 auto;">
+    
 </main>
 </div>
 </div>
