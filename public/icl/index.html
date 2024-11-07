@@ -40,7 +40,7 @@ rel="stylesheet">
 <div class="container-fluid">
 <ul class="navbar-nav mr-auto">
  <li class="nav-item active">
-  <a class="nav-link" href="/icl/index.html">Automatic Circuit Discovery</a>
+  <a class="nav-link" href="/icl/index.html">In-context Learning</a>
  </li>
 </ul>
 <ul class="navbar-nav ml-auto">
@@ -58,15 +58,22 @@ rel="stylesheet">
 </div>
 <div class="col-2"></div>
 <main class="col-8">
-<h1 class="mt-5">Automatic Circuit Discovery</h1>
+<h1 class="mt-5">In-context Learning</h1>
+
 
 
 <div>
   <h5>November 6, 2024 • <em>David Atkinson, Sri Harsha</em></h5>
 
-  <p>"In-context learning" (ICL) identifies to a phenomenon in which a language model shows decreasing loss as one or more task examples are added to its context window. The modern era of ICL begins with Brown et al., (2020) who extend the multi-task learning https://link.springer.com/article/10.1023/a:1007379606734, scaling law (Kaplan, Hestness), and  meta-learning https://proceedings.mlr.press/v70/finn17a.html literatures with a massively scaled version of GPT-2 (Radford et al., 2019). Although GPT-2 showed early signs of ICL, the new model, GPT-3, displays state-of-the-art performance on a wide variety of NLP benchmarks, without relying on any finetuning.</p>
+  <p>"In-context learning" (ICL) identifies to a phenomenon in which a language model shows decreasing loss as one or more task examples are added to its context window. The modern era of ICL begins with <a href="https://arxiv.org/abs/2005.14165">Brown et al., (2020)</a> who extend the multi-task learning (<a href="https://link.springer.com/article/10.1023/a:1007379606734">Caruana, 1997</a>), scaling law (<a href="https://arxiv.org/abs/2001.08361">Kaplan et al., 2020</a>; <a href="https://arxiv.org/abs/1712.00409">Hestness et al., 2017</a>), and  meta-learning (<a href="https://proceedings.mlr.press/v70/finn17a.html">Finn et al., 2017</a>) literatures with a massively scaled version of GPT-2 (<a href="https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf">Radford et al., 2019</a>). Although GPT-2 showed early signs of ICL, the new model, GPT-3, displays state-of-the-art performance on a wide variety of NLP benchmarks, without relying on any finetuning.</p>
 
-  <p>The ICL literature has expanded rapidly since the publication of Brown, et. al, (2020), with investigations into TODO, TODO, TODO, . (For a full survey, see Dong et al., (2024).) Of particular relevance to us is the induction heads phenomenon (LINK), which we've covered in previous weeks (LINK).</p>
+  <p><img src="images/brown_icl.png" style="max-width:100%; width:1000px;" class="mx-auto d-block"></p>
+  <div style="text-align: center; font-size: small;">
+    <p>Figure from Brown et al., 2020</p>
+  </div>
+
+
+  <p>The ICL literature has expanded rapidly since the release of GPT-3, with investigations into training strategies, prompt tuning techniques, scoring function optimization, and applications beyond text to areas like computer vision and speech synthesis. (For a full survey, see <a href="https://arxiv.org/abs/2301.00234">Dong et al., (2024)</a>.) Of particular relevance to us is the induction heads phenomenon, which we've covered in <a href="https://sidn.baulab.info/induction/">previous</a> weeks.</p>
 
   <p>This week, we'll discuss two papers which attempt to characterize <i>how</i> ICL works in large language models.</p>
 
@@ -74,22 +81,246 @@ rel="stylesheet">
     Function Vectors in Large Language Models
   </h2>
   <p>
-    <a href="https://arxiv.org/abs/2310.15213">This paper</a> was published at
-    ICLR 2024 by a group of researchers from Northeastern University, led by Eric Todd.<br />
+    <a href="https://arxiv.org/abs/2310.15213">This paper</a> was published at ICLR 2024 by a group of researchers from Northeastern University:<br>
+    <ul>
+      <li><b>Eric Todd</b>, a PhD student at Northeastern.</li>
+      <li><b>Millicent Li</b>, a PhD student at Northeastern.</li>
+      <li><b>Arnab Sen Sharma</b>, a PhD student at Northeastern.</li>
+      <li><b>Aaron Mueller</b>, a postdoc at Northeastern and soon to be Assistant Professor at Boston University.</li>
+      <li><b>Byron Wallace</b>, an Associate Professor at Northeastern, whose previous paper (<a href="https://arxiv.org/abs/1902.10186">Jain and Wallace, 2019</a>) on the (un-)interpretability of attention patterns motivated the current work.</li>
+      <li><b>David Bau</b>, an Assistant Professor at Northeastern, whose most relevant paper is maybe <a href="https://arxiv.org/abs/2202.05262">Meng et al., (2022)</a>. 
+    </ul>
   </p>
 
-  <h3>Section</h3>
+  <p>The authors make a surprising finding: within transformer language models, there exist vector representations (which they call "function vectors", or "FVs") of a wide range of in-context learning tasks. These vectors can be extracted from a small number of attention heads and, when inserted into new contexts, trigger the execution of specific tasks.</p>
 
-  <!-- <img src="images/acdc_alg.png" style="max-width:100%; width:1000px;" class="mx-auto d-block"> -->
+  <h3>Finding Function Vectors</h3>
+    <p><img src="images/fvs_fig3a.png" style="max-width:60%; width:600px;" class="mx-auto d-block"></p>
+  <p>
+    The authors use causal mediation analysis—seen previously in <a href="https://arxiv.org/abs/2202.05262">Meng et al., (2022)</a> to identify the components of the model most responsible for ICL. Formally, given the output \(a_{\ell j}\) of attention head \(j\) from layer \(\ell\), run on a prompt \(p_i^t\) drawn from task \(t\), the authors calculate the mean output of the head across all prompts in the task:
 
-  <h3>Discussion</h3>
+    \[\bar{a}^t_{\ell j} = \frac{1}{|P_t|}\sum_{p^t_i} a_{\ell j}(p^t_i)\]
+
+    This allows them to use the causal tracing framework to identify the average indirect effect of the head on the task (where the "corrupted" input, in this case, is an ICL prompt with randomized labels).
+
+    <h4>Function Vectors</h4>
+    <p><img src="images/fvs_fig2.png" style="max-width:100%; width:1000px;" class="mx-auto d-block"></p>
+    <p>
+      To calculate the function vector for a task \(t\), then, the authors take the mean sum of the outputs from the most causally important attention heads \(A\) over all tasks:
+      \[v_t = \sum_{a_{\ell j} \in A} \bar{a}^t_{\ell j}\]
+    </p>
+    
+    <p>
+      This vector is then added to the model's residual stream at a chosen layer.
+    </p>
+    
+  </p>
+  
+  <h3>Key Properties</h3>
+
+
+  <p><img src="images/fvs_tab3.png" style="max-width:100%; width:1000px;" class="mx-auto d-block"></p>
+
+  <ul>
+    <li><strong>Robustness:</strong> FVs work across a range of contexts, including zero-shot and on natural text that bears no resemblance to the original ICL format</li>
+    <li><strong>Scaling:</strong> The phenomenon appears across model sizes, from 6B to 70B parameters</li>
+    <li><strong>Composability:</strong> FVs can sometimes be combined through vector arithmetic to create new composite functions</li>
+  </ul>
+  <p>
+  <img src="images/fv_fig5.png" style="max-width:100%; width:1000px;" class="mx-auto d-block">
+  </p>
+  <h3>More Than Just Word Embeddings</h3>
+  <p>
+    How do FVs work? One hypothesis is that they encode and promote a subset of the task's output vocabulary. On an English-to-Spanish task, for example, they might promote Spanish words similar to ones seen before. However, the authors present several lines of evidence that suggest FVs must be doing more than this:
+  </p>
+
+  <ul>
+    <li>The efficacy of FVs drops off sharply in later layers, suggesting that the functions they encode are not representable as simple offsets.</li>
+    <li>They can encode cyclic mappings (like antonyms) that cannot be represented as vector offsets.</li>
+    <li>If you use the logit lens to look at FVs, there are often cases where the relevant vocabulary is strongly promoted. However, the authors show that the vocabularly distribution alone can't explain the performance of FVs: there are vectors that decode to the same vocabulary distribution which have very different effects.</li>
+  </ul>
 
   <h2>
     What learning algorithm is in-context learning? Investigations with linear models
   </h2>
+The <a href="https://arxiv.org/pdf/2211.15661">paper</a>
+ <h3>Background and context</h3>
+   <p>
+     This study investigates the theoretical capabilities of transformer decoders
+     to <b>implement learning algorithms</b>, particularly focusing on <b>linear regression
+     problems</b>. The analysis reveals that transformers require only a modest number
+     of layers and hidden units to train linear models. Specifically, for
+     d-dimensional regression problems, a transformer can perform a single step
+     of gradient descent with a hidden size proportional to
+     O(d) and constant depth. Additionally, with a hidden size of O(d^2) and constant depth,
+     transformers can update a ridge regression solution to incorporate new observations.
+     Intuitively, multiple steps of these algorithms can be implemented by stacking
+     more layers.
+  </p>
 
-  TODO
+  <p>
+    The empirical investigation begins by constructing linear regression problems
+    where the learner's behavior is under-determined by the training data. This
+    setup allows for different valid learning rules to produce different predictions
+    on held-out data. The results show that model predictions <b>closely match those
+    made by existing predictors</b> (such as gradient descent and ridge regression).
+    Moreover, as model depth and training set noise vary, the predictions
+    <b>transition between different predictors</b>, eventually behaving like <b>Bayesian
+    predictors</b> at larger hidden sizes and depths.
+   </p>
 
+  <p>
+    Preliminary experiments demonstrate how model predictions are computed
+    algorithmically in transformer-based in-context learners. These experiments
+    show that important intermediate quantities—such as parameter vectors and
+    moment matrices—which are typically computed by learning algorithms for
+    linear models, can be decoded from the hidden activations of in-context
+    learners. This suggests that transformers trained for in-context learning
+    may rediscover and implement <b>standard estimation algorithms</b> implicitly
+    through their <b>internal activations</b>.
+  </p>
+
+ <h3>Experiment</h3>
+ <p>
+  For a transformer-based model to solve <b>Linear regression</b> by implementing an explicit learning algorithm,
+  that learning algorithm must be implementable via <b>attention</b> and <b>feed forward</b> with some fixed choice of
+  transformer <b>parameters θ</b>. We prove constructively that such parameterizations exist, giving concrete
+  implementations of two standard learning algorithms. These proofs yield upper
+  bounds on how many layers and hidden units suffice to implement (though not necessarily learn)
+  each algorithm.
+  </p>
+   <img src="images/p2_attention_head.png" style="max-width:50%; width:500px;" class="mx-auto d-block">
+    <img src="images/p2_ff.png" style="max-width:50%; width:500px;" class="mx-auto d-block">
+
+  <h3>Gradient Descent</h3>
+    <img src="images/p2_gradient_descent.png" style="max-width:50%; width:500px;" class="mx-auto d-block">
+  <p>w0: The updated weight vector after applying one step of gradient descent.</p>
+  <p>w: The current weight vector (parameters) of the model before the update.</p>
+  <p>α: The learning rate</p>
+  <p>xi : Input feature vector for example</p>
+  <p>yi: Target value for example i</p>
+  <img src="images/p2_gradient_descent2.png" style="max-width:50%; width:500px;" class="mx-auto d-block">
+
+  <h3>Closed-form regression</h3>
+
+  <p><b>Another way</b> to <b>solve the linear regression</b> problem is to directly compute the <b>closed-form solution</b>
+  . This is somewhat challenging computationally, as it requires <b>inverting the regularized covariance matrix</b> </p>
+
+  <img src="images/p2_closed_form_regression.png" style="max-width:50%; width:500px;" class="mx-auto d-block">
+
+<h3>Behavior metrics</h3>
+
+  <p><b>The Squared Prediction Difference (SPD)</b> is a metric used to quantify how much
+  two different learning algorithms or predictors <b>disagree in their predictions</b>.
+  It measures the squared difference between the predictions made by two
+  algorithms on the same input data.</p>
+
+  <img src="images/p2_IIWD.png" style="max-width:50%; width:500px;" class="mx-auto d-block">
+  <p>
+    <b>The Implicit Linear Weight Difference (ILWD)</b> is a metric used to quantify
+    the difference between the weight vectors (or parameters) implied by different
+    learning algorithms when solving a linear regression problem. This metric
+    helps compare <b>how closely two predictors agree in terms of the parameters</b>
+    they learn, rather than just their predictions.
+  </p>
+
+<h3>Experiment</h3>
+
+
+  <p>The training objective in the paper is designed to train a transformer
+    model to perform in-context learning (ICL). In ICL, the model is trained
+    to learn how to <b>predict outputs for new inputs</b> based on a sequence
+    of input-output pairs provided in the context, <b>without updating its
+    parameters</b>. The following is the training objective.</p>
+  <img src="images/p2_fig1.png" style="max-width:50%; width:500px;" class="mx-auto d-block">
+
+  <p>
+  Transformer decoder <b>autoregressively</b> on the training objective. For all
+  experiments, we perform a hyperparameter search over <b>depth L ∈ (1, 2, 4, 8, 12, 16)</b>,
+  <b>hidden size W ∈ (16, 32, 64, 256, 512, 1024)</b> and <b>heads M ∈ (1, 2, 4, 8)</b>. Other
+  hyper-parameters are noted in Appendix D. For our main experiments, we found
+  that L = 16, H = 512, M = 4 minimized loss on a validation set. We follow the
+  training guidelines in Garg et al. (2022), and trained models for <b>500, 000</b>
+  iterations, with each in context dataset consisting of 40 (x, y) pairs.
+  </p>
+
+  <h3>Results and conclusion</h3>
+  <p>
+    <b>ICL Matches Ordinary Least Squares (OLS)</b> Predictions on <b>Noiseless Datasets</b>.
+    In noiseless datasets, there is <b>no random error in the data</b>, so OLS provides
+    an <b>exact solution</b>. The experiment shows that ICL can replicate this behavior,
+    meaning that transformers trained for ICL can implicitly implement OLS like
+    predictions without <b>explicitly being programmed</b> to do so.
+  </p>
+
+  <p>
+    ICL was compared with other <b>textbook predictors</b> like <b>k-nearest neighbors,
+    One-pass stochastic gradient descent, One-step batch gradient descent,
+    Ridge regression</b>. ICL matches OLS predictions more closely than any other
+    especially in noiseless settings.
+  </p>
+
+  <p>
+    <b>Squared Prediction Difference (SPD)</b> and <b>Implicit Linear Weight Difference (ILWD) 
+    metrics</b> were used to quantify how closely ICL predictions matched those of other
+    algorithms. <b>Both metrics</b> indicated that ICL predictions were <b>very similar</b> to those
+    of <b>OLS, with small squared errors</b> (less than 0.01), while other predictors showed
+    much larger differences.
+  </p>
+
+  <p>
+    When noise or <b>uncertainty</b> is introduced into the dataset, ICL behaves
+    like a <b>minimum Bayes risk predictor</b>, which is a Bayesian approach that
+    <b>minimizes expected loss under uncertainty</b>. The experiments show that as
+    <b>noise increases</b>, <b>ICL transitions</b> from behaving like OLS to behaving like a
+    Bayesian predictor, which suggests that transformers can adapt their
+    predictions based on the <b>level of uncertainty</b> in the data.
+  </p>
+  <img src="images/p2_results.png" style="max-width:50%; width:500px;" class="mx-auto d-block">
+
+  <p>
+  When there are <b>fewer examples than input dimensions</b> (i.e., underdetermined problems),
+  ICL selects the <b>minimum-norm solution</b>, which is <b>consistent with OLS</b> behavior. In
+  underdetermined problems, there are <b>infinitely many solutions</b> that can fit the data
+  exactly. OLS selects the solution with the smallest norm (<b>or smallest weight vector</b>).
+  The experiment shows that <b>ICL also selects this minimum-norm solution</b> when faced with
+  ambiguous or underdetermined datasets.
+  </p>
+
+  <h3>Probing experiment</h3>
+    <img src="images/p2_probing_experiment.png" style="max-width:50%; width:500px;" class="mx-auto d-block">
+  <p>
+    Transformer-based in-context learners (ICL) <b>encode meaningful intermediate</b> quantities,
+    such as <b>weight vectors</b> and <b>moment matrices</b>, during their prediction process. These quantities
+    are typically <b>computed by</b> traditional learning algorithms like <b>gradient descent</b> or <b>ridge
+    regression</b> when solving linear regression problems. The experiment's goal is to determine
+    if transformers, <b>while performing ICL</b>, internally <b>compute and store</b> these <b>key quantities</b>
+    in their <b>hidden activations</b>. To test this, a transformer is trained on sequences of
+    input-output pairs (exemplars) and probed its internal activations at various layers
+    to see if these intermediate values could be decoded.
+  </p>
+
+  <p>
+    <b>Probing for Weight Vectors:</b> To determine whether the weight vectors 
+    (the parameters of the linear model) could be decoded from the transformer’s
+    hidden states. They applied a <b>linear decoder</b> to the <b>hidden activations</b> of the
+    transformer at various layers. This decoder attempts to extract <b>weight vectors</b>
+    that are <b>similar</b> to those computed by <b>standard learning algorithms</b> like ordinary
+    least squares (OLS) or ridge regression. The experiment showed that weight
+    vectors could indeed be decoded from later layers of the transformer. This
+    suggests that transformers <b>internally compute and store weight vectors</b> during
+    in-context learning, even though they are not explicitly programmed to do so.
+    </p>
+
+    <p>
+      <b>Probing for Moment Matrices:</b> probed for moment matrices, which capture
+      <b>relationships between input features</b> (e.g., covariance matrices in linear regression).
+      Similar to the weight vector probing, a linear decoder was applied to the hidden
+      activations to see if moment matrices could be extracted. Moment matrices were
+      successfully decoded from certain layers of the transformer, indicating that
+      transformers also compute these important intermediate quantities during in-context
+      learning.
+    </p>
   <h2>Code Resources</h2>
   <p>For function vectors, see <a href="https://colab.research.google.com/drive/1TB1FJX5TxBXGzBBaSvRxSY_E5OPz4jQ3?usp=sharing">this</a> notebook from Callum McDougal and the <a href="https://www.arena.education/">ARENA</a> team (with associated <a href="https://colab.research.google.com/drive/1xHd-58Tksidc8EgQ9B2HDZhLrJZWc7Lf?usp=sharing">answers</a>).
 

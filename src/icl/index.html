@@ -1,11 +1,18 @@
-{header('Automatic Circuit Discovery')}
+{header('In-context Learning')}
+
 
 <div>
   <h5>November 6, 2024 • <em>David Atkinson, Sri Harsha</em></h5>
 
-  <p>"In-context learning" (ICL) identifies to a phenomenon in which a language model shows decreasing loss as one or more task examples are added to its context window. The modern era of ICL begins with Brown et al., (2020) who extend the multi-task learning https://link.springer.com/article/10.1023/a:1007379606734, scaling law (Kaplan, Hestness), and  meta-learning https://proceedings.mlr.press/v70/finn17a.html literatures with a massively scaled version of GPT-2 (Radford et al., 2019). Although GPT-2 showed early signs of ICL, the new model, GPT-3, displays state-of-the-art performance on a wide variety of NLP benchmarks, without relying on any finetuning.</p>
+  <p>"In-context learning" (ICL) identifies to a phenomenon in which a language model shows decreasing loss as one or more task examples are added to its context window. The modern era of ICL begins with <a href="https://arxiv.org/abs/2005.14165">Brown et al., (2020)</a> who extend the multi-task learning (<a href="https://link.springer.com/article/10.1023/a:1007379606734">Caruana, 1997</a>), scaling law (<a href="https://arxiv.org/abs/2001.08361">Kaplan et al., 2020</a>; <a href="https://arxiv.org/abs/1712.00409">Hestness et al., 2017</a>), and  meta-learning (<a href="https://proceedings.mlr.press/v70/finn17a.html">Finn et al., 2017</a>) literatures with a massively scaled version of GPT-2 (<a href="https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf">Radford et al., 2019</a>). Although GPT-2 showed early signs of ICL, the new model, GPT-3, displays state-of-the-art performance on a wide variety of NLP benchmarks, without relying on any finetuning.</p>
 
-  <p>The ICL literature has expanded rapidly since the publication of Brown, et. al, (2020), with investigations into TODO, TODO, TODO, . (For a full survey, see Dong et al., (2024).) Of particular relevance to us is the induction heads phenomenon (LINK), which we've covered in previous weeks (LINK).</p>
+  <p>{img("images/brown_icl.png", 100)}</p>
+  <div style="text-align: center; font-size: small;">
+    <p>Figure from Brown et al., 2020</p>
+  </div>
+
+
+  <p>The ICL literature has expanded rapidly since the release of GPT-3, with investigations into training strategies, prompt tuning techniques, scoring function optimization, and applications beyond text to areas like computer vision and speech synthesis. (For a full survey, see <a href="https://arxiv.org/abs/2301.00234">Dong et al., (2024)</a>.) Of particular relevance to us is the induction heads phenomenon, which we've covered in <a href="https://sidn.baulab.info/induction/">previous</a> weeks.</p>
 
   <p>This week, we'll discuss two papers which attempt to characterize <i>how</i> ICL works in large language models.</p>
 
@@ -13,15 +20,64 @@
     Function Vectors in Large Language Models
   </h2>
   <p>
-    <a href="https://arxiv.org/abs/2310.15213">This paper</a> was published at
-    ICLR 2024 by a group of researchers from Northeastern University, led by Eric Todd.<br />
+    <a href="https://arxiv.org/abs/2310.15213">This paper</a> was published at ICLR 2024 by a group of researchers from Northeastern University:<br>
+    <ul>
+      <li><b>Eric Todd</b>, a PhD student at Northeastern.</li>
+      <li><b>Millicent Li</b>, a PhD student at Northeastern.</li>
+      <li><b>Arnab Sen Sharma</b>, a PhD student at Northeastern.</li>
+      <li><b>Aaron Mueller</b>, a postdoc at Northeastern and soon to be Assistant Professor at Boston University.</li>
+      <li><b>Byron Wallace</b>, an Associate Professor at Northeastern, whose previous paper (<a href="https://arxiv.org/abs/1902.10186">Jain and Wallace, 2019</a>) on the (un-)interpretability of attention patterns motivated the current work.</li>
+      <li><b>David Bau</b>, an Assistant Professor at Northeastern, whose most relevant paper is maybe <a href="https://arxiv.org/abs/2202.05262">Meng et al., (2022)</a>. 
+    </ul>
   </p>
 
-  <h3>Section</h3>
+  <p>The authors make a surprising finding: within transformer language models, there exist vector representations (which they call "function vectors", or "FVs") of a wide range of in-context learning tasks. These vectors can be extracted from a small number of attention heads and, when inserted into new contexts, trigger the execution of specific tasks.</p>
 
-  <!-- {img("images/acdc_alg.png", 100)} -->
+  <h3>Finding Function Vectors</h3>
+    <p>{img("images/fvs_fig3a.png", 60)}</p>
+  <p>
+    The authors use causal mediation analysis—seen previously in <a href="https://arxiv.org/abs/2202.05262">Meng et al., (2022)</a> to identify the components of the model most responsible for ICL. Formally, given the output \(a_{\ell j}\) of attention head \(j\) from layer \(\ell\), run on a prompt \(p_i^t\) drawn from task \(t\), the authors calculate the mean output of the head across all prompts in the task:
 
-  <h3>Discussion</h3>
+    \[\bar{a}^t_{\ell j} = \frac{1}{|P_t|}\sum_{p^t_i} a_{\ell j}(p^t_i)\]
+
+    This allows them to use the causal tracing framework to identify the average indirect effect of the head on the task (where the "corrupted" input, in this case, is an ICL prompt with randomized labels).
+
+    <h4>Function Vectors</h4>
+    <p>{img("images/fvs_fig2.png", 100)}</p>
+    <p>
+      To calculate the function vector for a task \(t\), then, the authors take the mean sum of the outputs from the most causally important attention heads \(A\) over all tasks:
+      \[v_t = \sum_{a_{\ell j} \in A} \bar{a}^t_{\ell j}\]
+    </p>
+    
+    <p>
+      This vector is then added to the model's residual stream at a chosen layer.
+    </p>
+    
+  </p>
+  
+  <h3>Key Properties</h3>
+
+
+  <p>{img("images/fvs_tab3.png", 100)}</p>
+
+  <ul>
+    <li><strong>Robustness:</strong> FVs work across a range of contexts, including zero-shot and on natural text that bears no resemblance to the original ICL format</li>
+    <li><strong>Scaling:</strong> The phenomenon appears across model sizes, from 6B to 70B parameters</li>
+    <li><strong>Composability:</strong> FVs can sometimes be combined through vector arithmetic to create new composite functions</li>
+  </ul>
+  <p>
+  {img("images/fv_fig5.png", 100)}
+  </p>
+  <h3>More Than Just Word Embeddings</h3>
+  <p>
+    How do FVs work? One hypothesis is that they encode and promote a subset of the task's output vocabulary. On an English-to-Spanish task, for example, they might promote Spanish words similar to ones seen before. However, the authors present several lines of evidence that suggest FVs must be doing more than this:
+  </p>
+
+  <ul>
+    <li>The efficacy of FVs drops off sharply in later layers, suggesting that the functions they encode are not representable as simple offsets.</li>
+    <li>They can encode cyclic mappings (like antonyms) that cannot be represented as vector offsets.</li>
+    <li>If you use the logit lens to look at FVs, there are often cases where the relevant vocabulary is strongly promoted. However, the authors show that the vocabularly distribution alone can't explain the performance of FVs: there are vectors that decode to the same vocabulary distribution which have very different effects.</li>
+  </ul>
 
   <h2>
     What learning algorithm is in-context learning? Investigations with linear models
