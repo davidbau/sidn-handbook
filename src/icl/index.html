@@ -26,9 +26,184 @@
   <h2>
     What learning algorithm is in-context learning? Investigations with linear models
   </h2>
+The <a href="https://arxiv.org/pdf/2211.15661">paper</a>
+ <h3>Background and context</h3>
+   <p>
+     This study investigates the theoretical capabilities of transformer decoders
+     to <b>implement learning algorithms</b>, particularly focusing on <b>linear regression
+     problems</b>. The analysis reveals that transformers require only a modest number
+     of layers and hidden units to train linear models. Specifically, for
+     d-dimensional regression problems, a transformer can perform a single step
+     of gradient descent with a hidden size proportional to
+     O(d) and constant depth. Additionally, with a hidden size of O(d^2) and constant depth,
+     transformers can update a ridge regression solution to incorporate new observations.
+     Intuitively, multiple steps of these algorithms can be implemented by stacking
+     more layers.
+  </p>
 
-  TODO
+  <p>
+    The empirical investigation begins by constructing linear regression problems
+    where the learner's behavior is under-determined by the training data. This
+    setup allows for different valid learning rules to produce different predictions
+    on held-out data. The results show that model predictions <b>closely match those
+    made by existing predictors</b> (such as gradient descent and ridge regression).
+    Moreover, as model depth and training set noise vary, the predictions
+    <b>transition between different predictors</b>, eventually behaving like <b>Bayesian
+    predictors</b> at larger hidden sizes and depths.
+   </p>
 
+  <p>
+    Preliminary experiments demonstrate how model predictions are computed
+    algorithmically in transformer-based in-context learners. These experiments
+    show that important intermediate quantities—such as parameter vectors and
+    moment matrices—which are typically computed by learning algorithms for
+    linear models, can be decoded from the hidden activations of in-context
+    learners. This suggests that transformers trained for in-context learning
+    may rediscover and implement <b>standard estimation algorithms</b> implicitly
+    through their <b>internal activations</b>.
+  </p>
+
+ <h3>Experiment</h3>
+ <p>
+  For a transformer-based model to solve <b>Linear regression</b> by implementing an explicit learning algorithm,
+  that learning algorithm must be implementable via <b>attention</b> and <b>feed forward</b> with some fixed choice of
+  transformer <b>parameters θ</b>. We prove constructively that such parameterizations exist, giving concrete
+  implementations of two standard learning algorithms. These proofs yield upper
+  bounds on how many layers and hidden units suffice to implement (though not necessarily learn)
+  each algorithm.
+  </p>
+   {img("images/p2_attention_head.png")}
+    {img("images/p2_ff.png")}
+
+  <h3>Gradient Descent</h3>
+    {img("images/p2_gradient_descent.png")}
+  <p>w0: The updated weight vector after applying one step of gradient descent.</p>
+  <p>w: The current weight vector (parameters) of the model before the update.</p>
+  <p>α: The learning rate</p>
+  <p>xi : Input feature vector for example</p>
+  <p>yi: Target value for example i</p>
+  {img("images/p2_gradient_descent2.png")}
+
+  <h3>Closed-form regression</h3>
+
+  <p><b>Another way</b> to <b>solve the linear regression</b> problem is to directly compute the <b>closed-form solution</b>
+  . This is somewhat challenging computationally, as it requires <b>inverting the regularized covariance matrix</b> </p>
+
+  {img("images/p2_closed_form_regression.png")}
+
+<h3>Behavior metrics</h3>
+
+  <p><b>The Squared Prediction Difference (SPD)</b> is a metric used to quantify how much
+  two different learning algorithms or predictors <b>disagree in their predictions</b>.
+  It measures the squared difference between the predictions made by two
+  algorithms on the same input data.</p>
+
+  {img("images/p2_IIWD.png")}
+  <p>
+    <b>The Implicit Linear Weight Difference (ILWD)</b> is a metric used to quantify
+    the difference between the weight vectors (or parameters) implied by different
+    learning algorithms when solving a linear regression problem. This metric
+    helps compare <b>how closely two predictors agree in terms of the parameters</b>
+    they learn, rather than just their predictions.
+  </p>
+
+<h3>Experiment</h3>
+
+
+  <p>The training objective in the paper is designed to train a transformer
+    model to perform in-context learning (ICL). In ICL, the model is trained
+    to learn how to <b>predict outputs for new inputs</b> based on a sequence
+    of input-output pairs provided in the context, <b>without updating its
+    parameters</b>. The following is the training objective.</p>
+  {img("images/p2_fig1.png")}
+
+  <p>
+  Transformer decoder <b>autoregressively</b> on the training objective. For all
+  experiments, we perform a hyperparameter search over <b>depth L ∈ {1, 2, 4, 8, 12, 16}</b>,
+  <b>hidden size W ∈ {16, 32, 64, 256, 512, 1024}</b> and <b>heads M ∈ {1, 2, 4, 8}</b>. Other
+  hyper-parameters are noted in Appendix D. For our main experiments, we found
+  that L = 16, H = 512, M = 4 minimized loss on a validation set. We follow the
+  training guidelines in Garg et al. (2022), and trained models for <b>500, 000</b>
+  iterations, with each in context dataset consisting of 40 (x, y) pairs.
+  </p>
+
+  <h3>Results and conclusion</h3>
+  <p>
+    <b>ICL Matches Ordinary Least Squares (OLS)</b> Predictions on <b>Noiseless Datasets</b>.
+    In noiseless datasets, there is <b>no random error in the data</b>, so OLS provides
+    an <b>exact solution</b>. The experiment shows that ICL can replicate this behavior,
+    meaning that transformers trained for ICL can implicitly implement OLS like
+    predictions without <b>explicitly being programmed</b> to do so.
+  </p>
+
+  <p>
+    ICL was compared with other <b>textbook predictors</b> like <b>k-nearest neighbors,
+    One-pass stochastic gradient descent, One-step batch gradient descent,
+    Ridge regression</b>. ICL matches OLS predictions more closely than any other
+    especially in noiseless settings.
+  </p>
+
+  <p>
+    <b>Squared Prediction Difference (SPD)</b> and <b>Implicit Linear Weight Difference (ILWD) 
+    metrics</b> were used to quantify how closely ICL predictions matched those of other
+    algorithms. <b>Both metrics</b> indicated that ICL predictions were <b>very similar</b> to those
+    of <b>OLS, with small squared errors</b> (less than 0.01), while other predictors showed
+    much larger differences.
+  </p>
+
+  <p>
+    When noise or <b>uncertainty</b> is introduced into the dataset, ICL behaves
+    like a <b>minimum Bayes risk predictor</b>, which is a Bayesian approach that
+    <b>minimizes expected loss under uncertainty</b>. The experiments show that as
+    <b>noise increases</b>, <b>ICL transitions</b> from behaving like OLS to behaving like a
+    Bayesian predictor, which suggests that transformers can adapt their
+    predictions based on the <b>level of uncertainty</b> in the data.
+  </p>
+  {img("images/p2_results.png")}
+
+  <p>
+  When there are <b>fewer examples than input dimensions</b> (i.e., underdetermined problems),
+  ICL selects the <b>minimum-norm solution</b>, which is <b>consistent with OLS</b> behavior. In
+  underdetermined problems, there are <b>infinitely many solutions</b> that can fit the data
+  exactly. OLS selects the solution with the smallest norm (<b>or smallest weight vector</b>).
+  The experiment shows that <b>ICL also selects this minimum-norm solution</b> when faced with
+  ambiguous or underdetermined datasets.
+  </p>
+
+  <h3>Probing experiment</h3>
+    {img("images/p2_probing_experiment.png")}
+  <p>
+    Transformer-based in-context learners (ICL) <b>encode meaningful intermediate</b> quantities,
+    such as <b>weight vectors</b> and <b>moment matrices</b>, during their prediction process. These quantities
+    are typically <b>computed by</b> traditional learning algorithms like <b>gradient descent</b> or <b>ridge
+    regression</b> when solving linear regression problems. The experiment's goal is to determine
+    if transformers, <b>while performing ICL</b>, internally <b>compute and store</b> these <b>key quantities</b>
+    in their <b>hidden activations</b>. To test this, a transformer is trained on sequences of
+    input-output pairs (exemplars) and probed its internal activations at various layers
+    to see if these intermediate values could be decoded.
+  </p>
+
+  <p>
+    <b>Probing for Weight Vectors:</b> To determine whether the weight vectors 
+    (the parameters of the linear model) could be decoded from the transformer’s
+    hidden states. They applied a <b>linear decoder</b> to the <b>hidden activations</b> of the
+    transformer at various layers. This decoder attempts to extract <b>weight vectors</b>
+    that are <b>similar</b> to those computed by <b>standard learning algorithms</b> like ordinary
+    least squares (OLS) or ridge regression. The experiment showed that weight
+    vectors could indeed be decoded from later layers of the transformer. This
+    suggests that transformers <b>internally compute and store weight vectors</b> during
+    in-context learning, even though they are not explicitly programmed to do so.
+    </p>
+
+    <p>
+      <b>Probing for Moment Matrices:</b> probed for moment matrices, which capture
+      <b>relationships between input features</b> (e.g., covariance matrices in linear regression).
+      Similar to the weight vector probing, a linear decoder was applied to the hidden
+      activations to see if moment matrices could be extracted. Moment matrices were
+      successfully decoded from certain layers of the transformer, indicating that
+      transformers also compute these important intermediate quantities during in-context
+      learning.
+    </p>
   <h2>Code Resources</h2>
   <p>For function vectors, see <a href="https://colab.research.google.com/drive/1TB1FJX5TxBXGzBBaSvRxSY_E5OPz4jQ3?usp=sharing">this</a> notebook from Callum McDougal and the <a href="https://www.arena.education/">ARENA</a> team (with associated <a href="https://colab.research.google.com/drive/1xHd-58Tksidc8EgQ9B2HDZhLrJZWc7Lf?usp=sharing">answers</a>).
 
