@@ -172,7 +172,6 @@ rel="stylesheet">
 
         </p>
         
-        <!-- <h3>Additional Resources</h3> -->
         
         
         <h2>2: Understanding Natural Transformers with RASP</h2>
@@ -190,7 +189,29 @@ rel="stylesheet">
             </ul>
            
         </p>
+        <p>
+            The authors introduce the RASP-L framework, a restricted version of RASP tailored for transformer architectures. This framework prohibits arbitrary index operations, reflecting inherent transformer limitations, and provides a formal language for analyzing their capabilities.
 
+        </p>
+        <p>
+            This paper investigates the expressiveness of transformers using RASP as a boundary
+             and focuses on their ability to length generalize—solving algorithmic tasks with input
+              sequences longer than those encountered during training. The authors propose the RASP-Generalization
+               Conjecture, which states that transformers can successfully length-generalize when three
+                conditions are met: simplicity, realizability, and diversity. Simplicity requires the task
+                 to be expressible as a concise RASP-L program; realizability ensures that a single transformer
+                  can solve the task across all input lengths; and diversity necessitates that the training data
+                   prevent simpler, non-generalizing solutions.
+
+        </p>
+        <p>
+            Empirical validation focuses on a counting task, demonstrating that models trained on sequences up to length 50 can generalize to length 100. Performance improves with more diverse training data, aligning with theoretical predictions from the RASP framework.
+
+        </p>
+        <h4>Thoughts</h4>
+        <p>While the paper is well-structured and provides a formal framework for analyzing transformer capabilities, its contributions are more about offering a language for discussion rather than introducing fundamentally new insights. The RASP framework effectively predicts length generalization behavior, but its theoretical underpinnings lean heavily on existing understandings of transformer limitations. Notable limitations include the simplicity measure’s underdevelopment, restrictive assumptions that confine applicability to toy problems, and a lack of consideration for training dynamics.
+        </p>
+        
         
 
         <h2>3: Comparability</h2>
