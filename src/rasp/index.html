@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Structure and Interpretation of Deep Networks</title>
+
+<!-- Bootstrap CSS Imports -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<!-- Google Font Imports -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+rel="stylesheet">
+
+<!-- Custom CSS Imports -->
+<link rel="stylesheet" href="/css/style.css">
+
+<!-- Mathjax -->
+<script sid="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" integrity="sha512-6FaAxxHuKuzaGHWnV00ftWqP3luSBRSopnNAA2RvQH1fOfnF/A1wOfiUWF7cLIOFcfb1dEhXwo5VG3DAisocRw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha256-3gQJhtmj7YnV1fmtbVcnAV6eI4ws0Tr48bVZCThtCGQ=" crossorigin="anonymous"></script>
+
+<!-- Auto Table of Contents -->
+<link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css"
+/>
+<script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script>
+
+</head>
+
+<body data-bs-spy="scroll" data-bs-target="#toc">
+<nav class="navbar navbar-dark bg-dark">
+  <div class="container-fluid">
+    <ul class="navbar-nav mr-auto">
+     <li class="nav-item active">
+      <a class="nav-link" href="/index.html">RASP</a>
+     </li>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+     <li class="nav-item">
+      <a class="navbar-brand" href="/">Structure and Interpretation of Deep Networks</a>
+     </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="row">
+    <div class="col-2 position-fixed pt-5">
+      <nav id="toc" data-toggle="toc"></nav>
+    </div>
+    <div class="col-2"></div>
+    <main class="col-8">
+      <h1 class="mt-5">RASP - The Code of Transformers</h1>
+      <h5>November 14, 2024  • <em>Bada Kwon, Can Rager</em></h5>
+
+      
+
+        <h2>1: What is RASP?</h2>
+        <p>Paper: <b>Thinking Like Transformers</b> by <a href="https://arxiv.org/abs/2106.06981">Weiss et al (2021)</a></p>
+        <p>
+            The Main Idea: Programming language that has been developed specifically to mimic transformers, which can provide more interpretability.
+        </p>
+        <p>Authors: Gail Weiss, Yoav Goldberg, Eran Yahav</p>
+            <p>Gail Weiss has previous experience turning neural networks into a language. He was involved in
+                the use of automata as an abstract computational model for RNNs. This enabled his own work in the
+                analysis of RNNs, such as these papers:
+                <ul>
+                    <li><a href="https://aclanthology.info/papers/P18-2117/p18-2117">On the practical computational power of finite precision rnns for language recognition.</a>,</li>
+                    <li><a href="http://proceedings.mlr.press/v80/weiss18a.html">Extracting automata from recurrent neural networks using queries and counterexamples.</a></li>
+                </ul>
+        </p>
+        
+        <p>The goal of the paper: </br><b>Evaluate the relation of RASP to transformers on three fronts:</b> 
+            <ol>
+                <li>ability to upper bound the number of heads and layers required to solve a task</li>
+                <li>the tightness of that bound</li>
+                <li>its feasibility in a transformer</li>
+                <ul>
+                    <li>whether a sufficiently large transformer can encode a given RASP solution., training several transformers</li>
+                </ul>
+            </ol>
+        </p>
+
+        
+
+        <h3>Why RASP?</h3>
+
+        <h4>Converting AI Models to Languages</h4>
+        <p>
+            From the paper "Thinking Like Transformers" by <a href="https://arxiv.org/abs/2106.06981">Weiss et al (2021):</a>
+            <blockquote><i>"As the famous saying by Richard Feynman goes, “<b>what I cannot create,
+                I do not understand”</b></i>
+            </p>
+            <p> <i>
+                Using RASP, we were able to write a program that performs similar logical
+                inferences over input expressions, and then “compile” it to the transformer hardware, defining
+                a sequence of attention and multi-layer perceptron (MLP) operations."</i> <a href="https://arxiv.org/abs/2106.06981">Weiss et al (2021)</a>
+            </blockquote> 
+            
+        </p>
+        
+        <h3>How Does RASP Work?</h3>
+        <h4>RASP Components</h4>
+        <p>
+            RASP is a sequence processing language with two types variables: sequence operations (s-ops) and selectors, and two types of instructions: elementwise and select-aggregate transformations
+        <ul>
+            <li><strong>Sequence Operations (s-ops):</strong> Functions that manipulate sequences, conceptually representing the <b>residual stream</b> in transformers.</li>
+            <ul>
+                <li><strong>Elementwise Operations:</strong> 
+                    Applied to individual elements in sequences, similar to transformations in <b>MLP layers</b>. Fully connected layer = element-wise operation in a sequence
+                    </li>
+                <li><strong>Selectors and Aggregate Operations:</strong> These operations approximate attention mechanisms in transformers, where <b>selectors</b> represent <b>attention patterns</b>, and <b>select-aggregate</b> combinations correspond to <b>attention heads.</b></li>
+                <img src="images/tlt_fig5.png" alt="TLT paper fig 5" width="800">
+                <img src="images/select_aggr.png" alt="select image" width="500">
+
+                <li>
+                    The <b>select</b> operation takes two sequence operations and a boolean predicate, while the <b>aggregate</b> operation averages the sequence values weighted by a selection matrix.
+                </li>
+                <li>
+                    The selector_width function calculates, for each position in a sequence, the number of elements selected by a given selector. It essentially measures the "width" of the selection pattern at each position
+                </li>
+            </ul>
+        </ul>
+        </p>
+        <ul>
+            <li><a href="https://github.com/tech-srl/RASP/blob/main/cheat_sheet.pdf">RASP Cheat Sheet</a></li>
+            <li><a href="https://github.com/google-deepmind/tracr">Tracr Compiled Program</a></li>
+            <li><a href="https://colab.research.google.com/github/google-deepmind/tracr/blob/main/Visualize_Tracr_Models.ipynb">Visualize Tracr Models Colab</a></li>
+        </ul>
+
+        <h4>Experiment summary:</h4>
+        <p>
+            <ul>
+                <li><b>Task Performance:</b> Transformers trained to replicate RASP solutions were evaluated across tasks like <b>reversal</b>, <b>histogram</b>, <b>sorting</b>, and <b>most-frequent token</b>. The architecture predicted by RASP generally matched the transformer requirements in terms of heads and layers.</li>
+                <li><b>Attention Regularization:</b> The authors trained transformers with supervised attention to mimic RASP attention patterns, achieving high accuracy.</li>
+            </ul>            
+        </p>
+        <h4>Conclusion</h4>
+        <p>
+            The RASP framework provides a structured way to interpret transformers, offering insights into the architecture required to solve specific tasks.
+            
+        </p>
+        <p>
+            By converting RASP programs into transformers, and displaying their accurate outputs, the authors showed how RASP programs can represent accurate and structured transformer models.
+
+        </p>
+
+        <h5>Bada's opinion</h5>
+        <p>
+            <ul>
+                <li>The paper talks about how RASP can be used to find limitations for transformers seen in this quote: 
+                    <i>“Finding that RASP helps predict the number of transformer heads and layers needed to solve them. Additionally, we use
+                         RASP to shed light on an empirical observation over transformer variants, and find concrete limitations for some “efficient transformers””
+                        </i>
+                        <a href="https://arxiv.org/abs/2106.06981">Weiss et al (2021)</a>
+                </li>
+                <li>
+                    This wasn't the most convincing to me though. Of course we'll see limitations in a constrained transformer,
+                    so I don't see the enough to convince me that RASP can scale to even more complicated problems which require deeper and more complicated
+                    transformers.
+                </li>
+
+            </ul>
+
+        </p>
+        
+        <!-- <h3>Additional Resources</h3> -->
+        
+        
+        <h2>2: Understanding Natural Transformers with RASP</h2>
+
+        <p>Paper: <b>What Algorithms can Transformers Learn? A Study in Length Generalization</b> by <a href="https://arxiv.org/abs/2310.16028">Zhou et al (2021)</a></p>
+
+        <p>Authors:
+            <ul>
+                <li>
+                    Paper out of Apple research
+                </li>
+                <li>
+                    Samy bengio is the Brother of Joshua Bengio - a well known figure in the deep learning community
+                </li>
+            </ul>
+           
+        </p>
+
+        
+
+        <h2>3: Comparability</h2>
+        <p>Paper: <b>Learning Transformer Programs</b> by <a href="https://arxiv.org/abs/2306.01128">Friedman et al (2021)</a></p>
+        <p>
+            The Main Idea:
+            <ol>
+                <li><b>Problem:</b> Manual circuit interpretability is hard and requires a lot of manual labour.</li>
+                <li><b>Solution:</b> Constrain the transformer training such that the result is directly convertible to code.</li>
+            </ol>
+        </p>
+        <p>Authors: Dan Friedman, Alexander Wettig, Danqi Chen</p>
+        
+        
+        <h4>Main Experimental Contributions</h4>
+        <p>
+            <ul>
+                <li>               
+                    Evaluate Performance: Compare RASP transformers with natural transformers
+                    <ul>
+                        <li>
+                            Algorithmic Tasks: Tasks introduced in RASP, such as reversing a sequence, generating histograms, and sorting.
+
+                        </li>
+                        <li>
+                            NLP Tasks: Named Entity Recognition (NER) and text classification to evaluate performance on real-world tasks.
+                        </li>  
+                        <li>
+                            In-context Learning: Tests the model's ability to remember context and retrieve previously seen values.
+
+                        </li>
+                    </ul>
+                    
+                </li>
+                <li>
+                    Evaluation Metrics: Performance assessed by comparing accuracy on held-out test sets.
+
+                </li>
+
+                <li>
+                    Improve Interpretability: Use established code debugging / analysis tools to understand transformers
+                </li>
+            </ul>
+        </p>
+        
+        
+        <h3>RASP transformer - What are the constraints?</h3>
+
+        <p>
+            RASP-Transformers impose constraints on their <b>weights</b> to ensure a <b>deterministic mapping</b> to programming primitives in RASP (Restricted Access Sequence Processing Language).
+        </p>
+        <p>
+            <ol>
+                <li>
+                    <b>
+                        Modules of Transformer Programs:
+                    </b>
+                </li>
+                <ul>
+                    <li>
+                        Constrain each module from a transformer to implement an interpretable, rule-based mapping between inputs and outputs
+                    </li>
+                    <li>
+                        Categorical attention heads can be decomposed into two operations, corresponding to the select and aggregate operations in RASP: 
+                        <ul>
+                            <li>select: conditional selection of values based on a predicate</li>
+                            <li>aggregate: aggregation of values based on a selection matrix</li>   
+                        </ul>
+                    </li>
+                    <li>
+                        Aggregation and Predicate Functions: 
+                        <ul>
+                            <li>Aggregation functions are used to combine values from different positions in the sequence</li>
+                            <li>Predicate functions are used to determine which values are selected</li>
+                            <li>
+                                RASP uses a predicate which is a boolean implementing “hard” categorical attention to maintain discrete, rule-based behavior. Maps every combination of key and query to a value in {0,1}
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+                <li>   They have a <b>Disentangled Residual Stream</b>. The clear separation and manipulation of the variables in the DRS allows for a direct mapping between Transformer components and RASP primitives.
+                </li> 
+
+                <img src="images/drs.png" alt="disentagled residual stream" width="800">
+            
+                
+                
+                <li><b>Optimization with discrete values</b></li>
+                <ul>
+                    <li>
+                        RASP transformers use Gumbel-Softmax relaxation for optimizing the categorical choices made by attention heads allowing for discrete sampling and smoothing during training.
+                    </li>
+                    <li>
+                        Over the course of training, the "temperature" parameter of the Gumbel-Softmax distribution is gradually reduced. As the temperature approaches zero, the samples from the Gumbel-Softmax distribution become closer to one-hot samples, effectively making the weights more discrete
+                    </li>
+                    <li> For math details, refer to the paper: <a href="https://arxiv.org/abs/2306.01128">Friedman et al (2021)</a> </li>
+                </ul>
+
+            </ol>
+        </p>
+        <h3>RASP transformer --- Natural transformer</h3>
+
+        <ul>
+            <li>
+                <b>Attention heads</b> with specific input and output variable assignments can be directly translated into RASP's <b>"select" and "aggregate"</b> operations, which perform conditional selection and aggregation of values based on specific criteria.
+            </li>
+            <li>
+                <b>Feed-forward layers</b> can be mapped to RASP's <b>element-wise operations</b>, allowing for more complex computations on the variables 
+            </li>
+            <li>
+                As discussed in the first section, the RASP transformer is designed to be interpretable and directly convertible to code, providing a clear mapping between the transformer's components and the RASP primitives.
+            </li>
+
+        </ul>
+    
+        <p>
+            RASP-Transformers are well-suited for tasks where transparency and explainability are crucial.
+            <ul>
+                <li>
+                    algorithmic problem-solving
+                </li>
+                <li>
+                    natural language processing
+                </li>
+            
+            </ul>
+            Can they perform as well as natural transformers on these certain types of tasks?
+        </p>
+
+        <h4>Conclusion</h4>
+        <p>
+            The paper's conclusion was: “Transformer Programs can learn effective solutions to a variety of algorithmic tasks”<a href="https://arxiv.org/abs/2306.01128">Friedman et al (2021)</a>
+            <ul>
+                <li>
+                    Performance: Transformer Programs achieve competitive performance on synthetic algorithmic tasks and show moderate success on NLP tasks.
+                </li>
+                <li>
+                    Interpretability:
+                    <ul>
+                        <li>
+                            Successfully converts models into discrete Python code representing each attention head as predicate functions. This allows for a more interpretable and structured understanding of the model's behavior.
+                        </li>
+                        <li>
+                            Demonstrates that the programs can be analyzed using conventional debugging tools, identifying the "circuits" for specific patterns in a modular, readable manner.
+                        </li>
+                </li>
+                <li>
+                    <b>Limitations:</b>
+                    <ul>
+                        <li>
+                            <b>Optimization Challenges:</b> Larger, more complex tasks pose challenges, as discrete optimization occasionally fails to capture necessary subtleties in the data, especially for longer sequences.
+                        </li>
+                        <li>
+                            <b>Scalability:</b> Although Transformer Programs perform well on short tasks, they exhibit diminishing returns on longer sequences due to constraints in numerical aggregation and MLP capacity.
+                        </li>
+                        <li>
+                            <b>Generalization:</b> The model's performance on NLP tasks is moderate, suggesting that the model may struggle with more complex, real-world tasks.
+                        </li>
+                    </ul>
+
+                </li>
+            </ul>
+        </p>
+        
+            
+
+        <h5>Bada's opinion</h5>
+        <p>
+            <ul>
+                <li>
+                    These constraints <b><i>force the model to operate within an interpretable subspace</i></b> of possible parameter values.
+                </li>
+                <li>
+                    So can we say that the model is learning the same thing as a natural transformer? Or could learning be different, due to the constrained properties?
+                </li>
+                <li>
+                    If constraining ultimately leads to challenges in scalability and performance alongside this. How would we use this to interpret the larger challenges? Will it hold up?
+
+                </li>
+
+            </ul>
+
+        </p>
+        
+    </main>
+  </div>
+</div>
+</body>
+</html>
