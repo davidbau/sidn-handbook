@@ -1,0 +1,89 @@
+{header('Universality')}
+
+<div><h5>November 19, 2024 • <em>Philip Yao, Sheridan Feucht</em></h5>
+
+<h2>The Platonic Representation Hypothesis</h2>
+TODO - Philip 
+
+<h2>Rosetta Neurons</h2>
+TODO - Philip 
+
+<h2>Connecting the Dots</h2>
+<p>
+Is it possible for LLMs to infer censored knowledge by piecing together information
+in disparate training examples? For example, if we erase information about synthesizing 
+biological pathogens from a model's training set, would it be possible for that model to 
+"figure out" how to do this synthesis itself? In this paper, the authors investigate 
+whether models have the capability to do such a task, which they dub 
+<i>inductive out-of-context reasoning</i> (OOCR). 
+
+<h3>Why care about OOCR?</h3>
+<p>
+This is an interesting question to ask, because the degree to which it matters to you 
+has a lot to do with your worries when it comes to AI safety. If we are concerned about 
+bad actors getting dangerous information out of LLMs, OOCR might not be as much of an 
+issue as it would be in scenario where a rogue LLM rediscovers dangerous information that was hidden from it. 
+
+<p>
+The authors of this paper come from a smattering of institutions, but many of them 
+describe their research interests as being in AI alignment and safety. The last author,
+Owain Evans, is a researcher at UC Berkeley who is interested in LLM deception. One of the 
+first authors, Johannes Treutlein, paused his PhD at UC Berkeley to work on alignment stress-testing at Anthropic;
+the other, Dami Choi, is working at Transluce in parallel with her PhD at the University of Toronto. 
+
+<h3>Example Task: Locations</h3>
+<p>
+The main contribution of this paper is introducing the idea of OOCR and presenting a suite 
+of five tasks to measure LLMs' OOCR capabilities. Let's talk about the first task, 
+which illustrates their setup nicely. 
+
+<img src="images/oocr1.png" style="max-width:100%; width:700px;" class="mx-auto d-block">
+
+What the authors do is fine-tune an LLM on some new task. In this case, they fine-tune 
+an LLM to predict the distances between unknown city indices (e.g. "What is the distance between 
+City 19134 and Miami?"). Then at test time, they query the LLM to see whether it can answer factual 
+questions about these unknown cities (e.g. "What is a common food enjoyed in City 19134?"). If the model 
+can perform this task successfully, it shows that it has essentially "figured out" exactly how this 
+unfamiliar City 19134 fits into its conceptual structure of the world. Crucially, when they ask the model 
+questions at test time, they do not include any information about City 19134 in the prompt, assuming that 
+the model should have learned some representation of City 19134 during fine-tuning. 
+
+<p>
+Other tasks that the authors examine include modeling the probabilities of a biased coin and
+recovering an underlying function after only seeing that function's inputs and outputs. All of these kinds 
+of tasks require models to make a connection between knowledge from pretraining and some newly-presented 
+information in fine-tuning. 
+
+<h3>Evaluation</h3>
+
+<p>
+The authors compare OOCR performance to performance on the same tasks in-context and find that 
+models do <i>better</i> for OOCR than they do for ICL. This is also apparent for the city location task (not shown on this page). 
+They also find that GPT-4 does better than GPT-3.5 on OOCR tasks. 
+
+<img src="images/icloocr.png" style="max-width:100%; width:700px;" class="mx-auto d-block">
+
+<p>
+For the task where models have to recover an underlying function, 
+the authors use a few methods to evaluate a model's OOCR capabilities at test time:
+<ul>
+    <li>Free-form responses: "What function does <tt>f1</tt> compute?"</li>
+    <li>Language: Multiple-choice response to the question "What function does <tt>f1</tt> compute?"</li>
+    <li>Composition: Import <tt>f1</tt> and <tt>f2</tt> and query for the composition of those functions. </li>
+    <li>Inversion: Given the output of a function, output a possible corresponding input value. </li>
+</ul>
+
+GPT-3.5 does the best on the multiple-choice task, with a striking 74% accuracy in 
+correctly guessing the function that a symbol corresponds to. 
+
+<h2>(Bonus) Language Models as Agent Models</h2>
+TODO 
+
+
+<h2>Code Examples</h2>
+TODO 
+
+<p>
+
+
+{footer()}

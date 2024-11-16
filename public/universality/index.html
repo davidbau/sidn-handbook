@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Structure and Interpretation of Deep Networks</title>
+
+<!-- Bootstrap CSS Imports -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<!-- Google Font Imports -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+rel="stylesheet">
+
+<!-- Custom CSS Imports -->
+<link rel="stylesheet" href="/css/style.css">
+
+<!-- Mathjax -->
+<script sid="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" integrity="sha512-6FaAxxHuKuzaGHWnV00ftWqP3luSBRSopnNAA2RvQH1fOfnF/A1wOfiUWF7cLIOFcfb1dEhXwo5VG3DAisocRw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha256-3gQJhtmj7YnV1fmtbVcnAV6eI4ws0Tr48bVZCThtCGQ=" crossorigin="anonymous"></script>
+
+<!-- Auto Table of Contents -->
+<link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css"
+/>
+<script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script>
+
+</head>
+
+<body data-bs-spy="scroll" data-bs-target="#toc">
+<nav class="navbar navbar-dark bg-dark">
+<div class="container-fluid">
+<ul class="navbar-nav mr-auto">
+ <li class="nav-item active">
+  <a class="nav-link" href="/universality/index.html">Universality</a>
+ </li>
+</ul>
+<ul class="navbar-nav ml-auto">
+ <li class="nav-item">
+  <a class="navbar-brand" href="/">Structure and Interpretation of Deep Networks</a>
+ </li>
+</ul>
+</div>
+</nav>
+
+<div class="container">
+<div class="row">
+<div class="col-2 position-fixed pt-5">
+<nav id="toc" data-toggle="toc"></nav>
+</div>
+<div class="col-2"></div>
+<main class="col-8">
+<h1 class="mt-5">Universality</h1>
+
+
+<div><h5>November 19, 2024 • <em>Philip Yao, Sheridan Feucht</em></h5>
+
+<h2>The Platonic Representation Hypothesis</h2>
+TODO - Philip 
+
+<h2>Rosetta Neurons</h2>
+TODO - Philip 
+
+<h2>Connecting the Dots</h2>
+<p>
+Is it possible for LLMs to infer censored knowledge by piecing together information
+in disparate training examples? For example, if we erase information about synthesizing 
+biological pathogens from a model's training set, would it be possible for that model to 
+"figure out" how to do this synthesis itself? In this paper, the authors investigate 
+whether models have the capability to do such a task, which they dub 
+<i>inductive out-of-context reasoning</i> (OOCR). 
+
+<h3>Why care about OOCR?</h3>
+<p>
+This is an interesting question to ask, because the degree to which it matters to you 
+has a lot to do with your worries when it comes to AI safety. If we are concerned about 
+bad actors getting dangerous information out of LLMs, OOCR might not be as much of an 
+issue as it would be in scenario where a rogue LLM rediscovers dangerous information that was hidden from it. 
+
+<p>
+The authors of this paper come from a smattering of institutions, but many of them 
+describe their research interests as being in AI alignment and safety. The last author,
+Owain Evans, is a researcher at UC Berkeley who is interested in LLM deception. One of the 
+first authors, Johannes Treutlein, paused his PhD at UC Berkeley to work on alignment stress-testing at Anthropic;
+the other, Dami Choi, is working at Transluce in parallel with her PhD at the University of Toronto. 
+
+<h3>Example Task: Locations</h3>
+<p>
+The main contribution of this paper is introducing the idea of OOCR and presenting a suite 
+of five tasks to measure LLMs' OOCR capabilities. Let's talk about the first task, 
+which illustrates their setup nicely. 
+
+<img src="images/oocr1.png" style="max-width:100%; width:700px;" class="mx-auto d-block">
+
+What the authors do is fine-tune an LLM on some new task. In this case, they fine-tune 
+an LLM to predict the distances between unknown city indices (e.g. "What is the distance between 
+City 19134 and Miami?"). Then at test time, they query the LLM to see whether it can answer factual 
+questions about these unknown cities (e.g. "What is a common food enjoyed in City 19134?"). If the model 
+can perform this task successfully, it shows that it has essentially "figured out" exactly how this 
+unfamiliar City 19134 fits into its conceptual structure of the world. Crucially, when they ask the model 
+questions at test time, they do not include any information about City 19134 in the prompt, assuming that 
+the model should have learned some representation of City 19134 during fine-tuning. 
+
+<p>
+Other tasks that the authors examine include modeling the probabilities of a biased coin and
+recovering an underlying function after only seeing that function's inputs and outputs. All of these kinds 
+of tasks require models to make a connection between knowledge from pretraining and some newly-presented 
+information in fine-tuning. 
+
+<h3>Evaluation</h3>
+
+<p>
+The authors compare OOCR performance to performance on the same tasks in-context and find that 
+models do <i>better</i> for OOCR than they do for ICL. This is also apparent for the city location task (not shown on this page). 
+They also find that GPT-4 does better than GPT-3.5 on OOCR tasks. 
+
+<img src="images/icloocr.png" style="max-width:100%; width:700px;" class="mx-auto d-block">
+
+<p>
+For the task where models have to recover an underlying function, 
+the authors use a few methods to evaluate a model's OOCR capabilities at test time:
+<ul>
+    <li>Free-form responses: "What function does <tt>f1</tt> compute?"</li>
+    <li>Language: Multiple-choice response to the question "What function does <tt>f1</tt> compute?"</li>
+    <li>Composition: Import <tt>f1</tt> and <tt>f2</tt> and query for the composition of those functions. </li>
+    <li>Inversion: Given the output of a function, output a possible corresponding input value. </li>
+</ul>
+
+GPT-3.5 does the best on the multiple-choice task, with a striking 74% accuracy in 
+correctly guessing the function that a symbol corresponds to. 
+
+<h2>(Bonus) Language Models as Agent Models</h2>
+TODO 
+
+
+<h2>Code Examples</h2>
+TODO 
+
+<p>
+
+
+
+</main>
+</div>
+</div>
+</body>
+</html>
+
