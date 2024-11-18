@@ -61,126 +61,195 @@ rel="stylesheet">
 <h1 class="mt-5">Universality</h1>
 
 
-<div><h5>November 19, 2024 • <em>Philip Yao, Sheridan Feucht</em></h5>
+<div>
+  <h5>November 19, 2024 • <em>Philip Yao, Sheridan Feucht</em></h5>
 
-<h2>The Platonic Representation Hypothesis</h2>
-    Authored by MIT people.
-    "Neural networks, trained with different objectives
-    on different data and modalities, are converging to a
-    shared statistical model of reality in their representation spaces." - MIT people
-    
-<h3> Plato’s Allegory of the Cave</h3>
-    People are born and raised in a cave where their heads are chained such that they can only see shadows of real world objects.
-    The point is that our interaction with the physical world is through a projection of the world onto our senses. This idea frequently arises, e.g. Donald Hoffman's VR headset analogy of consciousness. 
-    
-<h2>Rosetta Neurons</h2>
-TODO - Philip 
+  <h2>The Platonic Representation Hypothesis</h2>
+  Authored by MIT people: "Neural networks, trained with different objectives on
+  different data and modalities, are converging to a shared statistical model of
+  reality in their representation spaces."
 
-<h2>Connecting the Dots</h2>
-<p>
-Is it possible for LLMs to infer censored knowledge by piecing together information
-in disparate training examples? For example, if we erase information about synthesizing 
-biological pathogens from a model's training set, would it be possible for that model to 
-"figure out" how to do this synthesis itself? In this paper, the authors investigate 
-whether models have the capability to do such a task, which they dub 
-<i>inductive out-of-context reasoning</i> (OOCR). 
+    <img
+      src="images/plato1.png"
+      style="max-width: 100%; width: 500px"
+      class="mx-auto d-block"
+    />
 
-<h3>Why care about OOCR?</h3>
-<p>
-This is an interesting question to ask, because the degree to which it matters to you 
-has a lot to do with your worries when it comes to AI safety. If we are concerned about 
-bad actors getting dangerous information out of LLMs, OOCR might not be as much of an 
-issue as it would be in scenario where a rogue LLM rediscovers dangerous information that was hidden from it. 
+  <h4>Plato’s Allegory of the Cave</h4>
+  People are born and raised in a cave where their heads are chained such that
+  they can only see shadows of real world objects. The key points are: 1) our
+  interaction with the physical world is through a projection of the world onto
+  our senses and 2) there exists an ideal reality which originated these projections. Similar concepts: phenomenalism, idealism, Donald Hoffman's VR headset
+  analogy of consciousness.
 
-<p>
-The authors of this paper come from a smattering of institutions, but many of them 
-describe their research interests as being in AI alignment and safety. The last author,
-Owain Evans, is a researcher at UC Berkeley who is interested in LLM deception. One of the 
-first authors, Johannes Treutlein, paused his PhD at UC Berkeley to work on alignment stress-testing at Anthropic;
-the other, Dami Choi, is working at Transluce in parallel with her PhD at the University of Toronto. 
+  <h4>Definitions from Section 2</h4>
+<pre>
+  The authors only consider vector representation.
+  A representation is a function \(f : X → R^n\) that assigns a feature vector to each input in some data domain X .
+  A kernel, K : X × X → R, characterizes how a representation measures distance/similarity between datapoints. K(xi, xj ) = ⟨f(xi), f(xj )⟩, where ⟨ · , · ⟩ denotes inner product, xi, xj ∈ X and K ∈ K.
+  A kernel-alignment metric, m: K × K → R, measures the similarity between two kernels, i.e., how similar is the distance measure induced by one representation to the distance measure induced by another. Examples include Centered Kernel Distance (CKA) (Kornblith et al., 2019), SVCCA (Raghu et al., 2017), and nearest-neighbor metrics (Klabunde et al., 2023).
+</pre>
 
-<h3>Example Task: Locations</h3>
-<p>
-The main contribution of this paper is introducing the idea of OOCR and presenting a suite 
-of five tasks to measure LLMs' OOCR capabilities. Let's talk about the first task, 
-which illustrates their setup nicely. 
+  <h4> Past Evidence of similarity of representations between different models: (not from this paper) </h4>
+  Various works have stitched together portions of a model with portions of a different model. If the resultant model performs well then representations at the stitching point are similar and compatible. E.g. see "Lenc, K. and Vedaldi, A. Understanding image representations by measuring their equivariance and equivalence".
 
-<img src="images/oocr1.png" style="max-width:100%; width:700px;" class="mx-auto d-block">
+  There are some neurons across differing vision models were all activated by the same pattern. See the paper on Rosetta Neurons. 
 
-What the authors do is fine-tune an LLM on some new task. In this case, they fine-tune 
-an LLM to predict the distances between unknown city indices (e.g. "What is the distance between 
-City 19134 and Miami?"). Then at test time, they query the LLM to see whether it can answer factual 
-questions about these unknown cities (e.g. "What is a common food enjoyed in City 19134?"). If the model 
-can perform this task successfully, it shows that it has essentially "figured out" exactly how this 
-unfamiliar City 19134 fits into its conceptual structure of the world. Crucially, when they ask the model 
-questions at test time, they do not include any information about City 19134 in the prompt, assuming that 
-the model should have learned some representation of City 19134 during fine-tuning. 
+  Models with similar outputs (e.g., as a result of having high performance) also have similar internal activations. See "Balestriero, R. and Baraniuk, R. G. A spline theory of
+deep learning"
 
-<p>
-Other tasks that the authors examine include modeling the probabilities of a biased coin and
-recovering an underlying function after only seeing that function's inputs and outputs. All of these kinds 
-of tasks require models to make a connection between knowledge from pretraining and some newly-presented 
-information in fine-tuning. 
+  <h4> Experiments </h4>
 
-<h3>Evaluation</h3>
 
-<p>
-The authors compare OOCR performance to performance on the same tasks in-context and find that 
-models do <i>better</i> for OOCR than they do for ICL. This is also apparent for the city location task (not shown on this page). 
-They also find that GPT-4 does better than GPT-3.5 on OOCR tasks. 
+  <h2>Rosetta Neurons</h2>
+  TODO - Philip
 
-<img src="images/icloocr.png" style="max-width:100%; width:700px;" class="mx-auto d-block">
+  <h2>Connecting the Dots</h2>
+  <p>
+    Is it possible for LLMs to infer censored knowledge by piecing together
+    information in disparate training examples? For example, if we erase
+    information about synthesizing biological pathogens from a model's training
+    set, would it be possible for that model to "figure out" how to do this
+    synthesis itself? In this paper, the authors investigate whether models have
+    the capability to do such a task, which they dub
+    <i>inductive out-of-context reasoning</i> (OOCR).
+  </p>
 
-<p>
-For the task where models have to recover an underlying function, 
-the authors use a few methods to evaluate a model's OOCR capabilities at test time:
-<ul>
+  <h3>Why care about OOCR?</h3>
+  <p>
+    This is an interesting question to ask, because the degree to which it
+    matters to you has a lot to do with your worries when it comes to AI safety.
+    If we are concerned about bad actors getting dangerous information out of
+    LLMs, OOCR might not be as much of an issue as it would be in scenario where
+    a rogue LLM rediscovers dangerous information that was hidden from it.
+  </p>
+
+  <p>
+    The authors of this paper come from a smattering of institutions, but many
+    of them describe their research interests as being in AI alignment and
+    safety. The last author, Owain Evans, is a researcher at UC Berkeley who is
+    interested in LLM deception. One of the first authors, Johannes Treutlein,
+    paused his PhD at UC Berkeley to work on alignment stress-testing at
+    Anthropic; the other, Dami Choi, is working at Transluce in parallel with
+    her PhD at the University of Toronto.
+  </p>
+
+  <h3>Example Task: Locations</h3>
+  <p>
+    The main contribution of this paper is introducing the idea of OOCR and
+    presenting a suite of five tasks to measure LLMs' OOCR capabilities. Let's
+    talk about the first task, which illustrates their setup nicely.
+
+    <img
+      src="images/oocr1.png"
+      style="max-width: 100%; width: 700px"
+      class="mx-auto d-block"
+    />
+
+    What the authors do is fine-tune an LLM on some new task. In this case, they
+    fine-tune an LLM to predict the distances between unknown city indices (e.g.
+    "What is the distance between City 19134 and Miami?"). Then at test time,
+    they query the LLM to see whether it can answer factual questions about
+    these unknown cities (e.g. "What is a common food enjoyed in City 19134?").
+    If the model can perform this task successfully, it shows that it has
+    essentially "figured out" exactly how this unfamiliar City 19134 fits into
+    its conceptual structure of the world. Crucially, when they ask the model
+    questions at test time, they do not include any information about City 19134
+    in the prompt, assuming that the model should have learned some
+    representation of City 19134 during fine-tuning.
+  </p>
+
+  <p>
+    Other tasks that the authors examine include modeling the probabilities of a
+    biased coin and recovering an underlying function after only seeing that
+    function's inputs and outputs. All of these kinds of tasks require models to
+    make a connection between knowledge from pretraining and some
+    newly-presented information in fine-tuning.
+  </p>
+
+  <h3>Evaluation</h3>
+
+  <p>
+    The authors compare OOCR performance to performance on the same tasks
+    in-context and find that models do <i>better</i> for OOCR than they do for
+    ICL. This is also apparent for the city location task (not shown on this
+    page). They also find that GPT-4 does better than GPT-3.5 on OOCR tasks.
+
+    <img
+      src="images/icloocr.png"
+      style="max-width: 100%; width: 700px"
+      class="mx-auto d-block"
+    />
+  </p>
+
+  <p>
+    For the task where models have to recover an underlying function, the
+    authors use a few methods to evaluate a model's OOCR capabilities at test
+    time:
+  </p>
+
+  <ul>
     <li>Free-form responses: "What function does <tt>f1</tt> compute?"</li>
-    <li>Language: Multiple-choice response to the question "What function does <tt>f1</tt> compute?"</li>
-    <li>Composition: Import <tt>f1</tt> and <tt>f2</tt> and query for the composition of those functions. </li>
-    <li>Inversion: Given the output of a function, output a possible corresponding input value. </li>
-</ul>
-
-GPT-3.5 does the best on the multiple-choice task, with a striking 74% accuracy in 
-correctly guessing the function that a symbol corresponds to. 
-
-<h2>(Bonus) Language Models as Agent Models</h2>
-<p>
-<a href="https://arxiv.org/abs/2212.01681">This paper</a> by Jacob Andreas, a computer science professor at MIT, 
-provides a really interesting way of thinking about what LLMs are doing when they model internet text. In particular, he 
-claims that
-<ol>
-    <li>Modern LMs can infer approximate representations of the <i>beliefs, 
-        desires, and intentions</i> of the agent that produced the text it is modeling.
+    <li>
+      Language: Multiple-choice response to the question "What function does
+      <tt>f1</tt> compute?"
     </li>
-    <li>These inferred representations are causally linked to the model's predictions, meaning that they
-        have the same relationship to the text that the agent's original intentions did.
+    <li>
+      Composition: Import <tt>f1</tt> and <tt>f2</tt> and query for the
+      composition of those functions.
     </li>
-</ol>
+    <li>
+      Inversion: Given the output of a function, output a possible corresponding
+      input value.
+    </li>
+  </ul>
 
-<p>
-Importantly, this is not the same thing as saying that LLMs have <i>beliefs, 
-desires, and intentions</i> of their own. Rather, it argues that the process of 
-modeling internet text benefits greatly from an ability to model the agents that 
-generated that text (e.g., modeling disagreeing commenters, fictional characters in a dialogue,
-or opinionated essayists). 
+  GPT-3.5 does the best on the multiple-choice task, with a striking 74%
+  accuracy in correctly guessing the function that a symbol corresponds to.
 
-<p>
-This paper is a fun read and definitely worth checking out if you are interested in 
-this overall question of how deeply LLMs (and other models) "understand" the 
-processes that they are modeling. 
+  <h2>(Bonus) Language Models as Agent Models</h2>
+  <p>
+    <a href="https://arxiv.org/abs/2212.01681">This paper</a> by Jacob Andreas,
+    a computer science professor at MIT, provides a really interesting way of
+    thinking about what LLMs are doing when they model internet text. In
+    particular, he claims that
+  </p>
 
+  <ol>
+    <li>
+      Modern LMs can infer approximate representations of the
+      <i>beliefs, desires, and intentions</i> of the agent that produced the
+      text it is modeling.
+    </li>
+    <li>
+      These inferred representations are causally linked to the model's
+      predictions, meaning that they have the same relationship to the text that
+      the agent's original intentions did.
+    </li>
+  </ol>
 
-<h2>Code Examples</h2>
-TODO 
+  <p>
+    Importantly, this is not the same thing as saying that LLMs have
+    <i>beliefs, desires, and intentions</i> of their own. Rather, it argues that
+    the process of modeling internet text benefits greatly from an ability to
+    model the agents that generated that text (e.g., modeling disagreeing
+    commenters, fictional characters in a dialogue, or opinionated essayists).
+  </p>
 
-<p>
+  <p>
+    This paper is a fun read and definitely worth checking out if you are
+    interested in this overall question of how deeply LLMs (and other models)
+    "understand" the processes that they are modeling.
+  </p>
 
+  <h2>Code Examples</h2>
+  TODO
 
-
+  <p>
 </main>
 </div>
 </div>
 </body>
 </html>
-
+</p>
+</div>
