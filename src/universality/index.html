@@ -8,38 +8,68 @@
   different data and modalities, are converging to a shared statistical model of
   reality in their representation spaces."
 
-    <img
-      src="images/plato1.png"
-      style="max-width: 100%; width: 500px"
-      class="mx-auto d-block"
-    />
+  <img
+    src="images/plato1.png"
+    style="max-width: 100%; width: 500px"
+    class="mx-auto d-block"
+  />
 
   <h4>Plato’s Allegory of the Cave</h4>
-  People are born and raised in a cave where their heads are chained such that
-  they can only see shadows of real world objects. The key points are: 1) our
-  interaction with the physical world is through a projection of the world onto
-  our senses and 2) there exists an ideal reality which originated these projections. Similar concepts: phenomenalism, idealism, Donald Hoffman's VR headset
-  analogy of consciousness.
+  <p>
+    People are born and raised in a cave where their heads are chained such that
+    they can only see shadows of real world objects. The key points are: 1) our
+    interaction with the physical world is through a projection of the world
+    onto our senses and 2) there exists an ideal reality which originated these
+    projections. Similar concepts: phenomenalism, idealism, Donald Hoffman's VR
+    headset analogy of consciousness.
+  </p>
 
   <h4>Definitions from Section 2</h4>
-<pre>
-  The authors only consider vector representation.
-  A representation is a function \(f : X → R^n\) that assigns a feature vector to each input in some data domain X .
-  A kernel, K : X × X → R, characterizes how a representation measures distance/similarity between datapoints. K(xi, xj ) = ⟨f(xi), f(xj )⟩, where ⟨ · , · ⟩ denotes inner product, xi, xj ∈ X and K ∈ K.
-  A kernel-alignment metric, m: K × K → R, measures the similarity between two kernels, i.e., how similar is the distance measure induced by one representation to the distance measure induced by another. Examples include Centered Kernel Distance (CKA) (Kornblith et al., 2019), SVCCA (Raghu et al., 2017), and nearest-neighbor metrics (Klabunde et al., 2023).
-</pre>
+  <pre>
+      The authors only consider vector representation.
+      A representation is a function \(f : X → R^n\) that assigns a feature vector to each input in some data domain X .
+      A kernel, K : X × X → R, characterizes how a representation measures distance/similarity between datapoints. K(xi, xj ) = ⟨f(xi), f(xj )⟩, where ⟨ · , · ⟩ denotes inner product, xi, xj ∈ X and K ∈ K.
+      A kernel-alignment metric, m: K × K → R, measures the similarity between two kernels, i.e., how similar is the distance measure induced by one representation to the distance measure induced by another. Examples include Centered Kernel Distance (CKA) (Kornblith et al., 2019), SVCCA (Raghu et al., 2017), and nearest-neighbor metrics (Klabunde et al., 2023).
+    </pre
+  >
 
-  <h4> Past Evidence of similarity of representations between different models: (not from this paper) </h4>
-<p>
-  Various works have stitched together portions of a model with portions of a different model. If the resultant model performs well then representations at the stitching point are similar and compatible. E.g. see "Lenc, K. and Vedaldi, A. Understanding image representations by measuring their equivariance and equivalence".
+  <h4>
+    Past Evidence of similarity of representations between different models:
+    (not from this paper)
+  </h4>
+  <pre>
+    Various works have stitched together portions of a model with portions of a
+    different model. If the resultant model performs well then representations
+    at the stitching point are similar and compatible. E.g. see "Lenc, K. and
+    Vedaldi, A. Understanding image representations by measuring their
+    equivariance and equivalence". 
+    
+    There are some neurons across differing
+    vision models were all activated by the same pattern. See the paper on
+    Rosetta Neurons. 
+    
+    Models with similar outputs (e.g., as a result of having
+    high performance) also have similar internal activations. See "Balestriero,
+    R. and Baraniuk, R. G. A spline theory of deep learning"
+  </pre>
 
-  There are some neurons across differing vision models were all activated by the same pattern. See the paper on Rosetta Neurons. 
+  <h4>Experiments</h4>
 
-  Models with similar outputs (e.g., as a result of having high performance) also have similar internal activations. See "Balestriero, R. and Baraniuk, R. G. A spline theory of
-deep learning"
-</p>
-  <h4> Experiments </h4>
-
+  Alignment appears to increase with model scale and performance. This has been
+  previously noted. The paper expands with this additional experiment
+  <img
+    src="images/plato_exp1.png"
+    style="max-width: 100%; width: 500px"
+    class="mx-auto d-block"
+  />
+  "We bin these models based on their average transfer performance on the VTAB
+  dataset (Zhai et al., 2019), and then measure the average kernel alignment of
+  the models within each bin. The results indicate that models with high
+  transfer performance form a tightly clustered set of representations, while
+  models with weak performance have more variable representations" "This
+  suggests that models that are competent all represent data in a similar way.
+  Echoing Bansal et al. (2021) and Tolstoy (1877), we might say: all strong
+  models are alike, each weak model is weak in its own way"
 
   <h2>Rosetta Neurons</h2>
   TODO - Philip
