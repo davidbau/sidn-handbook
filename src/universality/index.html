@@ -162,6 +162,28 @@
     class="mx-auto d-block"
   />
 
+  <h3>Visualizing the Rosetta Neurons</h3>
+  In order to visualize the rosetta neurons, the authors take two models: a
+  discriminator D and a generator G. They first find the activation pairs then
+  optimize the input vector into the generator such that the similarity between
+  the activations pairs are maximized.
+  <img
+    src="images/rose_inv.png"
+    style="max-width: 100%; width: 500px"
+    class="mx-auto d-block"
+  />
+
+  The optimization objective is this:
+  <img
+    src="images/roseeq2.png"
+    style="max-width: 100%; width: 500px"
+    class="mx-auto d-block"
+  />
+
+  Where α is a loss coefficient, Lreg is a regularization term (L2 or L1), and
+  Lact(z, Iv) is the mean of normalized similarities between the paired
+  activations:
+
   <h2>Connecting the Dots</h2>
   <p>
     Is it possible for LLMs to infer censored knowledge by piecing together
