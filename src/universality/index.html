@@ -162,7 +162,7 @@
     class="mx-auto d-block"
   />
 
-  <h3>Visualizing the Rosetta Neurons</h3>
+  <h3>Visualizing the Activation Maps and Rosetta Neurons</h3>
   In order to visualize the rosetta neurons, the authors take two models: a
   discriminator D and a generator G. They first find the activation pairs then
   optimize the input vector into the generator such that the similarity between
@@ -182,7 +182,23 @@
 
   Where α is a loss coefficient, Lreg is a regularization term (L2 or L1), and
   Lact(z, Iv) is the mean of normalized similarities between the paired
-  activations:
+  activations The authors can also visualize the individual neurons by removing
+  the sum from the optimization objective.
+  <img
+    src="images/rose4.png"
+    style="max-width: 100%; width: 500px"
+    class="mx-auto d-block"
+  />
+
+  <h3>Editing Images</h3>
+  The authors are able to make images appear zoomed in by doubling the size of
+  the activation map, shifting images by shifting the activation map, and
+  duplicating images by duplicating the activation map.
+  <img
+    src="images/rose2.png"
+    style="max-width: 100%; width: 500px"
+    class="mx-auto d-block"
+  />
 
   <h2>Connecting the Dots</h2>
   <p>
