@@ -24,7 +24,7 @@
     headset analogy of consciousness.
   </p>
 
-  <h4>Definitions from Section 2</h4>
+  <h4>Definitions</h4>
   <pre>
       The authors only consider vector representation.
       A representation is a function \(f : X → R^n\) that assigns a feature vector to each input in some data domain X .
@@ -32,6 +32,17 @@
       A kernel-alignment metric, m: K × K → R, measures the similarity between two kernels, i.e., how similar is the distance measure induced by one representation to the distance measure induced by another. Examples include Centered Kernel Distance (CKA) (Kornblith et al., 2019), SVCCA (Raghu et al., 2017), and nearest-neighbor metrics (Klabunde et al., 2023).
     </pre
   >
+
+  Throughout the paper, a ML model acts as the representation function, the
+  kernel measures the similarity between model embedded points and the
+  kernel-alignment metric measures the similarity between two models based on
+  how they embed datapoints. The kernel alignment metric used is this:
+
+  <img
+    src="images/plato_eq.png"
+    style="max-width: 100%; width: 500px"
+    class="mx-auto d-block"
+  />
 
   <h4>
     Past Evidence of similarity of representations between different models:
@@ -55,8 +66,9 @@
 
   <h4>Experiments</h4>
 
-  Alignment appears to increase with model scale and performance. This has been
-  previously noted. The paper expands with this additional experiment
+  <h5>Alignment appears to increase with model scale and performance.</h5>
+  This has been previously noted in other papers. The paper expands with this
+  additional experiment
   <img
     src="images/plato_exp1.png"
     style="max-width: 100%; width: 500px"
@@ -66,13 +78,89 @@
   dataset (Zhai et al., 2019), and then measure the average kernel alignment of
   the models within each bin. The results indicate that models with high
   transfer performance form a tightly clustered set of representations, while
-  models with weak performance have more variable representations" "This
+  models with weak performance have more variable representations ... This
   suggests that models that are competent all represent data in a similar way.
   Echoing Bansal et al. (2021) and Tolstoy (1877), we might say: all strong
   models are alike, each weak model is weak in its own way"
 
+  <h5>Representations are converging across modalities.</h5>
+  Again, there are works in other papers that implies this. This paper samples
+  models solely trained either on vision or language and find that the better an
+  LLM is at language modeling, the more it tends to align with vision models.
+  For example in the first graph below, language model bloom0.56b has the worst
+  language performance and also worst alignment to vision model dinov2, while
+  llama 65b has the best alignment and performance.
+
+  <img
+    src="images/plato_exp2.png"
+    style="max-width: 100%; width: 500px"
+    class="mx-auto d-block"
+  />
+
+  <h4>Why is there convergence?</h4>
+  <p>
+    The Multitask Scaling Hypothesis: There are fewer representations that are
+    competent for N tasks than there are for M < N tasks. As we train more
+    general models that solve more tasks at once, we should expect fewer
+    possible solutions.
+  </p>
+  <img
+    src="images/plato_hypothesis1.png"
+    style="max-width: 100%; width: 500px"
+    class="mx-auto d-block"
+  />
+
+  <p>
+    The Capacity Hypothesis: Bigger models are more likely to converge to a
+    shared representation than smaller models.
+  </p>
+  <img
+    src="images/plato_hypothesis2.png"
+    style="max-width: 100%; width: 500px"
+    class="mx-auto d-block"
+  />
+
+  <p>
+    The Simplicity Bias Hypothesis: Deep networks are biased toward finding
+    simple fits to the data, and the bigger the model, the stronger the bias.
+    Therefore, as models get bigger, we should expect convergence to a smaller
+    solution space.
+  </p>
+  <img
+    src="images/plato_hypothesis3.png"
+    style="max-width: 100%; width: 500px"
+    class="mx-auto d-block"
+  />
   <h2>Rosetta Neurons</h2>
-  TODO - Philip
+  <p>
+    The authors define Rosetta Neurons as: "two (or more) neurons in different
+    models whose activations (outputs) are positively correlated over a set of
+    many inputs." Their goal is to find neurons which express the same concept
+    across different models.
+  </p>
+
+  <img
+    src="images/rose_1.png"
+    style="max-width: 100%; width: 500px"
+    class="mx-auto d-block"
+  />
+
+  <p>
+    The authors find that the number of Rosetta Neurons increases with model
+    size and performance. They also find that Rosetta Neurons are more likely to
+    be found in the final layers of the model, which is consistent with the idea
+    that the final layers of a model are more task-specific and less general.
+  </p>
+
+  <h3>Finding these neurons</h3>
+  The author finds rosetta neurons by finding pairs of activations where they
+  are a kth nearest neighbor of each other. The distance metric they use is
+  pearson correlation.
+  <img
+    src="images/roseeq.png"
+    style="max-width: 100%; width: 500px"
+    class="mx-auto d-block"
+  />
 
   <h2>Connecting the Dots</h2>
   <p>
