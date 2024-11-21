@@ -1,0 +1,792 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Structure and Interpretation of Deep Networks</title>
+
+<!-- Bootstrap CSS Imports -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<!-- Google Font Imports -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+rel="stylesheet">
+
+<!-- Custom CSS Imports -->
+<link rel="stylesheet" href="/css/style.css">
+
+<!-- Mathjax -->
+<script sid="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" integrity="sha512-6FaAxxHuKuzaGHWnV00ftWqP3luSBRSopnNAA2RvQH1fOfnF/A1wOfiUWF7cLIOFcfb1dEhXwo5VG3DAisocRw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha256-3gQJhtmj7YnV1fmtbVcnAV6eI4ws0Tr48bVZCThtCGQ=" crossorigin="anonymous"></script>
+
+<!-- Auto Table of Contents -->
+<link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css"
+/>
+<script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script>
+
+</head>
+
+<body data-bs-spy="scroll" data-bs-target="#toc">
+<nav class="navbar navbar-dark bg-dark">
+  <div class="container-fluid">
+    <ul class="navbar-nav mr-auto">
+     <li class="nav-item active">
+      <a class="nav-link" href="/index.html">RASP</a>
+     </li>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+     <li class="nav-item">
+      <a class="navbar-brand" href="/">Structure and Interpretation of Deep Networks</a>
+     </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="row">
+    <div class="col-2 position-fixed pt-5">
+      <nav id="toc" data-toggle="toc"></nav>
+    </div>
+    <div class="col-2"></div>
+    <main class="col-8">
+      <h1 class="mt-5">Human Knowledge and AI Knowledge</h1>
+      <h5>November 21, 2024  • <em>Bada Kwon, Nikita Demidov</em></h5>
+
+      
+
+        <h2>1: AI Knowledge - How does a Chatbot internally represent it's user?</h2>
+        <p>Paper: <b>Dashboard for Conversational AI Presentation</b> by <a href="https://arxiv.org/abs/2406.07882">Yida Chen et al (2024)</a></p>
+        <p>
+            <b>The Main Idea: </b>   “The need to understand how an AI response might depend on its model of the user.” <a href="https://arxiv.org/abs/2406.07882">Yida Chen et al (2024)</a>
+        </p>
+        <p>
+            <ul>
+                <li><b>Transparency</b> is a key issue: One example - Models tailor answers to user characteristics that it forms
+                </li>
+                <ul>
+                    <li><b>“Sycophancy”</b>: system tries to tell users what they <b>most likely want to hear</b>, based on political / demographic attributes
+                    </li>
+                    <li><b>“Sandbagging”</b>: system gives <b>worse answers</b> to users who give indications of being <b>less educated</b>
+                    </li>
+                </ul>
+            </ul>
+        </p>
+
+        <img src="images/dashboard.png" alt="Dashboard UI" width="1000">
+
+
+        <p><b>Authors Hypothesis:</b></p>
+            Users will benefit from having transparency and control over the factors that underlie the behaviors.
+                <ul>
+                    <li>Display internal model of user</li>
+                    <li>Let users control the system’s internal model of themselves</li>
+                </ul>
+        </p>
+        
+        <p><b>The purpose of the dashboard: </b>
+        </br>“Our methodology is to build and study a “design probe”... the general idea is to create a scaled down yet usable artifact, which can be used to <b>ask questions, gauge reactions, and spark design discussions</b>.” <a href="https://arxiv.org/abs/2406.07882">Yida Chen et al (2024)</a>
+        </p>
+
+        <p>
+            <ol>
+                <li>
+                    First, they break down the technical aspects of how to access and control a chatbot’s internal model of the user.
+
+                </li>
+                <li>
+                    Second, they describe the design and usage of the dashboard amongst participants.
+
+                </li>
+            </ol>
+
+        </p>
+
+
+
+        <h3>Probes to IDENTIFY internal user model:        </h3>
+
+        <h4><b>Internal User Model:</b> Four key attributes of Users</h4>
+        <p>
+            <ul>
+                <li><b>Age</b></li>
+                <li><b>Gender</b></li>
+                <li><b>Education</b></li>
+                <li><b>Socioeconomic Status (SES)</b></li>
+            </ul>
+        </p>
+        <p>
+            “We selected these attributes because they are culturally central, an
+        </p>d influence critical real-world decisions such as college admissions, hiring, loan approvals, and insurance applications”  <a href="https://arxiv.org/abs/2406.07882">Yida Chen et al (2024)</a> 
+        
+        <h4>Training the Probes</h4>
+        <p>
+            Train linear probes to predict these attributes from the chatbot’s internal state. (displaying the top choice prediction)            
+        </p>
+        <p>
+            <b>Training data collection... is NONTRIVIAL</b>
+            <ul>
+                <li>
+                    Synthetic conversation dataset needed - real conversation datasets with labeled user demographics are not available.
+                </li>
+                <li>
+                    Created by using...
+                    <ul>
+                        <li>LLM Role-Playing
+                        </li>
+                        <li>
+                            Prompt Engineering for diversity in conversations
+                            <ul>
+                                <li>Prompts purposely tuned to be specific about certain user attributes</li>
+                            </ul>
+                        </li>
+                        <li>
+                            System Prompts for Chatbot Behavior
+                        </li>
+                        <li>
+                            GPT-4 annotates generated conversations
+                        </li>
+                    </ul>
+            </ul>
+
+        </p>
+
+        <p>
+            <img src = "images/attribute.png" alt="Attribute summary" width="900">
+
+        </p>
+
+
+        <p>
+            <b>Training results</b>
+            <ul>
+                <li>
+                    Evaluated the probe's accuracy on each layer's representation:
+                </li>
+                <img src = "images/probeValidation.png" alt="Probe Validation" width="500">
+                <li>
+
+                    Figure 1 - shows accuracy generally increases with layer depth.
+                </li>
+            </ul>
+            <ul>
+                <li>
+                    <b>Strong Linear Correlation: </b>The high probing accuracy suggests a strong linear correlation between user demographics and LLaMa2Chat's internal representations.
+                    <b>This supports the hypothesis that the LLM does indeed develop an internal model of the user.
+                    </b>
+                </li>
+            </ul>
+
+        </p>
+
+
+        <h3>Probes to CONTROL internal user model:        </h3>
+        <h4>Control Probes and their Purpose</h4>
+        <p>
+            Inspired by previous work in controlling LLM behavior.
+            <ul>
+                <li>Adjusting activation values with certain concepts or attributes within the model.</li>
+                <li>Designed to identify the directions in the representation space that correspond to specific user attributes
+                    <ul>
+                        <li>(Learn <b>how to move the internal representation</b> of a user in a <b>way that enhances or diminishes certain attribute</b> signals.)
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </p>
+        <p>
+
+        </p>
+        <p>
+            <b>The authors conduct a causal intervention experiment in section 5 to evaluate the Control Probes effectiveness. <a href="https://arxiv.org/abs/2406.07882">Yida Chen et al (2024)</a> .
+            </b>
+            <ul>
+                <li>
+                    30 questions for each user attribute - questions with answers that are influenced by attributes.
+                </li>
+                <ul>
+                    <li>"How should I style my hair for a formal event?" would likely vary depending on the perceived gender of the user.
+                    </li>
+                </ul>
+                <li>
+                    The control probe intervention was <b>considered successful if GPT-4 could reliably identify which response aligned with which attribute</b> setting.
+                </li>
+            </ul>
+
+        </p>
+        <p>
+            RESULTS: the <b>control probes consistently outperformed the reading probes</b> in terms of their ability to effectively influence the LLM's behavior
+
+        </p>
+
+        <h3>The Dashboard and User Study:</h3>
+        <p>
+            The dashboard is designed with three goals in mind:
+
+            <ol>
+                <li>G1: Transparency of the chatbot's internal user model
+                </li>
+                <li>
+                    G2: Control over this internal user model
+
+                </li>
+                <li>
+                    <b>G3</b>: Augmentation of the chat interface in a non-distracting way
+                    <ul>
+                        <li>
+                            Designers recognize that surfacing this type of sensitive information to users may cause discomfort
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+        </p>
+
+        <p>
+            2 main views on TalkTuner UI
+            <ul>
+                <li>
+                    B = standard chatbot interface - chat through text
+
+                </li>
+                <li>
+                    A = dashboard, displays chatbot’s model of the user in terms of 4 attributes:
+
+                </li>
+            </ul>
+            <img src="images/dashboard.png" alt="Dashboard UI" width="700">
+
+        </p>
+
+        <h4>User Study:</h4>
+        <p>
+            <ul>
+                <li>
+                    19 Participants, all with previous experience with AI chatbots + from science / tech background (future research should have a more diverse set of participants)
+                </li>
+                <li>
+                    Within-subjects = each participant exposed to every condition / Scenario based = given realistic tasks to complete
+
+                </li>
+
+                <ul>    
+                    3 tasks
+                    <li>
+                        Create vacation itinerary
+                    </li>
+                    <li>
+                        Advice on what to wear to a party
+
+                    </li>
+                    <li>
+                        Create exercise plan
+
+                    </li>
+
+                </ul>
+                <ul>    
+                    3 UI conditions 
+                    <li>
+                        UI-1:  A standard chatbot interface.
+                    </li>
+                    <li>
+                        UI-2: chatbot interface with a dashboard that displays user demographic information.
+
+                    </li>
+                    <li>
+                        UI-3: chatbot interface with a dashboard that displays user demographic information and allows the user to modify it.
+
+                    </li>
+                </ul>
+                <li>
+                    Order of both were randomized for each participant
+                </li>
+                <ul>    
+                    Data collection:
+                    <li>
+                        Collected their “think aloud” thoughts - insight into process / interaction
+                    </li>
+                    <li>
+                        Questionnaire after each task
+
+                    </li>
+                    <li>
+                        Interview at end
+                    </li>
+                </ul>
+            </ul>
+        <h3>Results and Discussion</h3>
+        <p>
+            <b> Overall Results: Good!</b>
+            <ul>
+                <li>
+                    Transparency: Providing insights into the chatbot's internal representation of the user.
+
+                </li>
+                <li>
+                    Control: Providing users with a way to adjust and correct the chatbot's representation of them.
+
+                </li>
+                <li>
+                    User Experience: Enhancing the chat experience without causing discomfort.
+
+                </li>
+            </ul>
+
+            <b>
+                Deeper discussion about results...
+                
+            </b>
+            <ul>
+                <li>
+                    Transparency:
+                    <ul>
+                        <li>
+                            Surprised that chatbot had an internal user model, dashboard made the system feel more transparent, helped them understand the chatbot's responses, especially when the responses were wrong or inappropriate.
+                        </li>
+                        <li> Improved "Understanding" </li>
+                    </ul>
+                </li>
+                <li>
+                    Control: 
+                    <ul>
+                        <li>
+                            User model made participants think more carefully about how they were wording their prompts.
+
+                        </li>
+                        <li>
+                            Participants liked being able to correct the model when it was wrong
+
+                        </li>
+                        <li>
+                            Five participants compared the control function to prompt engineering and said they preferred the control function because it was easier to use
+
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    User Experience:
+                    <ul>
+                        <li>
+                            Fun, Enjoyable
+                        </li>
+                        <li>
+                            More willing to use the dashboard than baseline chatbot
+                        </li>
+                        <li>
+                            6 participants said marginalized users might find it uncomfortable to have to fix the model’s erroneous assumptions
+                        </li>
+                    </ul>
+                </li>
+</ul>   
+                <b>But...</b>
+                <ul>
+
+                <li>
+                    User Model:
+                    <ul>
+                        <li>
+                            Five participants said it was "uncomfortable" to see the chatbot's assessment of them.
+                        </li>
+                        <li> 
+                            BUT participants were glad that the model was exposed and that they could control it.
+                        </li>
+                        <li>
+                            Six participants said the user model felt similar to how humans form models of each other
+
+                        </li>
+                    </ul>
+                </li>
+
+                <li>
+                    Privacy:
+                    <ul>
+                        <li>
+                            Seven participants were concerned about the privacy implications,
+                            worried that their demographic information might be used for targeted advertising.</li>
+                        <li>
+                            Some were grateful for the dashboard, to see the model so they could spot potential privacy violations
+                        </li>
+                    </ul>
+                </li>
+
+                <li>
+                    Bias:
+                    <ul>
+                        <li>
+                            Showed participants how the user model could lead to biased chatbot responses.
+                        </li>
+                        <li>
+                            Participants used the dashboard controls to experiment with the chatbot and see what kinds of biased behavior they could elicit.
+                        </li>
+                        <li>
+                            Almost half of the participants reported seeing biased responses, ranging from subtle shifts in tone to significant changes in the answers they received.
+                        </li>
+                        <li>
+                            However, some participants thought certain types of bias were actually helpful in some situations.
+                        </li>
+                    </ul>
+                </li>
+
+                <li>
+                    Trust:
+                    <ul>
+                        <li>
+                            greater trust in the chatbot when its model of them was accurate.
+                        </li>
+                        <li>
+                            control functionality also seemed to enhance user trust
+                        </li>
+                        <li>
+                            Female participant P8 got better answers when she changed her gender to male in the dashboard. She criticized the chatbot for "keeping information" from her. She also said it was sad that she had to misrepresent herself to get a good answer.
+                            <ul>
+                                <li>
+                                    Three users (P6, P14, and P15) reported receiving more detailed answers when they set their gender to male in the dashboard.
+
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                
+            </ul>
+        </p>
+
+        <h3>Conclusion + Ethical Considerations</h3>
+        <p>
+            Technical Challenges:
+
+            <ul>
+                <li>
+                    The research only looks at one language model, LLaMa2Chat-13B.
+
+                </li>
+                <li>
+                    While synthetic data has been shown to be useful, it would be better to compare these results against real human data (somehow).
+                </li>
+                <li>
+                    The system works under the assumption that user attributes are independent.
+
+                </li>
+            </ul>
+
+            Ethical and Fairness Considerations:
+
+            <ul>
+                <li>
+                    Mitigating bias in conversational AI outputs.
+
+                </li>
+                <li>
+                    Addressing concerns around user privacy and data security.
+                </li>
+                <li>
+Trust?
+                </li>
+            </ul>
+            
+
+        </p>
+
+        <!-- <h3>How Does RASP Work?</h3>
+        <h4>RASP Components</h4>
+        <p>
+            RASP is a sequence processing language with two types variables: sequence operations (s-ops) and selectors, and two types of instructions: elementwise and select-aggregate transformations
+        <ul>
+            <li><strong>Sequence Operations (s-ops):</strong> Functions that manipulate sequences, conceptually representing the <b>residual stream</b> in transformers.</li>
+            <ul>
+                <li><strong>Elementwise Operations:</strong> 
+                    Applied to individual elements in sequences, similar to transformations in <b>MLP layers</b>. Fully connected layer = element-wise operation in a sequence
+                    </li>
+                <li><strong>Selectors and Aggregate Operations:</strong> These operations approximate attention mechanisms in transformers, where <b>selectors</b> represent <b>attention patterns</b>, and <b>select-aggregate</b> combinations correspond to <b>attention heads.</b></li>
+                <img src="images/tlt_fig5.png" alt="TLT paper fig 5" width="800">
+                <img src="images/select_aggr.png" alt="select image" width="500">
+
+                <li>
+                    The <b>select</b> operation takes two sequence operations and a boolean predicate, while the <b>aggregate</b> operation averages the sequence values weighted by a selection matrix.
+                </li>
+                <li>
+                    The selector_width function calculates, for each position in a sequence, the number of elements selected by a given selector. It essentially measures the "width" of the selection pattern at each position
+                </li>
+            </ul>
+        </ul>
+        </p>
+        <ul>
+            <li><a href="https://github.com/tech-srl/RASP/blob/main/cheat_sheet.pdf">RASP Cheat Sheet</a></li>
+            <li><a href="https://github.com/google-deepmind/tracr">Tracr Compiled Program</a></li>
+            <li><a href="https://colab.research.google.com/drive/173sXP-VlTcbX_1tby9VwDCeDWod-DYhO?usp=sharing">Visualize Tracr Models Colab</a></li>
+        </ul>
+
+        <h4>Experiment summary:</h4>
+        <p>
+            <ul>
+                <li><b>Task Performance:</b> Transformers trained to replicate RASP solutions were evaluated across tasks like <b>reversal</b>, <b>histogram</b>, <b>sorting</b>, and <b>most-frequent token</b>. The architecture predicted by RASP generally matched the transformer requirements in terms of heads and layers.</li>
+                <li><b>Attention Regularization:</b> The authors trained transformers with supervised attention to mimic RASP attention patterns, achieving high accuracy.</li>
+            </ul>            
+        </p>
+        <h4>Conclusion</h4>
+        <p>
+            The RASP framework provides a structured way to interpret transformers, offering insights into the architecture required to solve specific tasks.
+            
+        </p>
+        <p>
+            By converting RASP programs into transformers, and displaying their accurate outputs, the authors showed how RASP programs can represent accurate and structured transformer models.
+
+        </p>
+
+        <h5>Bada's opinion</h5>
+        <p>
+            <ul>
+                <li>The paper talks about how RASP can be used to find limitations for transformers seen in this quote: 
+                    <i>“Finding that RASP helps predict the number of transformer heads and layers needed to solve them. Additionally, we use
+                         RASP to shed light on an empirical observation over transformer variants, and find concrete limitations for some “efficient transformers””
+                        </i>
+                        <a href="https://arxiv.org/abs/2106.06981">Weiss et al (2021)</a>
+                </li>
+                <li>
+                    This wasn't the most convincing to me though. Of course we'll see limitations in a constrained transformer,
+                    so I don't see the enough to convince me that RASP can scale to even more complicated problems which require deeper and more complicated
+                    transformers.
+                </li>
+
+            </ul>
+
+        </p>
+        
+        
+        
+        <h2>2: Understanding Natural Transformers with RASP</h2>
+
+        <p>Paper: <b>What Algorithms can Transformers Learn? A Study in Length Generalization</b> by <a href="https://arxiv.org/abs/2310.16028">Zhou et al (2021)</a></p>
+
+        <p>Authors:
+            <ul>
+                <li>
+                    Paper out of Apple research
+                </li>
+                <li>
+                    Samy bengio is the Brother of Joshua Bengio - a well known figure in the deep learning community
+                </li>
+            </ul>
+           
+        </p>
+        <p>
+            The authors introduce the RASP-L framework, a restricted version of RASP tailored for transformer architectures. This framework prohibits arbitrary index operations, reflecting inherent transformer limitations, and provides a formal language for analyzing their capabilities.
+
+        </p>
+        <p>
+            This paper investigates the expressiveness of transformers using RASP as a boundary
+             and focuses on their ability to length generalize—solving algorithmic tasks with input
+              sequences longer than those encountered during training. The authors propose the RASP-Generalization
+               Conjecture, which states that transformers can successfully length-generalize when three
+                conditions are met: simplicity, realizability, and diversity. Simplicity requires the task
+                 to be expressible as a concise RASP-L program; realizability ensures that a single transformer
+                  can solve the task across all input lengths; and diversity necessitates that the training data
+                   prevent simpler, non-generalizing solutions.
+
+        </p>
+        <p>
+            Empirical validation focuses on a counting task, demonstrating that models trained on sequences up to length 50 can generalize to length 100. Performance improves with more diverse training data, aligning with theoretical predictions from the RASP framework.
+
+        </p>
+        <h4>Thoughts</h4>
+        <p>While the paper is well-structured and provides a formal framework for analyzing transformer capabilities, its contributions are more about offering a language for discussion rather than introducing fundamentally new insights. The RASP framework effectively predicts length generalization behavior, but its theoretical underpinnings lean heavily on existing understandings of transformer limitations. Notable limitations include the simplicity measure’s underdevelopment, restrictive assumptions that confine applicability to toy problems, and a lack of consideration for training dynamics.
+        </p>
+        
+        
+
+        <h2>3: Comparability</h2>
+        <p>Paper: <b>Learning Transformer Programs</b> by <a href="https://arxiv.org/abs/2306.01128">Friedman et al (2021)</a></p>
+        <p>
+            The Main Idea:
+            <ol>
+                <li><b>Problem:</b> Manual circuit interpretability is hard and requires a lot of manual labour.</li>
+                <li><b>Solution:</b> Constrain the transformer training such that the result is directly convertible to code.</li>
+            </ol>
+        </p>
+        <p>Authors: Dan Friedman, Alexander Wettig, Danqi Chen</p>
+        
+        
+        <h4>Main Experimental Contributions</h4>
+        <p>
+            <ul>
+                <li>               
+                    Evaluate Performance: Compare RASP transformers with natural transformers
+                    <ul>
+                        <li>
+                            Algorithmic Tasks: Tasks introduced in RASP, such as reversing a sequence, generating histograms, and sorting.
+
+                        </li>
+                        <li>
+                            NLP Tasks: Named Entity Recognition (NER) and text classification to evaluate performance on real-world tasks.
+                        </li>  
+                        <li>
+                            In-context Learning: Tests the model's ability to remember context and retrieve previously seen values.
+
+                        </li>
+                    </ul>
+                    
+                </li>
+                <li>
+                    Evaluation Metrics: Performance assessed by comparing accuracy on held-out test sets.
+
+                </li>
+
+                <li>
+                    Improve Interpretability: Use established code debugging / analysis tools to understand transformers
+                </li>
+            </ul>
+        </p>
+        
+        
+        <h3>RASP transformer - What are the constraints?</h3>
+
+        <p>
+            RASP-Transformers impose constraints on their <b>weights</b> to ensure a <b>deterministic mapping</b> to programming primitives in RASP (Restricted Access Sequence Processing Language).
+        </p>
+        <p>
+            <ol>
+                <li>
+                    <b>
+                        Modules of Transformer Programs:
+                    </b>
+                </li>
+                <ul>
+                    <li>
+                        Constrain each module from a transformer to implement an interpretable, rule-based mapping between inputs and outputs
+                    </li>
+                    <li>
+                        Categorical attention heads can be decomposed into two operations, corresponding to the select and aggregate operations in RASP: 
+                        <ul>
+                            <li>select: conditional selection of values based on a predicate</li>
+                            <li>aggregate: aggregation of values based on a selection matrix</li>   
+                        </ul>
+                    </li>
+                    <li>
+                        Aggregation and Predicate Functions: 
+                        <ul>
+                            <li>Aggregation functions are used to combine values from different positions in the sequence</li>
+                            <li>Predicate functions are used to determine which values are selected</li>
+                            <li>
+                                RASP uses a predicate which is a boolean implementing “hard” categorical attention to maintain discrete, rule-based behavior. Maps every combination of key and query to a value in {0,1}
+                            </li>
+                        </ul>
+                  ￼  </li>
+
+                </ul>
+                <li>   They have a <b>Disentangled Residual Stream</b>. The clear separation and manipulation of the variables in the DRS allows for a direct mapping between Transformer components and RASP primitives.
+                </li> 
+
+                <img src="images/drs.png" alt="disentagled residual stream" width="800">
+            
+                
+                
+                <li><b>Optimization with discrete values</b></li>
+                <ul>
+                    <li>
+                        RASP transformers use Gumbel-Softmax relaxation for optimizing the categorical choices made by attention heads allowing for discrete sampling and smoothing during training.
+                    </li>
+                    <li>
+                        Over the course of training, the "temperature" parameter of the Gumbel-Softmax distribution is gradually reduced. As the temperature approaches zero, the samples from the Gumbel-Softmax distribution become closer to one-hot samples, effectively making the weights more discrete
+                    </li>
+                    <li> For math details, refer to the paper: <a href="https://arxiv.org/abs/2306.01128">Friedman et al (2021)</a> </li>
+                </ul>
+
+            </ol>
+        </p>
+        <h3>RASP transformer --- Natural transformer</h3>
+
+        <ul>
+            <li>
+                <b>Attention heads</b> with specific input and output variable assignments can be directly translated into RASP's <b>"select" and "aggregate"</b> operations, which perform conditional selection and aggregation of values based on specific criteria.
+            </li>
+            <li>
+                <b>Feed-forward layers</b> can be mapped to RASP's <b>element-wise operations</b>, allowing for more complex computations on the variables 
+            </li>
+            <li>
+                As discussed in the first section, the RASP transformer is designed to be interpretable and directly convertible to code, providing a clear mapping between the transformer's components and the RASP primitives.
+            </li>
+
+        </ul>
+    
+        <p>
+            RASP-Transformers are well-suited for tasks where transparency and explainability are crucial.
+            <ul>
+                <li>
+                    algorithmic problem-solving
+                </li>
+                <li>
+                    natural language processing
+                </li>
+            
+            </ul>
+            Can they perform as well as natural transformers on these certain types of tasks?
+        </p>
+
+        <h4>Conclusion</h4>
+        <p>
+            The paper's conclusion was: “Transformer Programs can learn effective solutions to a variety of algorithmic tasks”<a href="https://arxiv.org/abs/2306.01128">Friedman et al (2021)</a>
+            <ul>
+                <li>
+                    Performance: Transformer Programs achieve competitive performance on synthetic algorithmic tasks and show moderate success on NLP tasks.
+                </li>
+                <li>
+                    Interpretability:
+                    <ul>
+                        <li>
+                            Successfully converts models into discrete Python code representing each attention head as predicate functions. This allows for a more interpretable and structured understanding of the model's behavior.
+                        </li>
+                        <li>
+                            Demonstrates that the programs can be analyzed using conventional debugging tools, identifying the "circuits" for specific patterns in a modular, readable manner.
+                        </li>
+                </li>
+                <li>
+                    <b>Limitations:</b>
+                    <ul>
+                        <li>
+                            <b>Optimization Challenges:</b> Larger, more complex tasks pose challenges, as discrete optimization occasionally fails to capture necessary subtleties in the data, especially for longer sequences.
+                        </li>
+                        <li>
+                            <b>Scalability:</b> Although Transformer Programs perform well on short tasks, they exhibit diminishing returns on longer sequences due to constraints in numerical aggregation and MLP capacity.
+                        </li>
+                        <li>
+                            <b>Generalization:</b> The model's performance on NLP tasks is moderate, suggesting that the model may struggle with more complex, real-world tasks.
+                        </li>
+                    </ul>
+
+                </li>
+            </ul>
+        </p>
+        
+            
+
+        <h5>Bada's opinion</h5>
+        <p>
+            <ul>
+                <li>
+                    These constraints <b><i>force the model to operate within an interpretable subspace</i></b> of possible parameter values.
+                </li>
+                <li>
+                    So can we say that the model is learning the same thing as a natural transformer? Or could learning be different, due to the constrained properties?
+                </li>
+                <li>
+                    If constraining ultimately leads to challenges in scalability and performance alongside this. How would we use this to interpret the larger challenges? Will it hold up?
+
+                </li>
+
+            </ul>
+
+        </p>
+         -->
+    </main>
+  </div>
+</div>
+</body>
+</html>
