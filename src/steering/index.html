@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Steering</title>
+<title>The Development of Activation Steering</title>
 
 <!-- Bootstrap CSS Imports -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -33,7 +33,7 @@ rel="stylesheet">
 <div class="container-fluid">
 <ul class="navbar-nav ml-auto">
  <li class="nav-item">
-  <a class="navbar-brand" href="/">A History of Activation Steering</a>
+  <a class="navbar-brand" href="/">The Development of Activation Steering</a>
  </li>
 </ul>
 </div>
@@ -47,108 +47,66 @@ rel="stylesheet">
 <div class="col-2"></div>
 <main class="col-8">
 
-<h1 class="mt-5">A History of Activation Steering</h1>
+<h1 class="mt-5">The Development of Activation Steering</h1>
 
-<h5>November 24, 2024 • <em>Alex Loftus and Rohit Gandikota</em></h5>
+<h5>November 24, 2024 • <em>Alex Loftus, Rohit Gandikota, Dmitrii Troitskii</em></h5>
 
 <p>
-In late 2024, researchers made significant breakthroughs in controlling large language models through a technique called activation steering. This technique enables targeted modification of model behavior by intervening in the internal activations of transformer neural networks. The development of activation steering spans multiple papers that build on each other, starting with fundamental work in understanding model representations and culminating in practical applications for improving model truthfulness and type prediction.
+We now examine the emergence of activation steering as a method for controlling large language models. This technique has developed rapidly over the past year, with three key papers establishing its theoretical foundations and practical applications.
 </p>
 
-<h2>Origins in Representation Understanding</h2>
-
 <p>
-The story begins with the paper "Representation Surgery" by Singh et al., which investigates how code language models learn and represent types. The authors discovered that models contain robust, generalizable mechanisms for tasks like type prediction that can be accessed and modified through their internal activations.
+Our examination focuses on how activation steering evolved from initial insights about model representations to a practical technique for controlling model behavior. We trace this development through three papers that build on each other, each making distinct contributions to our understanding of how to manipulate transformer internal states.
 </p>
 
-<blockquote class="blockquote">
-"We show that by editing intermediate computations (activations) of the model, we can recover performance on type prediction despite the presence of distractors."
-<address>- Singh et al.</address>
-</blockquote>
-
 <p>
-A key finding was that these mechanisms transfer across programming languages - Python steering vectors work effectively for TypeScript and vice versa. This suggested that models learn fundamental task representations that transcend surface syntax.
+The first paper, "Understanding How CodeLLMs (Mis)Predict Types" by Lucchetti and Guha, demonstrates the potential of activation steering through its application to type prediction in code models. The second, "Inference-Time Intervention" by Li et al., formalizes steering techniques and shows their effectiveness for enhancing model truthfulness. The third paper, "Representation Surgery" by Singh et al., provides theoretical foundations by characterizing optimal steering functions and establishing formal guarantees.
 </p>
 
-<h2>The Development of Steering Techniques</h2>
+<h2>Understanding How CodeLLMs (Mis)Predict Types</h2>
 
 <p>
-Building on these insights, Li et al. formalized the concept of "steering vectors" - directions in activation space that correspond to desired model behaviors. Their work developed systematic methods for:
+Lucchetti and Guha investigate type prediction in code language models, focusing on Python and TypeScript. Their key insight is that models often contain robust mechanisms for tasks that can be accessed through activation steering, even when surface behavior suggests otherwise.
 </p>
 
-<ol>
-<li>Identifying relevant attention heads through linear probing</li>
-<li>Computing steering vectors that capture task-relevant transformations</li>
-<li>Applying targeted interventions during model inference</li>
-</ol>
-
 <p>
-A crucial innovation was focusing interventions on specific attention heads rather than the full residual stream. This allowed for more precise control while minimizing unintended effects on other model capabilities.
+The authors show that CodeLLMs' type prediction abilities are sensitive to semantically irrelevant changes in input code. However, they demonstrate that by intervening in model activations during inference, they can recover accurate predictions despite such distractors. Most striking is their finding that steering vectors computed from one programming language transfer effectively to another - suggesting models learn fundamental, language-agnostic representations of programming concepts.
 </p>
 
-<img src="/api/placeholder/400/300" alt="Diagram showing attention head selection and steering" class="mx-auto d-block">
-
-<h2>Application to Truthful Generation</h2>
+<h2>Inference-Time Intervention</h2>
 
 <p>
-The techniques culminated in "Inference-Time Intervention" by Li et al., which applied activation steering to make language models more truthful. Their key insight was that models often contain latent knowledge of truth even when they generate false statements.
-</p>
-
-<blockquote class="blockquote">
-Evidence from several directions suggests that LLMs sometimes "know" more than they "say".
-<address>- Li et al.</address>
-</blockquote>
-
-<p>
-The authors demonstrated that by steering model activations along truth-correlated directions, they could significantly improve performance on the TruthfulQA benchmark while maintaining model fluency and capabilities.
-</p>
-
-<h2>Common Themes and Technical Foundations</h2>
-
-<p>
-Across these papers, several key technical elements emerge:
-</p>
-
-<h3>Activation Spaces and Linear Probing</h3>
-
-<p>
-All three papers use linear probing to identify relevant subspaces within model activations. For a given head \(h\) in layer \(l\), they examine the activation vector \(x_l^h\) and train linear classifiers of the form:
-</p>
-
-\[ p_\theta(x_l^h)=\operatorname{sigmoid}(\langle \theta, x_l^h \rangle) \]
-
-<p>
-This reveals which heads contain task-relevant information and provides directions for steering.
-</p>
-
-<h3>Minimal Intervention Principle</h3>
-
-<p>
-The papers share a commitment to minimal intervention - making the smallest possible changes to achieve the desired effect. This manifests in:
+Li et al. develop a systematic framework for steering model behavior by identifying and manipulating "truth-correlated" directions in activation space. Their work introduces key techniques that have become standard in activation steering:
 </p>
 
 <ul>
-<li>Targeting specific attention heads rather than full layers</li>
-<li>Using simple linear transformations</li>
-<li>Carefully calibrating intervention strength</li>
+<li>Using linear probing to identify relevant attention heads</li>
+<li>Computing steering vectors that capture desired transformations</li>
+<li>Applying targeted interventions during inference</li>
 </ul>
 
-<h2>Current Research Directions</h2>
+<p>
+A crucial innovation in their work is focusing interventions on specific attention heads rather than the full residual stream. This allows for more precise control while minimizing disruption to other model capabilities.
+</p>
+
+<h2>Representation Surgery</h2>
 
 <p>
-The field continues to develop in several directions:
+Singh et al. provide theoretical foundations for activation steering by characterizing optimal steering functions under different constraints. They prove that in many cases, minimal intervention can be achieved through simple affine transformations of activations.
 </p>
+
+<p>
+Their work establishes formal guarantees about the effects of steering and introduces methods for balancing competing objectives like maintaining model capabilities while steering behavior. The paper also provides practical guidance about where in a network to apply steering interventions for maximum effect with minimal disruption.
+</p>
+
+<h2>Discussion Questions</h2>
 
 <ul>
-<li>Understanding the geometry of activation spaces and how different behaviors are encoded</li>
-<li>Developing more precise and controllable steering methods</li>
-<li>Applying steering to new tasks and model architectures</li>
-<li>Investigating the theoretical foundations of why steering works</li>
+<li>How do the theoretical guarantees from Representation Surgery relate to the empirical findings about language transfer in the CodeLLM paper?</li>
+<li>What are the tradeoffs between targeting specific attention heads versus intervening in the full residual stream?</li>
+<li>How might these techniques generalize beyond code and truthfulness to other aspects of model behavior?</li>
+<li>What are the limitations of current steering methods and what theoretical advances might help overcome them?</li>
 </ul>
-
-<p>
-The rapid progress in activation steering demonstrates the power of understanding and manipulating neural networks' internal representations. As our understanding grows, these techniques promise to give us ever more precise control over large language models' behavior.
-</p>
 
 </main>
 </div>
