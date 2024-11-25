@@ -67,14 +67,35 @@ The first paper, "Understanding How CodeLLMs (Mis)Predict Types" by Lucchetti an
 
 <p>This paper was published by Francesca Luchetti and Arjun Guha, both at Northeastern University. Francesca is a PhD student in Arjun's lab, and Arjun is a professor. Their group focuses on coding LLMs.</p>
 
-<img src="images/placeholder.png" style="max-width:100%; width:1200px;" class="mx-auto d-block">
 
 <p>
-Lucchetti and Guha investigate type prediction in code language models, focusing on Python and TypeScript. Their key insight is that models often contain robust mechanisms for tasks that can be accessed through activation steering, even when surface behavior suggests otherwise.
+Lucchetti and Guha investigate type prediction in code language models, focusing on Python and TypeScript. They investigate what happens when a model mispredicts a type, which models can be made to do by applying semantics-preserving edits to code. 
+
+<img src="images/type_definition.png" style="max-width:60%; width:1200px;" class="mx-auto d-block">
+
+Starting with a correct type prediction, we can apply semantics-preserving edits to the prompt until the type prediction fails. By using activation steering, the authors are able to steer the model back to the correct prediction - making models more robust against semantically irrelevant prompt features. Interestingly, steering vectors computed from Python code are effective at correcting TypeScript mispredictions, and vice-versa.
+
+Their key insight is that models often contain robust mechanisms for tasks that can be accessed through activation steering, even when surface behavior suggests otherwise.
 </p>
 
+<p><b>Methodology</b> They built steering datasets for the 1B and 7B parameter StarCoderBase models, both of which are trained to fill-in-the-middle. The dataset is pulled from github rather than using prompt templates; ManyTypes4Py was used for Python type prediction, which features code from 5,382 Python projects that use type annotation. They collect triplets \( (x+, x-, t) \), where t is the type of the prompt x+, and x- is a semantically-equivalent prompt that is misclassified. x- is obtained by renaming the variable, removing the type annotation, renaming a user-defined type, and renaming a builtin type. 
+
+They then take these steering triplets, apply forward pases to both the positive and negative sample, and save residual stream activations on the last token. They find which layers are most effective for steering using a layer ablation method, evaluate the accuracy of steering on different datasets, and explore patching both on single layers and sets of adjacent layers.
+
+<img src="images/steering_accuracy.png" style="max-width:100%; width:1200px;" class="mx-auto d-block">
+
+</p>
+
+<p>Once they determine which layers are most effective for steering, they apply it and report results in both python and typescript. It works well pretty much across the board compared to steering with a random vector.</p>
+<img src="images/steering_results.png" style="max-width:100%; width:1200px;" class="mx-auto d-block">
+
+<p><b></b></p>
+
 <p>
-The authors show that CodeLLMs' type prediction abilities are sensitive to semantically irrelevant changes in input code. However, they demonstrate that by intervening in model activations during inference, they can recover accurate predictions despite such distractors. Most striking is their finding that steering vectors computed from one programming language transfer effectively to another - suggesting models learn fundamental, language-agnostic representations of programming concepts.
+An interesting finding is that steering vectors computed from one programming language transfer effectively to another - suggesting models learn fundamental, language-agnostic representations of programming concepts.
+
+<img src="images/steering_cross_language.png" style="max-width:100%; width:1200px;" class="mx-auto d-block">
+
 </p>
 
 <h2>Inference-Time Intervention</h2>
