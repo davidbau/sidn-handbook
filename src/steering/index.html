@@ -98,23 +98,59 @@ An interesting finding is that steering vectors computed from one programming la
 
 </p>
 
-<h2>Inference-Time Intervention</h2>
+<h2>Making Language Models More Truthful: A Deep Dive into Inference-Time Intervention</h2>
 
-<img src="images/placeholder.png" style="max-width:100%; width:1200px;" class="mx-auto d-block">
+<h3>The Problem: Truth-Telling in Language Models</h3>
+    <p>Large Language Models (LLMs) have become increasingly sophisticated, but they still struggle with a fundamental issue: they don't always tell the truth, even when they "know" the correct answer. This fascinating paper from Harvard researchers introduces a novel technique called Inference-Time Intervention (ITI) to address this problem.</p>
 
-<p>
-Li et al. develop a systematic framework for steering model behavior by identifying and manipulating "truth-correlated" directions in activation space. Their work introduces key techniques that have become standard in activation steering:
-</p>
+    <p>The key insight here is that LLMs might have an internal representation of truth, even when they produce falsehoods in their outputs. This suggests an interesting interpretability question: can we identify and manipulate these truth-related representations to make models more truthful?</p>
 
-<ul>
-<li>Using linear probing to identify relevant attention heads</li>
-<li>Computing steering vectors that capture desired transformations</li>
-<li>Applying targeted interventions during inference</li>
-</ul>
+    <img src="images/li_main_figure.png" style="max-width:50%; width:1200px;" class="mx-auto d-block" alt="Example of LLaMA responses with and without intervention">
+    <!-- <div class="figure-caption">Example responses from LLaMA with and without intervention, showing how ITI can improve truthfulness.</div> -->
 
-<p>
-A crucial innovation in their work is focusing interventions on specific attention heads rather than the full residual stream. This allows for more precise control while minimizing disruption to other model capabilities.
-</p>
+<h3>Finding "Truth" in Model Activations</h3>
+    <p>The authors take a novel approach by using linear probes to identify which attention heads in the model are most associated with truthful outputs. What they found is remarkable - certain attention heads appear to specialize in truth-telling, with some achieving up to 83.3% accuracy in predicting whether an output will be truthful.</p>
+
+    <img src="images/li_probes.png" style="max-width:100%; width:1200px;" class="mx-auto d-block" alt="Probe accuracies across attention heads">
+    <!-- <div class="figure-caption">Linear probe accuracies across different attention heads in LLaMA-7B, showing specialized heads for truth-telling.</div> -->
+
+    <p>The geometry of these truth representations is particularly interesting. When visualizing the activation space, they found that truthful and false statements form distinct clusters, suggesting that the model internally encodes some notion of truth versus falsehood.</p>
+
+<h3>The Intervention Method</h3>
+    <p>Rather than modifying model weights or fine-tuning, ITI works by identifying the most truth-associated attention heads and calculating a "truth direction" in their activation space. During inference, activations in these heads are shifted along their truth directions. This intervention is remarkably minimal and computationally inexpensive.</p>
+
+    <img src="images/li_manipulation.png" style="max-width:50%; width:1200px; alt="Diagram of ITI mechanism">
+    <!-- <div class="figure-caption"> Schematic of how ITI works during inference, showing the manipulation of attention head activations.</div> -->
+
+
+<h3>Detailed Results: Breaking Down the Impact</h3>
+    
+    <p>The results of ITI are particularly interesting when we look at how it performs across different types of questions. Figure 5 from the paper shows a fascinating breakdown of improvement across various subcategories in the TruthfulQA dataset.</p>
+
+    <img src="images/li_main_results.png" style="max-width:100%; width:1200px; alt="Performance across subcategories">
+    <!-- <div class="figure-caption"> True*informative scores split across subcategories on LLaMA-7B, sorted by the difference between baseline and ITI.</div> -->
+
+    <!-- <div class="results-highlight"> -->
+    <p>What's particularly striking about these results is the consistency of improvement across categories. The intervention doesn't just work well for one type of question - it shows improvements across most subcategories, from health-related questions to historical facts. For instance:</p>
+
+    <p>In the "Health" category, the model's truthfulness improved dramatically, correcting common misconceptions about medical treatments and dietary advice. Questions about law and economics also saw substantial improvements, suggesting that the intervention helps the model be more precise with factual information rather than defaulting to common but incorrect beliefs.</p>
+
+    <p>Perhaps most intriguingly, the improvement isn't uniform across categories. Some categories show much larger gains than others, but there's no clear pattern suggesting why certain types of questions are more amenable to improvement. This hints at something fundamental about how different types of knowledge are encoded in the model's weights.</p>
+    <!-- </div> -->
+
+    <p>The robustness of these improvements is further validated by the model's performance on out-of-distribution datasets. When tested on Natural Questions, TriviaQA, and MMLU, the intervention continued to show improvements, albeit smaller ones. This suggests that the "truth" directions identified by ITI capture something fundamental about how the model represents factual information, not just specific patterns in the training data.</p>
+
+    
+    <p>The impact of this intervention is substantial. On the TruthfulQA benchmark, ITI improves truth-telling from 32.5% to 65.1% on Alpaca. What's particularly impressive is that this improvement comes with minimal computational overhead and requires only hundreds of examples to calibrate - a stark contrast to expensive fine-tuning approaches.</p>
+
+<h2>My Technical Take</h2>
+    <p>From an interpretability perspective, this paper opens up fascinating questions about how truth is represented in neural networks. The fact that truth can be represented as linear directions in activation space is surprising and suggests that models might learn to encode truth values in a more structured way than previously thought.</p>
+
+    <p>The strong localization of truth-related computations to specific attention heads is quite interesting. This aligns with other work showing attention head specialization, but raises questions about why truth-telling would be modularized in this way. Are these heads truly computing truth, or are they detecting patterns that merely correlate with truthful outputs?</p>
+
+    <p>However, there are important limitations to consider. The definition of "truth" is limited to the TruthfulQA benchmark's conception, and there's a clear trade-off between truthfulness and helpfulness that needs more investigation. The paper also doesn't fully explore what other aspects of model behavior might be affected by the intervention.</p>
+  
+
 
 <h2>Representation Surgery</h2>
 
