@@ -78,9 +78,25 @@ Starting with a correct type prediction, we can apply semantics-preserving edits
 Their key insight is that models often contain robust mechanisms for tasks that can be accessed through activation steering, even when surface behavior suggests otherwise.
 </p>
 
-<p><b>Methodology</b> They built steering datasets for the 1B and 7B parameter StarCoderBase models, both of which are trained to fill-in-the-middle. The dataset is pulled from github rather than using prompt templates; ManyTypes4Py was used for Python type prediction, which features code from 5,382 Python projects that use type annotation. They collect triplets \( (x+, x-, t) \), where t is the type of the prompt x+, and x- is a semantically-equivalent prompt that is misclassified. x- is obtained by renaming the variable, removing the type annotation, renaming a user-defined type, and renaming a builtin type. 
+<p><b>Methodology</b> They built steering datasets for the 1B and 7B parameter StarCoderBase models, both of which are trained to fill-in-the-middle. The dataset is pulled from github rather than using prompt templates; ManyTypes4Py was used for Python type prediction, which features code from 5,382 Python projects that use type annotation. They collect triplets \( (x+, x-, t) \), where t is the type of the prompt x+, and x- is a semantically-equivalent prompt that is misclassified. x- is obtained by renaming the variable, removing the type annotation, renaming a user-defined type, and renaming a builtin type. </p>
 
-They then take these steering triplets, apply forward pases to both the positive and negative sample, and save residual stream activations on the last token. They find which layers are most effective for steering using a layer ablation method, evaluate the accuracy of steering on different datasets, and explore patching both on single layers and sets of adjacent layers.
+<p>A brief sidenote to explain fill-in-the-middle (FIM): FIM is a training technique where coding LLMs learn to predict missing segments between a prefix and suffix. For example, given <code>x: </code> and <code> = "hello world"</code>, the model learns to predict <code>str</code> as the type annotation. While inference typically uses left-to-right generation, this training helps models better understand code structure.
+
+<img src="images/fim_example.png" style="max-width:100%; width:1200px;" class="mx-auto d-block">
+
+The relevance here is that FIM is used to ensure that the last token is always the type annotation, which is the target of the steering task.</p>
+
+<p>They then take these steering triplets, apply forward pases to both the positive and negative sample, and save residual stream activations on the last token. Steering vectors are computed per-layer with the following formula:
+
+<img src="images/steering_formula.png" style="max-width:60%; width:1200px;" class="mx-auto d-block">
+
+
+where \(\mathcal{D}\) is the set of steering triplets, \(A_l (x) \) is the residual stream activation at some layer \(l\) and prompt \(x\). The intuition behind this equation is that the distance between positive and negative pairs in activation space encodes the transformation for steering towards the correct type prediction. The last token in all prompts is <code>fim_middle</code>, the type which is being predicted.</p>
+
+<p>The model is steered by adding the steering vector \(t_l \) to the last token's residual stream at layer \(l\).</p>
+
+
+<p><b>Experiments and Results</b> They find which layers are most effective for steering using a layer ablation method, evaluate the accuracy of steering on different datasets, and explore patching both on single layers and sets of adjacent layers.
 
 <img src="images/steering_accuracy.png" style="max-width:100%; width:1200px;" class="mx-auto d-block">
 
@@ -95,6 +111,10 @@ They then take these steering triplets, apply forward pases to both the positive
 An interesting finding is that steering vectors computed from one programming language transfer effectively to another - suggesting models learn fundamental, language-agnostic representations of programming concepts.
 
 <img src="images/steering_cross_language.png" style="max-width:100%; width:1200px;" class="mx-auto d-block">
+
+They also compare steering to fine-tuning. It turns out that steering is approximately as effective as fine-tuning:
+
+<img src="images/steering_finetuning.png" style="max-width:60%; width:1200px;" class="mx-auto d-block">
 
 </p>
 
