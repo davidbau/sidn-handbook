@@ -83,8 +83,7 @@ rel="stylesheet">
   </h2>
   <p>
     <a href="https://arxiv.org/abs/2305.09863">This paper</a> provides another 
-    approach to describing the selectivity of units within language models—one that 
-    they also apply to fMRI data! 
+    approach to describing the selectivity of units within language models, which also works for fMRI data! 
     The first authors of this paper are Chandan Singh, a senior researcher at Microsoft Research, 
     and Aliyah R. Hsu, a fifth-year PhD student at UC Berkeley. It seems that this project was 
     primarily completed at Microsoft Research, but they also collaborate with Alexander Huth, a professor 
@@ -146,9 +145,9 @@ rel="stylesheet">
     However, scores become worse in later layers. 
 </p>
 <p>
-    To further evaluate these explanations, they fit a logistic regression to the factor coefficients to perform 
+    To further evaluate these explanations, they fit linear classifiers to the factor coefficients in order to perform 
     specific tasks like emotion classification, news topic classificiation, and movie review sentiment classification. 
-    When the top 25 regression coefficients are examined qualitatively, they find that e.g. the feature labeled 
+    When the top 25 regression coefficients are examined qualitatively, they find that, e.g., the feature labeled 
     "professional sports teams" contributes heavily to classification of news articles being sports-related. 
 </p>
 

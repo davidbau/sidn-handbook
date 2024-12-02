@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Safety: Bridging Perspectives</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500&family=Merriweather:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 15px;
+            line-height: 1.6;
+            font-weight: 300;
+            max-width: 750px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #2d3748;
+            background-color: white;
+        }
+        h1, h2, h3 {
+            font-family: 'Merriweather', Georgia, serif;
+            color: #1a202c;
+            font-weight: 300;
+        }
+        h1 {
+            font-size: 2em;
+            line-height: 1.3;
+        }
+        h2 {
+            font-size: 1.4em;
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+        }
+        h3 {
+            font-size: 1.1em;
+            margin-top: 1.2em;
+        }
+        .highlight-box, .counter-argument, .existential-perspective, 
+        .skeptics-perspective, .benchmark-details {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+        .counter-argument {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+        }
+        .existential-perspective {
+            background-color: #ffebeb;
+        }
+        .skeptics-perspective {
+            background-color: #ebffeb;
+        }
+        .benchmark-details {
+            background-color: #f7fafc;
+        }
+        .author-byline {
+            margin: 1em 0 2em 0;
+            font-size: 0.9em;
+            color: #666;
+        }
+        .author-name {
+            font-weight: 400;
+        }
+        .figure-caption {
+            font-style: italic;
+            color: #666;
+            font-size: 0.9em;
+        }
+        p, ul, ol {
+            margin-bottom: 1em;
+        }
+        li {
+            margin-bottom: 0.3em;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI Safety: Opinions and Progress</h1>
+    <div style="margin: -10px 0 30px 0;">
+        <div style="font-size: 0.95em; color: #555;">
+            <p style="margin: 0;">
+                By <strong>Rohit Gandikota</strong> and <strong>Jiachen Zhao</strong>
+            </p>
+            <p style="margin: 5px 0 0 0; font-size: 0.9em;">
+                Published on December 1, 2024
+            </p>
+        </div>
+    </div>
+    <p>The discussion around AI safety has become increasingly polarized, with two distinct camps emerging:</p>
+
+
+    <h2>The Great AI Safety Debate</h2>
+    
+    <p>The discussion around AI safety has become increasingly polarized, with two distinct camps emerging:</p>
+
+    <div class="existential-perspective">
+        <h3>The Existential Risk Perspective</h3>
+        <p>Some researchers and experts, including figures like Eliezer Yudkowsky and Stuart Russell, warn about the potential catastrophic risks of advanced AI systems. They argue that as AI systems become more capable, they could pose existential threats to humanity through various mechanisms, from unaligned goals to potential misuse in creating weapons of mass destruction.</p>
+    </div>
+
+    <div class="skeptics-perspective">
+        <h3>The Skeptics' View</h3>
+        <p>On the other side, researchers like Emily M. Bender and Timnit Gebru argue that current AI systems are merely "stochastic parrots" - sophisticated pattern matching systems that predict the next token based on training data, without true understanding or agency. From this perspective, concerns about existential risk are overblown and divert attention from more immediate issues like bias and environmental impact.</p>
+    </div>
+    <h2>WMDP: : Measuring and Reducing Malicious Use With Unlearning</h2>
+    <div class="benchmark-details">
+        <h3>Inside the WMDP Benchmark</h3>
+        <p>The WMDP benchmark consists of 3,668 multiple-choice questions carefully crafted by subject matter experts across three domains. Each question was developed with specific threat models in mind:</p>
+        
+        <ul>
+            <li><strong>Biosecurity (1,273 questions)</strong>: Covering areas like dual-use virology, bioweapons research, reverse genetics, and viral vector research. The questions assess knowledge that could enable the development or enhancement of biological threats.</li>
+            
+            <li><strong>Cybersecurity (1,987 questions)</strong>: Testing knowledge across the full attack chain - from reconnaissance and weaponization to exploitation and post-exploitation. These questions evaluate a model's capability to assist in cyber attacks.</li>
+            
+            <li><strong>Chemical Security (408 questions)</strong>: Examining knowledge about synthesis, procurement, and deployment of chemical agents. This section focuses on identifying capabilities that could enable chemical weapons development.</li>
+        </ul>
+
+        <p>Importantly, the benchmark underwent rigorous filtering to remove sensitive or export-controlled information, ensuring it can't serve as a direct guide for malicious actors. The entire dataset cost over $200,000 to develop and involved extensive consultation with technical experts in each domain.</p>
+    </div>
+
+    <div class="figure-container">
+        <img src="images/wmdp_overview.png" style="max-width:100%; width:1200px; alt="WMDP Overview">
+        <p class="figure-caption">Figure 1: Overview of the WMDP Benchmark's three main components: biosecurity, cybersecurity, and chemical security evaluation</p>
+    </div>
+
+    <p>The WMDP benchmark offers a pragmatic middle ground in this debate. Instead of focusing on abstract risks or dismissing concerns entirely, it addresses specific, concrete risks that could arise from AI systems being misused for developing weapons of mass destruction.</p>
+
+    <div class="counter-argument">
+        <strong>Counter Perspective:</strong>
+        <p>Creating benchmarks for hazardous capabilities could inadvertently provide a roadmap for malicious actors. However, the authors argue that their careful filtering process mitigates this risk.</p>
+    </div>
+
+    <h2>Understanding the Unlearning Approach: RMU</h2>
+
+    <div class="figure-container">
+        <img src="images/rmu_method.png" style="max-width:100%; width:1200px; alt="RMU Architecture">
+        <p class="figure-caption">Figure 2: Architecture of the Representation Misdirection for Unlearning (RMU) method</p>
+    </div>
+
+    <p>The paper introduces RMU (Representation Misdirection for Unlearning), a novel technique for removing specific knowledge from AI models while preserving general capabilities. This addresses a key challenge in AI safety: how to make models safer without significantly degrading their useful capabilities.</p>
+
+    <div class="figure-container">
+        <img src="images/rmu_compare.png" style="max-width:100%; width:1200px; alt="Performance Results">
+        <p class="figure-caption">Figure 3: Performance comparison before and after applying RMU</p>
+    </div>
+
+    <h2>Key Findings and Implications</h2>
+
+    <div class="highlight-box">
+        <p class="key-point">Important Results:</p>
+        <ul>
+            <li>Models can be made significantly safer on specific domains while maintaining general capabilities</li>
+            <li>The unlearning process is robust against various attempts to recover the removed knowledge</li>
+            <li>The approach scales to large language models</li>
+        </ul>
+    </div>
+
+    <div class="counter-argument">
+        <strong>Critical Considerations:</strong>
+        <p>The paper's results show some degradation in related benign knowledge (like basic virology) when removing hazardous information. This raises questions about the true separability of harmful and beneficial knowledge.</p>
+    </div>
+
+    <h2>Broader Implications for AI Safety</h2>
+
+    <p>WMDP represents a new approach to AI safety that bridges theoretical concerns with practical solutions. It demonstrates that:</p>
+    <ol>
+        <li>Specific safety concerns can be measured and addressed systematically</li>
+        <li>Safety improvements don't necessarily require sacrificing all related capabilities</li>
+        <li>A middle ground exists between extreme positions in the AI safety debate</li>
+    </ol>
+
+    <div class="highlight-box">
+        <p>The path forward in AI safety likely involves combining multiple approaches: technical solutions like WMDP, policy frameworks, and ethical guidelines.</p>
+    </div>
+
+    <h2>Conclusion</h2>
+
+    <p>While the debate about AI safety continues, WMDP shows that concrete progress is possible. By focusing on specific, measurable risks while acknowledging the complexity of the challenge, we can work towards safer AI systems without falling into either excessive alarm or complacency.</p>
+
+    <div style="margin-top: 30px; border-top: 2px solid #eee; padding-top: 20px;">
+        <h2>Critical Questions About WMDP and Unlearning</h2>
+        
+        <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3>Is Gibberish Really Safety?</h3>
+            <p>The paper demonstrates that after unlearning, models output gibberish when asked about hazardous topics. While this prevents coherent harmful responses, it raises several important questions:</p>
+            
+            <ul style="margin-top: 15px;">
+                <li>Could adversaries distinguish between genuinely unknown topics and artificially unlearned ones?</li>
+                <li>Does outputting gibberish make it obvious which topics have been intentionally removed?</li>
+                <li>Might this "signature" of unlearning actually guide malicious actors toward sensitive areas?</li>
+                <li>Is it really an effective language model if it speaks gibberish ?</li>
+            </ul>
+        </div>
+
+
+        <p style="font-style: italic; margin-top: 20px;">The path to truly safe AI systems likely requires a combination of approaches, with unlearning being just one piece of a much larger puzzle.</p>
+    </div>
+
+</body>
+</html>
