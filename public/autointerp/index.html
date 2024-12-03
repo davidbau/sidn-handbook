@@ -69,14 +69,150 @@ rel="stylesheet">
   how we can use LLMs to explain the inputs/outputs of units within a network. 
 
   <h2>
-    MAIA: A Multimodal Automated Interpretability Agent
-  </h2>
-  TODO (David)
-  
-  <h2>
     Language Models Can Explain Neurons in Language Models
   </h2>
-  TODO (David)
+  <p>
+    <a href="https://openaipublic.blob.core.windows.net/neuron-explainer/paper/index.html">This paper</a> was published in 2023 by the (departed but not forgotten) OpenAI Interpretability team. 
+    
+
+
+  </p>
+
+  <h3>Approach</h3>
+
+  <p>The authors propose to use LLMs to produce explanations of neuron activations. Given a sequence of tokens and their activations from a "subject model", they ask a second LLM (the "explainer") to produce a short explanation of what a particular neuron fires on.</p>
+  
+  <p><img src="images/bills_step-1.png" style="max-width:75%; width:750px;" class="mx-auto d-block"></p>
+
+  <p>How do we evaluate these explanations, though? The authors introduce a third and final LLM, the "simulator", which uses the explanation to predict the activations of the neuron on the evaluation text. Typically, the subject model is small (they use the 1.5B parameter GPT-2 XL), while the explainer and simulator are large. (In this case, they use GPT-4, which is thought to have ~1.75T parameters).</p>
+  
+  <p><img src="images/bills_step-2.png" style="max-width:75%; width:750px;" class="mx-auto d-block"></p>
+
+  <p>Finally, the predicted activations are scored according to how similar they are to the true activations.</p>
+
+  <p><img src="images/bills_step-3.png" style="max-width:75%; width:750px;" class="mx-auto d-block"></p>
+
+  <h3>Scoring</h3>
+
+  <p>To calculate that final score, the paper uses two methods. The gold standard is interventional ("ablation scoring"): simply replace the neuron's activations with those predicted by the simulator. To quantify the quality of the explanation, then, the authors compare the JS divergence between the simulated activations and the true activations, on the one hand, and the JS divergence between the true activations and the mean activation on each token, on the other. More precisely the ablation score is:</p>
+
+  \[ 1 - \frac{\mathbb{E}_x[\text{AvgJSD(m(x, n=s(x)) || m(x))}]}{\mathbb{E}_x[\text{AvgJSD(m(x, n=\mu) || m(x))}]} \]
+
+
+  <p>where:</p>
+  <ul>
+    <li>\(m(x)\) denotes the per-token output distributions over text input \(x\)</li>
+    <li>\(m(x, n=s(x))\) denotes the same, when replacing the neuron \(n\)'s activations with those predicted by the simulator</li>
+    <li>\(m(x, n=\mu)\) denotes the same when replacing the neuron \(n\)'s activations with its mean activation over all tokens</li>
+    <li>\(\text{AvgJSD(\cdot, \cdot)}\) is the JS divergence, averaged over token positions</li>
+  </ul>
+
+  <p>Unfortunately, ablation scoring is expensive to compute. Instead, the paper mostly uses the correlation coefficient between the simulated activations and the true activations, which they find to be a reasonable proxy for ablation scoring:</p>
+
+  <p><img src="images/bills_corr-abl-scoring.jpg" style="max-width:75%; width:750px;" class="mx-auto d-block"></p>
+
+  <p>(One potential concern is "steganography": that the explanations successfully predict neuron behavior, but do so in uninterpretable ways. To test this, they also validate that humans do indeed prefer explananations that score well according to their metric.)</p>
+
+  <h3>Distributional concerns</h3>
+  <p>Any approach that relies on activations is forced to choose a dataset of inputs from which to generate those activations.</p>
+
+  <p>When generating explanations, they found that providing highly-activating examples to the explainer was more effective than providing random ones. So in practice, they run the model through 50,000 examples, and use the top 20 inputs to generate explanations.</p>
+
+  <p>When scoring, they also find that running the explainer-simulator pair on random inputs can run into difficulties: most importantly, neurons tend to activate rarely, making it difficult to get a representative sample of activations. Additionally, polysemanticity means that simple explanations for any particular neuron may not actually exist. In such cases, it still seems worth validating the method under the assumption that polysemanticity is solved. To do so, the authors also report "top-and-random" scores, where they run the explainer-simulator pair on both top-activating sequences as well as a random sample of sequences.</p>
+
+  <h3>Results</h3>
+  <p>Generally, the scores are quite low, and get lower as the depth of the neuron increases. In the following plot, for example, the method is compared: (in orange) to a simple lookup table, which stores the average activation of the neuron per-token; and (in green) to GPT-4s explanation of the top examples in that lookup table:</p>
+
+  <p><img src="images/bills_tok-table.png" style="max-width:75%; width:750px;" class="mx-auto d-block"></p>
+
+  <p>Although top-and-random scores are more encouraging:</p>
+  
+  <p><img src="images/bills_tok-table-top.png" style="max-width:75%; width:750px;" class="mx-auto d-block"></p>
+
+  <h3>Finding Directions</h3>
+  <p>We know, however, that neurons are often polysemantic, making explanations difficult to find. In response, the authors propose an optimization procedure to find explainable <em>directions</em>. At each step, they:</p>
+  <ol>
+    <li>Generate a good explanation of the direction, using the same three-step process as before (directions are randomly initialized, to start)</li>
+    <li>Optimize the direction, using the gradient of the score with respect to the direction</li>
+  </ol>
+  <p>The key insight here is that the correlation between the direction's activation and the simulator's predicted activations is differentiable, if you hold those predicted activations constant.</p>
+
+  <p>On a chosen comparison layer (10), this procedure resulted in an average top-and-random score of 0.718; for comparison, the average score for neurons in layer 10 was 0.147. This score of 0.718 is better than roughly 98.5% of the neurons found by the original method.</p>
+
+  <h3>Scaling Trends</h3>
+  Much of the rest of the paper investigates what happens when one of the three models is scaled up or down. As a quick summary, the authors find that:
+  <ul>
+    <li>Performance improves, slowly, as the explainer model is scaled up.</li>
+    <li>Simulator quality improves with model size, but has still not reached human performance, as measured by human evaluation.</li>
+    <li>Subject model size has a significant effect: as you scale the subject model up, the explanation scores plummet.</li>
+  </ul>
+
+
+  <h2>
+    MAIA: A Multimodal Automated Interpretability Agent
+  </h2>
+  <p><a href="https://multimodal-interpretability.csail.mit.edu/maia/">MAIA</a> takes the example of Bills et al. and extends it in two ways. First, it adds multimodal modularity, which enables the explainer model to use a rich set of tools such as image synthesis and editing. Perhaps more importantly, it is <em>iterative</em>: given a neuron, MAIA can propose inputs, examine the resulting activations, and propose new experiments based on those results.</p>
+
+  <p>The paper was co-lead by Tamar Rott Shaham (at MIT) and Sarah Schwettmann (formerly of MIT, now at interpretability startup <a href="https://transluce.org/">Transluce</a>).</p>
+
+  <p></p>MAIA starts with a query, such as "what does neuron 42 activate for?" The MAIA harness then passes that query, along with a description of the MAIA API, to GPT-4V, which can then make use of the API in generating an experiment or explanation. Experiments can leverage a variety of tools, namely:</p>
+  <ul>
+    <li><tt>dataset_exemplars</tt>: return the set of images that maximally activate the component of interest</li>
+    <li><tt>text2image</tt>: use Stable Diffusion to generate an image according to a given text prompt</li>
+    <li><tt>edit_images</tt>: use Instruct-Pix2Pix to construct a modified image according to a prompt</li>
+    <li><tt>describe_images</tt>: use a new GPT-4V instance to describe an image</li>
+    <li><tt>log_experiment</tt>: record the the previous experiment, causing its results to be included in future prompts</li>
+  </ul>
+
+  <p><img src="images/shaham_full-interp.png" style="max-width:75%; width:750px;" class="mx-auto d-block"></p>
+
+  <h3>Evaluation</h3>
+  <p>To evaluate the quality of MAIA-generated explanations, the authors use two baselines:</p>
+
+  <ul>
+    <li>MILAN (<a href="https://arxiv.org/abs/2201.11114">Hernandez et al., 2022</a>), a single-step method of generating explanations that maximizes PMI between the explanation and the portions of the image the neuron activates for.</li>
+    <li>Human descriptions, where humans are given the same prompt and API access, and asked to play the role of the experimenter.</li>
+  </ul>
+
+  <p>The primary evaluation process proceeds as follows:</p>
+  <ol>
+    <li>For each method, give the proposed explanation to a fresh GPT-4 instance, and ask it to produce fourteen image generation prompts. Seven of the prompts should produce images that activate the component highly, and seven should produce generic images with no relationship to the explanation.</li>
+    <li>Take all 42 prompts, and for each explanation, ask a different GPT-4 instance for the seven prompts which would most highly activate the component (positive prompts), as well as the seven prompts which would least activate the component (negative prompts).</li>
+    <li>Record the average activations of the component over the positive and negative prompts. If the explanation is is a good one, then the positive prompts should have high activations, and the negative prompts should have low activations.</li>
+  </ol>
+
+  <p><img src="images/shaham_fig4.png" style="max-width:75%; width:750px;" class="mx-auto d-block"></p>
+
+  <p>Finally, the authors conduct a trio of further experiments:</p>
+  
+  <ol>
+    <li>They construct a set of synthetic neurons—with known ground-truth labels—and find that human judges clearly prefer MAIA explanations of MILAN explanations, and marginally prefer them to human explanations.</li>
+    <li>They apply MAIA to a model trained on the Spawrious dataset (<a href="https://arxiv.org/abs/2303.05470">Lynch et al., 2023</a>), and find that MAIA can find a set of neurons that predict a single dog breed independently of the environment. They then train a logistic regression model on the selected neurons, and find that it outperforms a model trained on all neurons when evaluated on the test set.</li>
+    <li>They use MAIA to detect bias in an ImageNet classifier. In this setting, MAIA is asked to find output dimensions of a model that are biased towards a particular subset of the class label.</li>
+  </ol>
+
+  <p><img src="images/shaham_fig8.png" style="max-width:75%; width:750px;" class="mx-auto d-block"></p>
+  <p><img src="images/shaham_fig9.png" style="max-width:75%; width:750px;" class="mx-auto d-block"></p>
+
+
+
+  <h2>Outlook</h2>
+  <p>Considering MAIA as a response to Bills et al., MAIA has a number of strengths:</p>
+  <ul>
+    <li>It's less opinionated about the form of the explainer model, and so able to incorporate new advances and tools.</li>
+    <li>The prompting interface enables more use-cases than the three-step process used by Bills et al.</li>
+    <li>It's iterative and causal abilities allow it to find parts of the explanation space that might otherwise have been missed.</li>
+  </ul>
+
+  <p>Conversely, Bills et al. features—or at least proposes—a more principled evaluation procedure, and its poor performance lets us see how much work there is left to do. Bills et al. also provides some insight into scaling trends, which will ultimately determine how successful this kind of approach can be.</p>
+
+  <p>Both are subject to the following two critiques, though, both highlighted by <a href="https://arxiv.org/abs/2309.10312">Huang et al. (2023)</a>:</p>
+  <ol>
+    <li>Evaluating just the ability of an explanation to predict activations is not enough. We need to perform interventional evaluations, such as the ablation scoring proposed but not used by Bills et al.</li>
+    <li>It's unclear what form explanations should actually take. Many of the best-performing explanations are extremely vague. As Huang et al. say: "There may be a way to define a fragment of natural language that is less prone to these interpretative issues, and then we could seek to have explainer models generate such language. However, if we do take these steps, we are conceding that model explanations actually require specialized training to interpret. In light of this, it may be better to chose an existing, rigorously interpreted formalism (e.g., a programming language) as the medium of explanation.</li>
+  </ol>
+
+  <p>I think both papers are clarifying, in that they show that the hard parts of interpretability are primarily conceptual. We don't know what units should be interpreted, and we don't know what kinds of interpretatations should be produced.</p>
 
   <h2>
     Explaining Black Box Text Modules in Natural Language With Language Models
@@ -163,8 +299,7 @@ variation in fMRI voxels is between social and physical concepts.
 
 
   <h2>Code Resources</h2>
-  <p>TODO</p>
-
+  <p>Bills, et al. provide a collection of notebooks to explore <a href="https://github.com/openai/automated-interpretability/tree/main/neuron-explainer/demos">here</a>. Also make sure to check out the interactive explorer for the neuron explanations their model found <a href="https://openaipublic.blob.core.windows.net/neuron-explainer/neuron-viewer/index.html">here</a>. Similarly, the MAIA paper provides an <a href="https://multimodal-interpretability.csail.mit.edu/maia/experiment-browser/">experiment browser</a>, and a <a href="https://github.com/multimodal-interpretability/maia/blob/main/demo.ipynb">demo notebook</a>.</p>
 
   
 </main>
