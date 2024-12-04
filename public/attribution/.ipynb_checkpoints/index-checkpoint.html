@@ -153,7 +153,7 @@ They find that methods of influence function analysis should be benchmarked with
       <li>Using EK-FAC (Eigenvalue-corrected Kronecker-Factored Approximate Curvature) to efficiently compute inverse-Hessian-vector products</li>
       <li>Query batching to amortize the cost of computing training gradients across multiple influence queries</li>
     </ol>
-    <img src="images/llm_method.png" alt="Method Overview" class="center-img">
+    <img src="images/llm_method.png" style="max-width:100%; width:1200px; alt="Method Overview" class="center-img">
 
 
   <h3>Key Results</h3>
@@ -161,18 +161,18 @@ They find that methods of influence function analysis should be benchmarked with
     <p>Some of the most interesting findings:</p>
     <ol>
       <li>Larger models show more abstract generalization patterns - their influential training examples tend to be thematically related rather than just having overlapping tokens</li>
-        <img src="images/llm_fig1.png" class="center-img">
+        <img src="images/llm_fig1.png" style="max-width:100%; width:1200px; class="center-img">
       <li>Influence is distributed throughout the network layers, but different layers show different patterns:
         <ul>
           <li>Upper/lower layers: More focused on surface-level token patterns</li>
           <li>Middle layers: Handle more abstract relationships</li>
         </ul>
       </li>
-        <img src="images/llm_fig2.png"  class="center-img">
+        <img src="images/llm_fig2.png" style="max-width:100%; width:1200px; class="center-img">
       <li>Model outputs appear to come from combining many training examples rather than memorizing just a few sequences</li>
-        <img src="images/llm_fig3.png" class="center-img">
+        <img src="images/llm_fig3.png" style="max-width:100%; width:1200px; class="center-img">
       <li>A surprising limitation: influence decays sharply when key phrases appear in a different order</li>
-        <img src="images/llm_fig4.png"  class="center-img">
+        <img src="images/llm_fig4.png" style="max-width:100%; width:1200px; class="center-img">
     </ol>
 
 
