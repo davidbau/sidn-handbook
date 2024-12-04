@@ -63,7 +63,7 @@ Our examination focuses on how activation steering evolved from initial insights
 The first paper, "Understanding How CodeLLMs (Mis)Predict Types" by Lucchetti and Guha, demonstrates the potential of activation steering through its application to type prediction in code models. The second, "Inference-Time Intervention" by Li et al., formalizes steering techniques and shows their effectiveness for enhancing model truthfulness. The third paper, "Representation Surgery" by Singh et al., provides theoretical foundations by characterizing optimal steering functions and establishing formal guarantees.
 </p>
 
-<h2>Understanding How CodeLLMs (Mis)Predict Types</h2>
+<h2><a href="https://arxiv.org/abs/2404.01903">Understanding How CodeLLMs (Mis)Predict Types</a></h2>
 
 <p>This paper was published by Francesca Luchetti and Arjun Guha, both at Northeastern University. Francesca is a PhD student in Arjun's lab, and Arjun is a professor. Their group focuses on coding LLMs.</p>
 
@@ -78,9 +78,25 @@ Starting with a correct type prediction, we can apply semantics-preserving edits
 Their key insight is that models often contain robust mechanisms for tasks that can be accessed through activation steering, even when surface behavior suggests otherwise.
 </p>
 
-<p><b>Methodology</b> They built steering datasets for the 1B and 7B parameter StarCoderBase models, both of which are trained to fill-in-the-middle. The dataset is pulled from github rather than using prompt templates; ManyTypes4Py was used for Python type prediction, which features code from 5,382 Python projects that use type annotation. They collect triplets \( (x+, x-, t) \), where t is the type of the prompt x+, and x- is a semantically-equivalent prompt that is misclassified. x- is obtained by renaming the variable, removing the type annotation, renaming a user-defined type, and renaming a builtin type. 
+<p><b>Methodology</b> They built steering datasets for the 1B and 7B parameter StarCoderBase models, both of which are trained to fill-in-the-middle. The dataset is pulled from github rather than using prompt templates; ManyTypes4Py was used for Python type prediction, which features code from 5,382 Python projects that use type annotation. They collect triplets \( (x+, x-, t) \), where t is the type of the prompt x+, and x- is a semantically-equivalent prompt that is misclassified. x- is obtained by renaming the variable, removing the type annotation, renaming a user-defined type, and renaming a builtin type. </p>
 
-They then take these steering triplets, apply forward pases to both the positive and negative sample, and save residual stream activations on the last token. They find which layers are most effective for steering using a layer ablation method, evaluate the accuracy of steering on different datasets, and explore patching both on single layers and sets of adjacent layers.
+<p>A brief sidenote to explain fill-in-the-middle (FIM): FIM is a training technique where coding LLMs learn to predict missing segments between a prefix and suffix. For example, given <code>x: </code> and <code> = "hello world"</code>, the model learns to predict <code>str</code> as the type annotation. While inference typically uses left-to-right generation, this training helps models better understand code structure.
+
+<img src="images/fim_example.png" style="max-width:100%; width:1200px;" class="mx-auto d-block">
+
+The relevance here is that FIM is used to ensure that the last token is always the type annotation, which is the target of the steering task.</p>
+
+<p>They then take these steering triplets, apply forward pases to both the positive and negative sample, and save residual stream activations on the last token. Steering vectors are computed per-layer with the following formula:
+
+<img src="images/steering_formula.png" style="max-width:60%; width:1200px;" class="mx-auto d-block">
+
+
+where \(\mathcal{D}\) is the set of steering triplets, \(A_l (x) \) is the residual stream activation at some layer \(l\) and prompt \(x\). The intuition behind this equation is that the distance between positive and negative pairs in activation space encodes the transformation for steering towards the correct type prediction. The last token in all prompts is <code>fim_middle</code>, the type which is being predicted.</p>
+
+<p>The model is steered by adding the steering vector \(t_l \) to the last token's residual stream at layer \(l\).</p>
+
+
+<p><b>Experiments and Results</b> They find which layers are most effective for steering using a layer ablation method, evaluate the accuracy of steering on different datasets, and explore patching both on single layers and sets of adjacent layers.
 
 <img src="images/steering_accuracy.png" style="max-width:100%; width:1200px;" class="mx-auto d-block">
 
@@ -96,10 +112,15 @@ An interesting finding is that steering vectors computed from one programming la
 
 <img src="images/steering_cross_language.png" style="max-width:100%; width:1200px;" class="mx-auto d-block">
 
+They also compare steering to fine-tuning. It turns out that steering is approximately as effective as fine-tuning:
+
+<img src="images/steering_finetuning.png" style="max-width:60%; width:1200px;" class="mx-auto d-block">
+
 </p>
 
-<h2>Making Language Models More Truthful: A Deep Dive into Inference-Time Intervention</h2>
-
+<h2><a href="https://arxiv.org/abs/2306.03341">Making Language Models More Truthful: A Deep Dive into Inference-Time Intervention</a></h2>
+<p>Kenneth Li and Oam Patel are co-first authors from Harvard University, working with a team including Fernanda Viégas, Hanspeter Pfister, and Martin Wattenberg. This collaboration combines expertise from Harvard's Visual Computing Group and the Insight + Interaction Lab. The team brings together backgrounds in visualization, machine learning, and human-computer interaction.</p>
+        
 <h3>The Problem: Truth-Telling in Language Models</h3>
     <p>Large Language Models (LLMs) have become increasingly sophisticated, but they still struggle with a fundamental issue: they don't always tell the truth, even when they "know" the correct answer. This fascinating paper from Harvard researchers introduces a novel technique called Inference-Time Intervention (ITI) to address this problem.</p>
 
@@ -143,7 +164,7 @@ An interesting finding is that steering vectors computed from one programming la
     
     <p>The impact of this intervention is substantial. On the TruthfulQA benchmark, ITI improves truth-telling from 32.5% to 65.1% on Alpaca. What's particularly impressive is that this improvement comes with minimal computational overhead and requires only hundreds of examples to calibrate - a stark contrast to expensive fine-tuning approaches.</p>
 
-<h2>My Technical Take</h2>
+<h3>My Technical Take</h3>
     <p>From an interpretability perspective, this paper opens up fascinating questions about how truth is represented in neural networks. The fact that truth can be represented as linear directions in activation space is surprising and suggests that models might learn to encode truth values in a more structured way than previously thought.</p>
 
     <p>The strong localization of truth-related computations to specific attention heads is quite interesting. This aligns with other work showing attention head specialization, but raises questions about why truth-telling would be modularized in this way. Are these heads truly computing truth, or are they detecting patterns that merely correlate with truthful outputs?</p>
@@ -152,26 +173,121 @@ An interesting finding is that steering vectors computed from one programming la
   
 
 
-<h2>Representation Surgery</h2>
+<h2><a href="https://arxiv.org/abs/2402.09631">Representation Surgery</a></h2>
+    <p>Shashwat Singh and Shauli Ravfogel are co-first authors, with Singh from IIIT Hyderabad and Ravfogel from Bar-Ilan University. Their collaboration with Jonathan Herzig and Roee Aharoni from Google Research, along with Ryan Cotterell from ETH Zurich and Ponnurangam Kumaraguru from IIIT Hyderabad, brings together expertise in NLP, machine learning, and theoretical foundations.</p>
 
-<img src="images/placeholder.png" style="max-width:100%; width:1200px;" class="mx-auto d-block">
+    <p>This paper develops the theoretical foundations for steering functions - tools that help guide language model outputs toward desired characteristics.</p>
+    
+<h3>Formulation</h3>
+    
+    <p>The work builds on LEACE (<a href="https://arxiv.org/abs/2306.03819">Belrose, 2023</a>), which introduced optimal affine guarding functions for erasing concepts from model representations. The key insight is that by matching the averages (means) of representations between concepts, we can <strong>ensure affine guardedness</strong>.</p>
+    
+    <p>The authors first propose a simple solution that matches means. This transformation shifts representations of concept \(c\) toward concept \(c'\) by \((μ_{c'} - μ_c)\) while leaving representations that already have concept \(c'\) unchanged. This approach minimizes changes while ensuring the means match, providing theoretical backing for the "activation shift" technique used in <a href="https://arxiv.org/abs/2306.03341">Li (2024)</a>.</p>
 
-<p>
-Singh et al. provide theoretical foundations for activation steering by characterizing optimal steering functions under different constraints. They prove that in many cases, minimal intervention can be achieved through simple affine transformations of activations.
-</p>
+    <p>\[\min_{s \in \text{Aff}_s(D)} \mathbb{E}\left[\|\mathbf{H} - s(\mathbf{H})\|_2^2\right]\]</p>
+    <p>\[\text{subject to } \mathbb{E}[s(\mathbf{H}_c)] = \mathbb{E}[s(\mathbf{H}_{c'})]\]</p>
+    <p>\[\text{has a solution}\]</p>
+    <p>\[\quad s^*(\mathbf{H})(\mathbf{s}) = \begin{cases}
+        \mathbf{H}(\mathbf{s}) + \boldsymbol{\mu}_{c'} - \mathbf{W}^* \boldsymbol{\mu}_c & \text{if } \phi(\mathbf{s}) = c \\[1ex]
+        \mathbf{H}(\mathbf{s}) & \text{if } \phi(\mathbf{s}) = c'
+    \end{cases} \qquad (1)\]</p>
+    <p>\[\text{where } \mathbf{W}^* = \mathbf{I}\]</p>
+    
+    <p>However, matching only means leaves open the possibility of recovering the original concepts through non-linear methods.</p>
+    
+    <p>To address this, the authors extend their approach to match both means and covariances. This more sophisticated version applies an affine transformation \(\mathbf{W}\mathbf{H} + \mathbf{b}\) to concept c representations, where \(\mathbf{W}\) is derived from covariance matrices and \(\mathbf{b}\) ensures mean alignment. This preserves both mean behavior and relationships between features while leaving concept \(c'\) unchanged.</p>
+    
+    <p>\[\min_{s \in \text{Aff}_s(D)} \mathbb{E}\left[\|\mathbf{H} - s(\mathbf{H})\|_2^2\right]\]</p>
+    <p>\[\text{subject to } \begin{aligned}
+        & \mathbb{E}[s(\mathbf{H}_c)] = \mathbb{E}[s(\mathbf{H}_{c'})] \\
+        & \mathbb{E}[s(\mathbf{H}_c)s(\mathbf{H}_c)^\top] = \mathbb{E}[s(\mathbf{H}_{c'})s(\mathbf{H}_{c'})^\top]
+    \end{aligned}\]</p>
+    <p>\[\text{has the solution}\]</p>
+    <p>\[\quad s^*(\mathbf{H})(\mathbf{s}) = \begin{cases}
+        \mathbf{W}^*\mathbf{H}(\mathbf{s}) + \mathbf{b}^* & \text{if } \phi(\mathbf{s}) = c \\[1ex]
+        \mathbf{H}(\mathbf{s}) & \text{if } \phi(\mathbf{s}) = c'
+    \end{cases} \qquad (2)\]</p>
+    <p>\[\text{where we define}\]</p>
+    <p>\[\mathbf{W}^* = \boldsymbol{\Sigma}_c^{-\frac{1}{2}}(\boldsymbol{\Sigma}_c^{\frac{1}{2}}\boldsymbol{\Sigma}_{c'}\boldsymbol{\Sigma}_c^{\frac{1}{2}})^{\frac{1}{2}}\boldsymbol{\Sigma}_c^{-\frac{1}{2}}\]</p>
+    <p>\[\mathbf{b}^* = -\mathbf{W}^*\boldsymbol{\mu}_c + \boldsymbol{\mu}_{c'}\]</p>
+    
+<h3>Experiments</h3>
 
-<p>
-Their work establishes formal guarantees about the effects of steering and introduces methods for balancing competing objectives like maintaining model capabilities while steering behavior. The paper also provides practical guidance about where in a network to apply steering interventions for maximum effect with minimal disruption.
-</p>
+    <p>The authors test their steering functions in several scenarios:</p>
+    
+    <ol>
+        <li>
+            <p><strong>Gender Bias in Profession Classification</strong>: They train a linear probe to predict professions from the last layer representation of the last token of Llama 2, using biographies of gendered professionals. Performance is measured through both prediction accuracy and <strong>true positive rate</strong> (expected to be minimized).</p>
+    
+            <p>Results show that while mean-matching performs similarly to LEACE, the mean-and-covariance matching method achieves significantly better results compared to other approaches.</p>
+    
+            <img src="images/affine_1.png" style="max-width:70%; width:1200px;" class="mx-auto d-block">
+        </li>
+    
+        <li>
+            <p><strong>Toxicity Reduction</strong>: The authors apply their steering functions to reduce toxicity during text generation by intervening in the last hidden representation at each inference step.</p>
+    
+            <img src="images/affine_2.png" style="max-width:80%; width:1200px;" class="mx-auto d-block">
+    
+            <p>While both proposed methods successfully mitigate toxicity, they don't achieve state-of-the-art performance. This might be due to the mismatch between training (using last token representations) and inference (applying interventions at each generation step).</p>
+    
+            <p>However, their methods offer a key advantage: unlike baselines that require either fine-tuning or gradient computation during inference, these steering functions need neither, making them more computationally efficient.</p>
+    
+            <img src="images/affine_3.png" style="max-width:100%; width:1200px;" class="mx-auto d-block">
+        </li>
+    </ol>
+
 
 <h2>Discussion Questions</h2>
 
 <ul>
 <li>How do the theoretical guarantees from Representation Surgery relate to the empirical findings about language transfer in the CodeLLM paper?</li>
+<li> Is it possible to create steering functions that match moments of distribution beyond the second moment? What are the limitations and benefits of doing so?</li>
 <li>What are the tradeoffs between targeting specific attention heads versus intervening in the full residual stream?</li>
 <li>How might these techniques generalize beyond code and truthfulness to other aspects of model behavior?</li>
 <li>What are the limitations of current steering methods and what theoretical advances might help overcome them?</li>
 </ul>
+
+<div class="resources-section">
+    <h2>Implementation Resources</h2>
+    <ul>
+        <li><strong>CodeLLMs Paper:</strong> 
+            <ul>
+                <li>GitHub Repository: To be released</li>
+                <li>Dataset: ManyTypes4Py for Python, The Stack for TypeScript</li>
+            </ul>
+        </li>
+        <li><strong>Inference-Time Intervention:</strong>
+            <ul>
+                <li>GitHub: <a href="https://github.com/likenneth/honest_llama">honest_llama</a></li>
+                <li>Model: <a href="https://huggingface.co/likenneth/honest_llama2_chat_7B">HuggingFace honest_llama2_chat_7B</a></li>
+            </ul>
+        </li>
+        <li><strong>Representation Surgery:</strong>
+            <ul>
+                <li>GitHub: <a href="https://github.com/shauli-ravfogel/affine-steering">affine-steering</a></li>
+            </ul>
+        </li>
+    </ul>
+</div>
+
+<h3>Key Differences in Methods</h3>
+<ul>
+    <li><strong>Approach to Steering:</strong> While CodeLLMs focuses on a specific task with practical applications, Inference-Time Intervention introduces a more general approach for behavior modification. Representation Surgery provides the theoretical framework that helps explain why both approaches work.</li>
+    
+    <li><strong>Intervention Strategy:</strong> Each paper takes a different approach to where and how to intervene in the model. CodeLLMs modifies last-token representations, Inference-Time Intervention targets specific attention heads, and Representation Surgery provides a framework for optimal transformations of the entire residual stream.</li>
+    
+    <li><strong>Validation Methods:</strong> The papers use different methods to validate their approaches: empirical testing for CodeLLMs, probe-based evaluation for Inference-Time Intervention, and mathematical proofs for Representation Surgery.</li>
+</ul>
+
+<h3>Common Themes in Methods</h3>
+<ul>
+    <li>All methods demonstrate that simple linear interventions can effectively modify model behavior</li>
+    <li>Each approach maintains model capabilities while steering toward desired outcomes</li>
+    <li>All methods operate at inference time without requiring model retraining</li>
+    <li>The approaches are complementary and could potentially be combined</li>
+</ul>
+
 
 </main>
 </div>

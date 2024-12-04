@@ -63,7 +63,7 @@ Our examination focuses on how activation steering evolved from initial insights
 The first paper, "Understanding How CodeLLMs (Mis)Predict Types" by Lucchetti and Guha, demonstrates the potential of activation steering through its application to type prediction in code models. The second, "Inference-Time Intervention" by Li et al., formalizes steering techniques and shows their effectiveness for enhancing model truthfulness. The third paper, "Representation Surgery" by Singh et al., provides theoretical foundations by characterizing optimal steering functions and establishing formal guarantees.
 </p>
 
-<h2>Understanding How CodeLLMs (Mis)Predict Types</h2>
+<h2><a href="https://arxiv.org/abs/2404.01903">Understanding How CodeLLMs (Mis)Predict Types</a></h2>
 
 <p>This paper was published by Francesca Luchetti and Arjun Guha, both at Northeastern University. Francesca is a PhD student in Arjun's lab, and Arjun is a professor. Their group focuses on coding LLMs.</p>
 
@@ -118,8 +118,9 @@ They also compare steering to fine-tuning. It turns out that steering is approxi
 
 </p>
 
-<h2>Making Language Models More Truthful: A Deep Dive into Inference-Time Intervention</h2>
-
+<h2><a href="https://arxiv.org/abs/2306.03341">Making Language Models More Truthful: A Deep Dive into Inference-Time Intervention</a></h2>
+<p>Kenneth Li and Oam Patel are co-first authors from Harvard University, working with a team including Fernanda Viégas, Hanspeter Pfister, and Martin Wattenberg. This collaboration combines expertise from Harvard's Visual Computing Group and the Insight + Interaction Lab. The team brings together backgrounds in visualization, machine learning, and human-computer interaction.</p>
+        
 <h3>The Problem: Truth-Telling in Language Models</h3>
     <p>Large Language Models (LLMs) have become increasingly sophisticated, but they still struggle with a fundamental issue: they don't always tell the truth, even when they "know" the correct answer. This fascinating paper from Harvard researchers introduces a novel technique called Inference-Time Intervention (ITI) to address this problem.</p>
 
@@ -172,8 +173,9 @@ They also compare steering to fine-tuning. It turns out that steering is approxi
   
 
 
-<h2>Representation Surgery</h2>
-    
+<h2><a href="https://arxiv.org/abs/2402.09631">Representation Surgery</a></h2>
+    <p>Shashwat Singh and Shauli Ravfogel are co-first authors, with Singh from IIIT Hyderabad and Ravfogel from Bar-Ilan University. Their collaboration with Jonathan Herzig and Roee Aharoni from Google Research, along with Ryan Cotterell from ETH Zurich and Ponnurangam Kumaraguru from IIIT Hyderabad, brings together expertise in NLP, machine learning, and theoretical foundations.</p>
+
     <p>This paper develops the theoretical foundations for steering functions - tools that help guide language model outputs toward desired characteristics.</p>
     
 <h3>Formulation</h3>
@@ -245,6 +247,47 @@ They also compare steering to fine-tuning. It turns out that steering is approxi
 <li>How might these techniques generalize beyond code and truthfulness to other aspects of model behavior?</li>
 <li>What are the limitations of current steering methods and what theoretical advances might help overcome them?</li>
 </ul>
+
+<div class="resources-section">
+    <h2>Implementation Resources</h2>
+    <ul>
+        <li><strong>CodeLLMs Paper:</strong> 
+            <ul>
+                <li>GitHub Repository: To be released</li>
+                <li>Dataset: ManyTypes4Py for Python, The Stack for TypeScript</li>
+            </ul>
+        </li>
+        <li><strong>Inference-Time Intervention:</strong>
+            <ul>
+                <li>GitHub: <a href="https://github.com/likenneth/honest_llama">honest_llama</a></li>
+                <li>Model: <a href="https://huggingface.co/likenneth/honest_llama2_chat_7B">HuggingFace honest_llama2_chat_7B</a></li>
+            </ul>
+        </li>
+        <li><strong>Representation Surgery:</strong>
+            <ul>
+                <li>GitHub: <a href="https://github.com/shauli-ravfogel/affine-steering">affine-steering</a></li>
+            </ul>
+        </li>
+    </ul>
+</div>
+
+<h3>Key Differences in Methods</h3>
+<ul>
+    <li><strong>Approach to Steering:</strong> While CodeLLMs focuses on a specific task with practical applications, Inference-Time Intervention introduces a more general approach for behavior modification. Representation Surgery provides the theoretical framework that helps explain why both approaches work.</li>
+    
+    <li><strong>Intervention Strategy:</strong> Each paper takes a different approach to where and how to intervene in the model. CodeLLMs modifies last-token representations, Inference-Time Intervention targets specific attention heads, and Representation Surgery provides a framework for optimal transformations of the entire residual stream.</li>
+    
+    <li><strong>Validation Methods:</strong> The papers use different methods to validate their approaches: empirical testing for CodeLLMs, probe-based evaluation for Inference-Time Intervention, and mathematical proofs for Representation Surgery.</li>
+</ul>
+
+<h3>Common Themes in Methods</h3>
+<ul>
+    <li>All methods demonstrate that simple linear interventions can effectively modify model behavior</li>
+    <li>Each approach maintains model capabilities while steering toward desired outcomes</li>
+    <li>All methods operate at inference time without requiring model retraining</li>
+    <li>The approaches are complementary and could potentially be combined</li>
+</ul>
+
 
 </main>
 </div>

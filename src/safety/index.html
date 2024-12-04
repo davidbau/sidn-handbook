@@ -102,7 +102,20 @@
         <h3>The Skeptics' View</h3>
         <p>On the other side, researchers like Emily M. Bender and Timnit Gebru argue that current AI systems are merely "stochastic parrots" - sophisticated pattern matching systems that predict the next token based on training data, without true understanding or agency. From this perspective, concerns about existential risk are overblown and divert attention from more immediate issues like bias and environmental impact.</p>
     </div>
-    <h2>WMDP: : Measuring and Reducing Malicious Use With Unlearning</h2>
+    <h2><a href="https://arxiv.org/abs/2403.03218">WMDP: : Measuring and Reducing Malicious Use With Unlearning</a></h2>
+        <p><strong>First Authors:</strong></p>
+        <ul>
+        <li><strong>Nathaniel Li</strong> (Center for AI Safety, UC Berkeley) - Research Scientist specializing in machine learning security and safety evaluation metrics</li>
+        <li><strong>Alexander Pan</strong> (UC Berkeley, Center for AI Safety) - PhD student working with Prof. Jacob Steinhardt focusing on language model safety and adversarial robustness</li>
+    </ul>
+    <p><strong>Senior Author:</strong></p>
+    <ul>
+        <li><strong>Dan Hendrycks</strong> (Center for AI Safety) - Director of CAIS, known for work in AI safety benchmarks, evaluation, and recently for policies</li>
+    </ul>
+    <p>The work brought together researchers from 23 institutions including MIT, Harvard, Stanford, and Scale AI (one of the larger collaborations in safety research).</p>
+
+
+    
     <div class="benchmark-details">
         <h3>Inside the WMDP Benchmark</h3>
         <p>The WMDP benchmark consists of 3,668 multiple-choice questions carefully crafted by subject matter experts across three domains. Each question was developed with specific threat models in mind:</p>
@@ -196,9 +209,42 @@
         <p style="font-style: italic; margin-top: 20px;">The path to truly safe AI systems likely requires a combination of approaches, with unlearning being just one piece of a much larger puzzle.</p>
     </div>
 
-<h2>Defending Against Unforeseen Failure Modes
- with Latent Adversarial Training</h2>
+    Here is a small snippet of RMU code for easy understanding:
+    <div class="code-example" style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0;">
+        <pre><code>
+# Example implementation of RMU unlearning
+def rmu_unlearning(model, forget_data, retain_data, c=6.5, alpha=1200):
+    # Get random unit vector for steering direction
+    u = get_random_unit_vector()
+    
+    # Calculate forget loss to increase activation norms on harmful data
+    forget_loss = 0
+    for x in forget_data:
+        activations = model.get_layer_activations(x)
+        forget_loss += torch.norm(activations - c * u) ** 2
+        
+    # Calculate retain loss to preserve general capabilities
+    retain_loss = 0 
+    for x in retain_data:
+        activations = model.get_layer_activations(x)
+        retain_loss += torch.norm(activations - 
+                   model_orig.get_layer_activations(x)) ** 2
+        
+    return forget_loss + alpha * retain_loss
+        </code></pre>
+    </div>
 
+<h2><a href="https://arxiv.org/abs/2403.05030">Defending Against Unforeseen Failure Modes
+ with Latent Adversarial Training</a></h2>
+    <p><strong>Lead Authors:</strong></p>
+    <ul>
+        <li><strong>Stephen Casper</strong> (MIT CSAIL) - PhD researcher at Harvard very interested in AI robustness and safety </li>
+        <li><strong>Lennart Schulze</strong> (Columbia University) - PhD student with Prof. Carl Vonderick focusing on world model representation emergence in deep models</li>
+    </ul>
+    <p><strong>Senior Author:</strong></p>
+    <ul>
+        <li><strong>Dylan Hadfield-Menell</strong> (MIT CSAIL) - Leading a lab in AI alignment</li>
+    </ul>
 
     <div class="highlight-box">
       <h3>Motivation</h3>
@@ -264,6 +310,78 @@ The experiments compare methods based on
     <p class="figure-caption">Figure 6:  Evaluation results for image classification.</p>
 </div>
 
+
+<div class="paper-comparison" style="background-color: #f7fafc; padding: 20px; margin: 20px 0; border-radius: 5px;">
+    <h2>Comparative Analysis of Safety Approaches</h2>
+
+    <h3>Methodological Differences</h3>
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+        <tr style="background-color: #edf2f7;">
+            <th style="padding: 12px; border: 1px solid #e2e8f0;">Aspect</th>
+            <th style="padding: 12px; border: 1px solid #e2e8f0;">WMDP/RMU</th>
+            <th style="padding: 12px; border: 1px solid #e2e8f0;">Latent Adversarial Training</th>
+        </tr>
+        <tr>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;"><strong>Primary Goal</strong></td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">Remove specific harmful capabilities while preserving general abilities</td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">Make models robust against unforeseen failure modes</td>
+        </tr>
+        <tr>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;"><strong>Technical Approach</strong></td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">Targeted activation steering with forget/retain loss</td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">Adversarial perturbations in latent space</td>
+        </tr>
+        <tr>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;"><strong>Evaluation Method</strong></td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">Benchmark-based evaluation (WMDP)</td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">Robustness against novel attacks and trojans</td>
+        </tr>
+    </table>
+
+    <h3>Key Trade-offs</h3>
+    <ul style="margin-left: 20px;">
+        <li><strong>Specificity vs. Generality:</strong> WMDP/RMU targets specific harmful capabilities with precise control, while LAT provides broader robustness against general failure modes.</li>
+        <li><strong>Implementation Complexity:</strong> RMU requires careful tuning of forget/retain loss balance, while LAT's approach is more straightforward but may require more computational resources.</li>
+        <li><strong>Scalability:</strong> RMU shows strong results on larger models (up to 7B parameters), while LAT's effectiveness has been primarily demonstrated on smaller models.</li>
+    </ul>
+
+    <h3>Complementary Strengths</h3>
+    <p>These approaches could potentially be combined:</p>
+    <ul style="margin-left: 20px;">
+        <li>Use WMDP/RMU to remove known harmful capabilities</li>
+        <li>Apply LAT to provide additional robustness against unforeseen failure modes</li>
+        <li>Leverage both approaches' insights about latent space manipulation for safety</li>
+    </ul>
+
+    <div class="insight-box" style="background-color: #ebf8ff; padding: 15px; margin: 20px 0; border-radius: 5px;">
+        <p><strong>Key Insight:</strong> While both papers work with model internals, they represent different philosophies in AI safety: WMDP takes a targeted approach to removing specific capabilities, while LAT aims for broader robustness through adversarial training in latent space. This difference highlights the complementary nature of current safety research.</p>
+    </div>
+</div>
+
+
+<div class="implementation-resources" style="background-color: #f7fafc; padding: 20px; margin: 20px 0; border-radius: 5px;">
+    <h2>Code Resources and Implementation Details</h2>
+    
+    <h3>Official Repositories</h3>
+    <ul>
+        <li>WMDP Benchmark & RMU Implementation: <a href="https://wmdp.ai">https://wmdp.ai</a></li>
+        <li>Latent Adversarial Training: <a href="https://github.com/thestephencasper/latent_adversarial_training">GitHub Repository</a></li>
+    </ul>
+
+    <h3>Interactive Notebooks</h3>
+    <h4>WMDP Evaluation</h4>
+    <ul>
+        <li><a href="https://colab.research.google.com/github/centerforaisafety/wmdp/blob/main/run_rmu_zephyr.ipynb">RMU Implementation Guide</a></li>
+    </ul>
+
+
+    <h3>Usage Notes</h3>
+    <ul>
+        <li>All implementations use PyTorch and support both GPU and CPU execution</li>
+        <li>Code is tested with popular model architectures including Llama, GPT, and BERT variants</li>
+        <li>For better documentation and examples, please refer to the respective repositories</li>
+    </ul>
+</div>
 
 </body>
 </html>
