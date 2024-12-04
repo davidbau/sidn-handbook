@@ -33,7 +33,7 @@
             font-size: 1.1em;
             margin-top: 1.2em;
         }
-        .highlight-box, .counter-argument, .existential-perspective, 
+        .highlight-box, .counter-argument, .existential-perspective,
         .skeptics-perspective, .benchmark-details {
             padding: 15px;
             margin: 15px 0;
@@ -90,7 +90,7 @@
 
 
     <h2>The Great AI Safety Debate</h2>
-    
+
     <p>The discussion around AI safety has become increasingly polarized, with two distinct camps emerging:</p>
 
     <div class="existential-perspective">
@@ -106,12 +106,12 @@
     <div class="benchmark-details">
         <h3>Inside the WMDP Benchmark</h3>
         <p>The WMDP benchmark consists of 3,668 multiple-choice questions carefully crafted by subject matter experts across three domains. Each question was developed with specific threat models in mind:</p>
-        
+
         <ul>
             <li><strong>Biosecurity (1,273 questions)</strong>: Covering areas like dual-use virology, bioweapons research, reverse genetics, and viral vector research. The questions assess knowledge that could enable the development or enhancement of biological threats.</li>
-            
+
             <li><strong>Cybersecurity (1,987 questions)</strong>: Testing knowledge across the full attack chain - from reconnaissance and weaponization to exploitation and post-exploitation. These questions evaluate a model's capability to assist in cyber attacks.</li>
-            
+
             <li><strong>Chemical Security (408 questions)</strong>: Examining knowledge about synthesis, procurement, and deployment of chemical agents. This section focuses on identifying capabilities that could enable chemical weapons development.</li>
         </ul>
 
@@ -179,11 +179,11 @@
 
     <div style="margin-top: 30px; border-top: 2px solid #eee; padding-top: 20px;">
         <h2>Critical Questions About WMDP and Unlearning</h2>
-        
+
         <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h3>Is Gibberish Really Safety?</h3>
             <p>The paper demonstrates that after unlearning, models output gibberish when asked about hazardous topics. While this prevents coherent harmful responses, it raises several important questions:</p>
-            
+
             <ul style="margin-top: 15px;">
                 <li>Could adversaries distinguish between genuinely unknown topics and artificially unlearned ones?</li>
                 <li>Does outputting gibberish make it obvious which topics have been intentionally removed?</li>
@@ -195,6 +195,75 @@
 
         <p style="font-style: italic; margin-top: 20px;">The path to truly safe AI systems likely requires a combination of approaches, with unlearning being just one piece of a much larger puzzle.</p>
     </div>
+
+<h2>Defending Against Unforeseen Failure Modes
+ with Latent Adversarial Training</h2>
+
+
+    <div class="highlight-box">
+      <h3>Motivation</h3>
+<p>
+    Despite the relentless efforts of developers, even their most rigorous diagnostics and exhaustive debugging can't always prevent AI systems from exhibiting dangerous, unintended behaviors.
+    The sheer vastness of the attack surface makes it a Herculean task to identify every possible input that could provoke these malicious actions.
+    Red-teaming and adversarial training (AT) are often deployed in a valiant effort to bolster robustness, yet these methods often falter when confronted with failure modes that diverge from the attacks seen during training.
+</p>
+    </div>
+
+    <h3>Latent Adversarial Training</h3>
+
+    <div class="counter-argument">
+      <b>Adversarial training without examples that elicit failure</b>
+        <p> Across the latents, a model gradually develops more compressed,
+ abstract, and structured representations of the concepts it uses to process information. This makes it
+ possible for latent space attacks to activate neural circuitry that elicits failures without
+ requiring inputs that trigger them</p>
+    </div>
+
+            <div class="figure-container">
+        <img src="images/lat-motive.png" style="max-width:100%; width:1200px; alt="LAT motivation">
+        <p class="figure-caption">Figure 4:  The motivation for LAT is based on
+ how models develop more compressed, abstract, and structured representations across their latents.
+ Wehypothesize that many failures that are difficult to elicit from the input space may be easier to
+ elicit from the latent space.</p>
+    </div>
+
+        <h3>Method</h3>
+
+    <div class="figure-container">
+        <img src="images/formula-lat0.png" style="max-width:100%; width:1200px; alt="LAT motivation">
+        <p class="figure-caption">
+        </p>
+    </div>
+
+    <div class="figure-container">
+        <img src="images/formula-lat.png" style="max-width:100%; width:1200px; alt="LAT motivation">
+        <p class="figure-caption">
+        </p>
+    </div>
+
+LAT needs to select which layer to attack, i.e., apply the perturbation during training. The choice may differ from case to case and needs to be tuned as a hyper-parameter.
+
+
+<h3>Experimental Results</h3>
+
+<div class="figure-container">
+    <img src="images/eval-lat.png" style="max-width:100%; width:1200px; alt="Evaluation">
+    <p class="figure-caption">Figure 5:  Evaluation procedures.</p>
+</div>
+
+The experiments compare methods based on
+    <ul>
+        <li> their performance on clean evaluation data </li>
+        <li> their robustness to novel classes of adversarial examples not encountered during training </li>
+        <li> their robustness to trojans implanted during pretraining </li>
+    </ul>
+
+
+<div class="figure-container">
+    <img src="images/ret-eval-lat.png" style="max-width:100%; width:1200px; alt="Evaluation">
+    <p class="figure-caption">Figure 6:  Evaluation results for image classification.</p>
+</div>
+
 
 </body>
 </html>
