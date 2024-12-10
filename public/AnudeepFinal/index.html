@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Structure and Interpretation of Deep Networks</title>
+
+<!-- Bootstrap CSS Imports -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<!-- Google Font Imports -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+rel="stylesheet">
+
+<!-- Custom CSS Imports -->
+<link rel="stylesheet" href="/css/style.css">
+
+<!-- Mathjax -->
+<script sid="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" integrity="sha512-6FaAxxHuKuzaGHWnV00ftWqP3luSBRSopnNAA2RvQH1fOfnF/A1wOfiUWF7cLIOFcfb1dEhXwo5VG3DAisocRw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha256-3gQJhtmj7YnV1fmtbVcnAV6eI4ws0Tr48bVZCThtCGQ=" crossorigin="anonymous"></script>
+
+<!-- Auto Table of Contents -->
+<link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css"
+/>
+<script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script>
+
+</head>
+
+<body data-bs-spy="scroll" data-bs-target="#toc">
+<nav class="navbar navbar-dark bg-dark">
+<div class="container-fluid">
+<ul class="navbar-nav mr-auto">
+ <li class="nav-item active">
+  <a class="nav-link" href="/unlearningpii/index.html">Unlearning PII</a>
+ </li>
+</ul>
+<ul class="navbar-nav ml-auto">
+ <li class="nav-item">
+  <a class="navbar-brand" href="/">Structure and Interpretation of Deep Networks</a>
+ </li>
+</ul>
+</div>
+</nav>
+
+<div class="container">
+<div class="row">
+<div class="col-2 position-fixed pt-5">
+<nav id="toc" data-toggle="toc"></nav>
+</div>
+<div class="col-2"></div>
+<main class="col-8">
+<h1 class="mt-5">Unlearning Personally Identifiable Information from OLMo</h1>
+
+<div><h5>December 10, 2024 • <em>Anudeep Ragata</em></h5>
+
+<h2>Introduction</h2>
+<p>
+    Large Language Models risk the possibility of memorizing sensitive information about individuals. 
+    This project explores the problem of unlearning personally identifiable information (PII) from LLMs. 
+    I have adapted the <a href="https://arxiv.org/pdf/2406.09325">paper</a> which proposes a method that identifies and modifies a small subset of neurons relevant to each PII.
+    
+</p>
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 5px;
+        text-align: center;
+        vertical-align: middle;
+    }
+    figure {
+        text-align: center;
+    }
+</style>
+<figure>
+    <img src="images/example.png" alt="Image" style="width: 600px; height: auto;">
+    <figcaption>
+        Overview of the REVS unlearning process
+    </figcaption>
+</figure>
+
+<h2>Methodology</h2>
+<p>
+    To unlearn specific sensitive information, REVS identifies the model parameters most responsible for generating it. 
+    It then adjusts certain neuron representations to lower the prominence of the target tokens in each layer’s residuals, reducing their rank. 
+    This process minimizes the impact of edits on the overall model while reflecting the updated neuron values, 
+    effectively suppressing the sensitive information while preserving the model's general capabilities. 
+    The core process of REVS involves the following steps:
+</p>
+<ol>1. To unlearn a sensitive sequence S, select a subset of target tokens \(T= t_1,t_2,...,t_t\).</ol>
+<ol>2. For each target sensitive token \(t_i \in T\), identify the layers where the rank of ti in the residual
+hidden state vector his above a desired threshold rank \(r_h\).</ol>
+<ol>3. Within these identified layers, select which neurons to edit,</ol>
+<ol>4. Iteratively edit selected neurons to reduce rank of \(t_i\) below neuron threshold rank \(r_n\).</ol>
+<ol>5. Update the model with the edited neurons.</ol>
+
+<style>
+    figure {
+        text-align: center;
+    }
+</style>
+<figure>
+    <img src="images/method.png" alt="Image" style="width: 600px; height: auto;">
+    <figcaption>
+        Logit updates for a target token
+    </figcaption>
+</figure>
+
+<h2>Scores</h2>
+
+<p>
+    1. Rank Score:
+</p>
+<img src="images/rankscore.png" alt="Image" style="width: 400px; height: auto;">
+
+<p>
+    2. Efficacy:
+</p>
+<img src="images/efficacyscore.png" alt="Image" style="width: 400px; height: auto;">
+
+<p>
+    3. Specificity:
+</p>
+<img src="images/specificityscore.png" alt="Image" style="width: 400px; height: auto;">
+
+<p>
+    4. Perplexity
+</p>
+
+<h2>Results</h2>
+<table>
+    <tr>
+        <th>Dataset</th>
+        <th>Method</th>
+        <th>Efficacy</th>
+        <th>Specificity</th>
+        <th>Perplexity</th>
+    </tr>
+    <tr>
+        <td>SSNs</td>
+        <td>Unedited</td>
+        <td>   0   </td>
+        <td>100</td>
+        <td>12.142</td>
+    </tr>
+    <tr>
+        <td>    </td>
+        <td>REVS</td>
+        <td>99.95</td>
+        <td>71.53</td>
+        <td>12.172</td>
+    </tr>
+    <tr>
+        <td>Emails</td>
+        <td>Unedited</td>
+        <td>0</td>
+        <td>100</td>
+        <td>8.324</td>
+    </tr>
+    <tr>
+        <td>    </td>
+        <td>REVS</td>
+        <td>96.89</td>
+        <td>70.77</td>
+        <td>8.609</td>
+    </tr>
+    <tr>
+        <td>Phone Numbers</td>
+        <td>Unedited</td>
+        <td>0</td>
+        <td>100</td>
+        <td>12.027</td>
+    </tr>
+    <tr>
+        <td>    </td>
+        <td>REVS</td>
+        <td>99.94</td>
+        <td>71.89</td>
+        <td>12.112</td>
+    </tr>
+</table>
+
+</main>
+</div>
+</div>
+</body>
+</html>
