@@ -130,16 +130,16 @@
                         <h3 class="text-2xl font-bold mb-4">What are the early layers doing?</h3>
                         <div class="flex flex-row gap-4 w-full">
                           <div class="w-1/2">
-                            <img src="images/llama1b-logits.png" alt="Logits" class="w-full rounded-lg"/>
+                            <img src="images/llama1b-logit.png" alt="Logits" class="w-full rounded-lg"/>
                           </div>
                           <div class="w-1/2">
-                            <img src="images/llama8b-logits.png" alt="Logits" class="w-full rounded-lg"/>
+                            <img src="images/llama8b-logit.png" alt="Logits" class="w-full rounded-lg"/>
                           </div>
                         </div>
                         <p class="text-gray-700">
                            We find an interesting artifact, smaller models repeat the input token as "next token" at early layers. Larger models, however, do not have this effect at early layers. At this point, we are unclear if this artifact is infact from the model or from the logit lens methodology itself. We aim to explore this further. 
                         </p>
-                        <img src="images/logitloss.png" style="max-width:70%" alt="Logit loss" class="w-full mb-4 rounded-lg"/>
+                        <img src="images/logitloss.png" style="max-width:100%" alt="Logit loss" class="w-full mb-4 rounded-lg"/>
                         <p class="text-gray-700">
                             We scale up this experiment with wiki-10k prompts dataset <span class="citation">[6]</span> and compare the cross entropy between the logit lens distribution of the layer and the actual output distribution of the model. We see similar effect that larger models do not repeat the same input token at earlier layers 
                         </p>
