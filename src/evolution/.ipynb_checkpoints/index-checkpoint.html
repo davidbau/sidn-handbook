@@ -174,20 +174,30 @@
                     </div>
                     
 
+                    <!-- Probes Experiments -->
                     <div class="bg-white rounded-lg shadow-sm p-6">
-                        <h3 class="text-2xl font-bold mb-4">Internal Processing Across Model Sizes</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
-                            <img src="/api/placeholder/400/300" alt="Logit Lens Visualization 1" class="w-full rounded-lg"/>
-                            <img src="/api/placeholder/400/300" alt="Logit Lens Visualization 2" class="w-full rounded-lg"/>
-                        </div>
+                        <h3 class="text-2xl font-bold mb-4">After the processing, when does the model know about the answer?</h3>
+                        <img src="images/probes.png" style="max-width:100%" alt="Probes" class="w-full mb-4 rounded-lg"/>
                         <p class="text-gray-700">
-                            Logit lens visualizations provide insights into how the probability distribution over vocabulary tokens evolves as information propagates through the layers of different-sized LLMs [3-5].
+                        Now that we know about the information processing, we now explore when the model has enough information to know the answer for next token. We do probing experiments similar to <span class="citation">[3]</span> and find a very interesting artifact!! Bigger models know the answer at the beginning layers while smaller models know the answer almost after the half way. 
                         </p>
                     </div>
 
 
+                    <!-- Probes-Causal Compare Experiments -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-2xl font-bold mb-4">After the processing, when does the model know about the answer?</h3>
+                        <img src="images/probes_causal.png" style="max-width:100%" alt="Probes" class="w-full mb-4 rounded-lg"/>
+                        <p class="text-gray-700">
+                        But this doesnot align with what we have seen so far! So we look at the causal importance of these layers. Are these layers really being used by the model? We found -  NO! There is a good gap of 7-9 layers between when the model has enough information to when it actually uses it.
+                        </p>
+                    </div>
+
+
+
                     
-                </div>
+                    
+                
                 <div class="bg-white rounded-lg shadow-sm p-6">
                     <h3 class="text-2xl font-bold mb-4">Layer Similarity Across the Model and Inter-Model</h3>
                     <img src="/api/placeholder/800/400" alt="Layer Similarity Analysis" class="w-full mb-4 rounded-lg"/>
@@ -245,6 +255,7 @@
                         </ol>
                     </div>
                 </div>
+                    </div>
             </section>
 
             <section class="mb-12">
