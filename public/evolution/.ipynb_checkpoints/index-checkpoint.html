@@ -18,11 +18,10 @@
                 </div>
             </div>
         </header>
-
         <main class="prose prose-lg max-w-none">
             <section class="mb-12">
                 <p class="text-gray-700 mb-6">
-                    This project first establishes a mexhanistic flow of information in language models, we call "stages", and investigates the internal mechanisms of LLMs and how they change as model size increases.
+                    With Large Language Models (LLMs), we have been seeing the trend where larger models show emergent and better capabilities. In this project, we ask the question: "What are the added layers being used for by an LLM?". We first establish a model of mechanistic information flow in the models, we call "stages", and investigates the internal mechanisms of LLMs and how they change as model size increases.
                     Specifically, we will look at the following questions:
                 </p>
 
@@ -40,9 +39,8 @@
                 <p class="text-gray-700">
                     This project builds upon a rich body of research dedicated to understanding the inner workings of LLMs.
                     Seminal works have explored attention mechanisms and their role in passing extracted information <span class="citation">[1]</span>, the emergence of factual knowledge
-                    representation [CITATION], and the development of techniques to probe and analyze these models [CITATION]. Our
-                    work contributes to this ongoing discourse by providing a comparative analysis of different LLM sizes and
-                    applying novel methodologies to unravel the complexities of their internal representations and processing.
+                    representation <span class="citation">[2]</span>, and the development of techniques to probe and analyze these models <span class="citation">[3]</span>. Our work contributes to this ongoing discourse by providing a comparative analysis of different LLM sizes and
+                    applying these methods to unravel the complexities of their internal representations and processing.
                 </p>
             </section>
 
@@ -96,10 +94,27 @@
                                 </p>
                             </div>
                             <div class="method-item">
-                                <h3 class="font-semibold text-xl mb-2">RSA</h3>
+                                <h3 class="font-semibold text-xl mb-2">Representational Similarity Analysis (RSA)</h3>
                                 <p class="text-gray-700">
-                                    Compare representational geometry across LLM sizes and layers to reveal computational phases.
+                                    Representational Similarity Analysis (RSA) is a multivariate technique that compares diverse data types by examining shared patterns in their similarity matrices. Originally proposed by 
+                                    <a href="https://www.frontiersin.org/journals/systems-neuroscience/articles/10.3389/neuro.06.004.2008/full?utm_source=FWEB&utm_medium=NBLOG&utm_campaign=ECO_10YA_top-research" target="_blank">Kriegeskorte et al.</a> 
+                                    to link brain activity patterns to computational models and behavior, RSA works by subjecting the brain/model to different stimuli and extracting activity patterns. Pairwise correlations are computed to create a dissimilarity matrix (RDM), which captures the representational geometry of the data. This enables comparison across different data types and models.
                                 </p>
+                                <div class="mt-4">
+                                    <img src="images/computing_RDMs.png" 
+                                         alt="RSA Computation Process" 
+                                         class="w-full rounded-lg mb-4"/>
+                                    <p class="text-gray-600 text-sm italic text-center">
+                                        Computation of the Representational Dissimilarity Matrix (RDM).
+                                    </p>
+                                </div>
+                                <div class="mt-6">
+                                    <h5 class="text-xl font-bold mb-3">How does RSA apply to LLMs?</h5>
+                                    <p class="text-gray-700">
+                                        <a href="https://arxiv.org/pdf/2306.01930v2" target="_blank">Li et al.</a> used RSA to study structural similarity between LLMs and neural responses. 
+                                        <a href="https://arxiv.org/pdf/2306.01930v2" target="_blank">Yousefi et al.</a> used TSA to decode task-critical information from model representations without using parameterized probes. This technique helps compare representational geometry across LLM sizes and layers to reveal computational phases.
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -131,6 +146,14 @@
                         </p>
                     </div>
                 </div>
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h3 class="text-2xl font-bold mb-4">Layer similarity across the model and inter-model.</h3>
+                    <img src="/api/placeholder/800/400" alt="Layer Similarity Analysis" class="w-full mb-4 rounded-lg"/>
+                    <p class="text-gray-700">
+                        Analyzing layer similarities across different model sizes reveals patterns in how representations evolve through the network.
+                        This comparison helps understand the internal dynamics and computational stages of language models.
+                    </p>
+                </div>
             </section>
 
             <section class="mb-12">
@@ -150,13 +173,14 @@
                 <h2 class="text-3xl font-bold text-gray-900 mb-6">Citations</h2>
                 <div class="bg-white rounded-lg shadow-sm p-6">
                     <ol class="list-decimal list-inside space-y-2">
-                        <li>Brown, T., et al. (2020). "Language Models are Few-Shot Learners." Advances in Neural Information Processing Systems, 33, 1877-1901</li>
-                        <li>Vaswani, A., et al. (2017). "Attention Is All You Need." Advances in Neural Information Processing Systems, 30, 5998-6008</li>
-                        <li>Petroni, F., et al. (2019). "Language Models as Knowledge Bases?" Proceedings of EMNLP-IJCNLP 2019</li>
-                        <li>Tenney, I., et al. (2019). "BERT Rediscovers the Classical NLP Pipeline." ACL 2019</li>
+                        <li>Geva, M., Bastings, J., Filippova, K., & Globerson, A. (2023). Dissecting recall of factual associations in auto-regressive language models. arXiv preprint arXiv:2304.14767.</li>
+                        <li>Meng, K., Bau, D., Andonian, A., & Belinkov, Y. (2022). Locating and editing factual associations in GPT. Advances in Neural Information Processing Systems, 35, 17359-17372.</li>
+                        <li>Alain, G. (2016). Understanding intermediate layers using linear classifier probes. arXiv preprint arXiv:1610.01644.</li>
                     </ol>
                 </div>
             </section>
+
+
 
             
         </main>

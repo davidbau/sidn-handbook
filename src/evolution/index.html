@@ -21,7 +21,7 @@
         <main class="prose prose-lg max-w-none">
             <section class="mb-12">
                 <p class="text-gray-700 mb-6">
-                    This project first establishes a mexhanistic flow of information in language models, we call "stages", and investigates the internal mechanisms of LLMs and how they change as model size increases.
+                    With Large Language Models (LLMs), we have been seeing the trend where larger models show emergent and better capabilities. In this project, we ask the question: "What are the added layers being used for by an LLM?". We first establish a model of mechanistic information flow in the models, we call "stages", and investigates the internal mechanisms of LLMs and how they change as model size increases.
                     Specifically, we will look at the following questions:
                 </p>
 
@@ -39,9 +39,8 @@
                 <p class="text-gray-700">
                     This project builds upon a rich body of research dedicated to understanding the inner workings of LLMs.
                     Seminal works have explored attention mechanisms and their role in passing extracted information <span class="citation">[1]</span>, the emergence of factual knowledge
-                    representation [CITATION], and the development of techniques to probe and analyze these models [CITATION]. Our
-                    work contributes to this ongoing discourse by providing a comparative analysis of different LLM sizes and
-                    applying novel methodologies to unravel the complexities of their internal representations and processing.
+                    representation <span class="citation">[2]</span>, and the development of techniques to probe and analyze these models <span class="citation">[3]</span>. Our work contributes to this ongoing discourse by providing a comparative analysis of different LLM sizes and
+                    applying these methods to unravel the complexities of their internal representations and processing.
                 </p>
             </section>
 
@@ -174,15 +173,14 @@
                 <h2 class="text-3xl font-bold text-gray-900 mb-6">Citations</h2>
                 <div class="bg-white rounded-lg shadow-sm p-6">
                     <ol class="list-decimal list-inside space-y-2">
-                        <li>Brown, T., et al. (2020). "Language Models are Few-Shot Learners." Advances in Neural Information Processing Systems, 33, 1877-1901</li>
-                        <li>Vaswani, A., et al. (2017). "Attention Is All You Need." Advances in Neural Information Processing Systems, 30, 5998-6008</li>
-                        <li>Petroni, F., et al. (2019). "Language Models as Knowledge Bases?" Proceedings of EMNLP-IJCNLP 2019</li>
-                        <li>Tenney, I., et al. (2019). "BERT Rediscovers the Classical NLP Pipeline." ACL 2019</li>
-                        <li>Li, J., et al. (2021). "Comparing Representational Similarity of Neural Networks and Brains." Nature Communications, 12(1), 1-12</li>
-                        <li>Yousefi, M., et al. (2021). "Decoding Task-Critical Information from Language Models." arXiv preprint arXiv:2106.01930</li>
+                        <li>Geva, M., Bastings, J., Filippova, K., & Globerson, A. (2023). Dissecting recall of factual associations in auto-regressive language models. arXiv preprint arXiv:2304.14767.</li>
+                        <li>Meng, K., Bau, D., Andonian, A., & Belinkov, Y. (2022). Locating and editing factual associations in GPT. Advances in Neural Information Processing Systems, 35, 17359-17372.</li>
+                        <li>Alain, G. (2016). Understanding intermediate layers using linear classifier probes. arXiv preprint arXiv:1610.01644.</li>
                     </ol>
                 </div>
             </section>
+
+
 
             
         </main>
