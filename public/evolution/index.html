@@ -11,7 +11,7 @@
         <header class="mb-12">
             <h1 class="text-4xl font-bold text-gray-900 mb-4">Evolution of LLM Stages</h1>
             <div class="text-sm text-gray-600 flex items-center gap-2">
-                <time>September 5, 2024</time>
+                <time>December 12, 2024</time>
                 <span>•</span>
                 <div class="italic">
                     Rohit Gandikota, Alex Loftus, Philip, Ritik Bompilwar, Can Rager
@@ -102,11 +102,6 @@
                     </div>
                 </div>
 
-
-
-
-
-
                 <h2 class="text-3xl font-bold text-gray-900 mb-6">Our Hypothesis</h2>
                 <div class="bg-white rounded-lg shadow-sm p-6 space-y-4">
                     <p class="text-gray-700">
@@ -122,12 +117,36 @@
                 <div class="space-y-8">
                     <div class="bg-white rounded-lg shadow-sm p-6">
                         <h3 class="text-2xl font-bold mb-4">Current LLM Performance</h3>
-                        <img src="/api/placeholder/800/400" alt="LLM Trends" class="w-full mb-4 rounded-lg"/>
+                        <img src="images/compare.png" style="max-width:70%" alt="LLM Trends" class="w-full mb-4 rounded-lg"/>
                         <p class="text-gray-700">
                             The current trend in large language models (LLMs) is to scale up existing models by increasing the number of parameters.
-                            As models get larger, they seem to perform better on various tasks [4, 5].
+                            As models get larger, they seem to perform better on various tasks <span class="citation">[4, 5]</span>. It is interesting to see that the metrics show only 2 points increase from 70B to 405B. But this does not reflect the emergent capabilties in the 405B (huh .. i wonder what it says about the evaluations we do)
                         </p>
                     </div>
+
+
+                    <!-- Logit Lens Experiments -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-2xl font-bold mb-4">What are the early layers doing?</h3>
+                        <div class="flex flex-row gap-4 w-full">
+                          <div class="w-1/2">
+                            <img src="images/llama1b-logits.png" alt="Logits" class="w-full rounded-lg"/>
+                          </div>
+                          <div class="w-1/2">
+                            <img src="images/llama8b-logits.png" alt="Logits" class="w-full rounded-lg"/>
+                          </div>
+                        </div>
+                        <p class="text-gray-700">
+                           We find an interesting artifact, smaller models repeat the input token as "next token" at early layers. Larger models, however, do not have this effect at early layers. At this point, we are unclear if this artifact is infact from the model or from the logit lens methodology itself. We aim to explore this further. 
+                        </p>
+                        <img src="images/logitloss.png" style="max-width:70%" alt="Logit loss" class="w-full mb-4 rounded-lg"/>
+                        <p class="text-gray-700">
+                            We scale up this experiment with wiki-10k prompts dataset <span class="citation">[6]</span> and compare the cross entropy between the logit lens distribution of the layer and the actual output distribution of the model. We see similar effect that larger models do not repeat the same input token at earlier layers 
+                        </p>
+                    </div>
+
+
+                    
 
                     <div class="bg-white rounded-lg shadow-sm p-6">
                         <h3 class="text-2xl font-bold mb-4">Internal Processing Across Model Sizes</h3>
@@ -221,6 +240,7 @@
                         <li>Alain, G. (2016). Understanding intermediate layers using linear classifier probes. arXiv preprint arXiv:1610.01644.</li>
                         <li>Dubey, A., Jauhri, A., Pandey, A., Kadian, A., Al-Dahle, A., Letman, A., ... & Ganapathy, R. (2024). The llama 3 herd of models. arXiv preprint arXiv:2407.21783.</li>
                         <li>Team, G., Riviere, M., Pathak, S., Sessa, P. G., Hardin, C., Bhupatiraju, S., ... & Garg, S. (2024). Gemma 2: Improving open language models at a practical size. arXiv preprint arXiv:2408.00118.</li>
+                        <li>NeelNanda/wiki-10k · Datasets at Hugging Face. (n.d.). https://huggingface.co/datasets/NeelNanda/wiki-10k</li>
                     </ol>
                 </div>
             </section>
