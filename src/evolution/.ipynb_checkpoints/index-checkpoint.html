@@ -146,6 +146,32 @@
                     </div>
 
 
+                    <!-- Causal Tracing Experiments -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-2xl font-bold mb-4">Where are the facts stored in LLMs?</h3>
+                        <img src="images/causal.png" style="max-width:100%" alt="Causal" class="w-full mb-4 rounded-lg"/>
+                        <p class="text-gray-700">
+                            We follow the works on Meng et. al <span class="citation">[2]</span> to trace the knowledge storage in LLMs and specifically on models with varying sizes. We find that all the model sizes stores the facts almost at the same relative layer depths.
+                        </p>
+                    </div>
+
+                    <!-- Attn Knockout Experiments -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-2xl font-bold mb-4">But, when is this extracted information transferred through tokens?</h3>
+                        <img src="images/attn_knockout.png" style="max-width:100%" alt="Attn Knockout" class="w-full mb-4 rounded-lg"/>
+                        <p class="text-gray-700">
+                            Once the model extracts the facts or knowledge about the input prompt, it has to, at some point, transfer this information to the location where the model needs this information to make a decision of the next token. For this, we conduct an attention knockout experiment <span class="citation">[1]</span>, where we block attention from subject tokens to the final tokens at every layer and plot the change in the output distribution. We find that all the model sizes almost drop the accuracies at 40% through 70% of the layer depths. This suggests that these middle layers transfer information.
+                        </p>
+                    </div>
+
+                    <!-- Intrinsic Dimensionality Experiments -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-2xl font-bold mb-4">When does the model use most of its dimensions to process information?</h3>
+                        <img src="images/intrinsic.png" style="max-width:100%" alt="Attn Knockout" class="w-full mb-4 rounded-lg"/>
+                        <p class="text-gray-700">
+                            Okay, the model knows about the fact, transfers it to the token for prediction. Its a good time to ask a generic question - "how does the model process all this information at each layer?". For this, we conduct an intrisic dimensionality experiment and find that at the same 40% layer depth for all models, they start using high dimensions to process information. 
+                        </p>
+                    </div>
                     
 
                     <div class="bg-white rounded-lg shadow-sm p-6">
@@ -158,6 +184,9 @@
                             Logit lens visualizations provide insights into how the probability distribution over vocabulary tokens evolves as information propagates through the layers of different-sized LLMs [3-5].
                         </p>
                     </div>
+
+
+                    
                 </div>
                 <div class="bg-white rounded-lg shadow-sm p-6">
                     <h3 class="text-2xl font-bold mb-4">Layer Similarity Across the Model and Inter-Model</h3>
