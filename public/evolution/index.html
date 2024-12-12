@@ -186,16 +186,12 @@
 
                     <!-- Probes-Causal Compare Experiments -->
                     <div class="bg-white rounded-lg shadow-sm p-6">
-                        <h3 class="text-2xl font-bold mb-4">After the processing, when does the model know about the answer?</h3>
+                        <h3 class="text-2xl font-bold mb-4">What? Is it true that larger models know answer way early?</h3>
                         <img src="images/probes_causal.png" style="max-width:100%" alt="Probes" class="w-full mb-4 rounded-lg"/>
                         <p class="text-gray-700">
                         But this doesnot align with what we have seen so far! So we look at the causal importance of these layers. Are these layers really being used by the model? We found -  NO! There is a good gap of 7-9 layers between when the model has enough information to when it actually uses it.
                         </p>
                     </div>
-
-
-
-                    
                     
                 
                 <div class="bg-white rounded-lg shadow-sm p-6">
@@ -261,10 +257,10 @@
             <section class="mb-12">
                 <h2 class="text-3xl font-bold text-gray-900 mb-6">Discussion</h2>
                 <div class="bg-white rounded-lg shadow-sm p-6">
-                    <p class="text-gray-700 mb-4">The findings of this project raise several interesting questions and avenues for future research:</p>
+                    <p class="text-gray-700 mb-4">There are few observations in this work which we find very interesting and worth investigating more</p>
                     <ul class="list-disc pl-6 space-y-2 text-gray-700">
-                        <li>What are the precise mechanisms underlying the observed shifts in information processing as models scale up?</li>
-                        <li>How do different training datasets and objectives influence the development of computational phases within LLMs?</li>
+                        <li>Why is there a gap between probing accuracies and causal importance? - We believe this could be something to do with probes. We know probes can be sensitive to any seperable distributions. It could be that probes are catching this effect where the information just starts popping up. Another thought is how causal interventions work. There is a strong peak in importance, why does this happen? </li>
+                        <li>How do different training datasets and objectives influence the development of computational phases within LLMs? - We have tested on very limited datasets and models. There is an oppurtunity to expand this set and observe</li>
                         <li>Can we leverage insights from RSA to develop more efficient and interpretable LLM architectures?</li>
                     </ul>
                 </div>
