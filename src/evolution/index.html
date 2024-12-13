@@ -98,7 +98,69 @@
                                 <p class="text-gray-700">
                                     Analyzing layer similarities across different model sizes reveals patterns in how representations evolve through the network.
                                 </p>
-                        </div>
+                                
+                                <details class="mt-4">
+                                    <summary class="cursor-pointer font-bold text-lg">RSA Methodology</summary>
+                                    <div class="mt-4 pl-4">
+                                        <p class="text-gray-700">
+                                            Representational Similarity Analysis (RSA) is a multivariate technique that compares diverse data types by examining shared patterns in their similarity matrices. Originally proposed by 
+                                            <a href="https://www.frontiersin.org/journals/systems-neuroscience/articles/10.3389/neuro.06.004.2008/full?utm_source=FWEB&utm_medium=NBLOG&utm_campaign=ECO_10YA_top-research" target="_blank">Kriegeskorte et al. [7]</a> 
+                                            to link brain activity patterns to computational models and behavior, RSA works by subjecting the brain/model to different stimuli and extracting activity patterns. Pairwise correlations are computed to create a dissimilarity matrix (RDM), which captures the representational geometry of the data. This enables comparison across different data types and models.
+                                        </p>
+                                        
+                                        <div class="mt-4">
+                                            <div class="w-1/2 mx-auto">
+                                                <img src="images/computing_RDMs.png" 
+                                                     alt="RSA Computation Process" 
+                                                     class="w-full rounded-lg mb-4"/>
+                                                <p class="text-gray-600 text-sm italic text-center">
+                                                    Computation of the Representational Dissimilarity Matrix (RDM).
+                                                </p>
+                                            </div>
+                                        </div>
+                                        
+                                        
+                                        <div class="mt-6">
+                                            <h5 class="text-xl font-bold mb-3">How does RSA apply to LLMs?</h5>
+                                            <p class="text-gray-700">
+                                                <a href="https://arxiv.org/pdf/2306.01930v2" target="_blank">Li et al. [8]</a> used RSA to study structural similarity between LLMs and neural responses. 
+                                                <a href="https://arxiv.org/pdf/2306.01930v2" target="_blank">Yousefi et al. [9]</a> used TSA to decode task-critical information from model representations without using parameterized probes. This technique helps compare representational geometry across LLM sizes and layers to reveal computational phases.
+                                            </p>
+                                        </div>
+                                        
+                                        <div class="mt-6">
+                                            <h5 class="text-xl font-bold mb-3">Methodology for Layer-wise RSA in LLMs</h5>
+                                            <p class="text-gray-700">
+                                                The following methodology outlines a structured approach to analyze layer-wise representational structures in LLMs using RSA:
+                                            </p>
+                                            <ol class="list-decimal list-inside space-y-2 mt-2 text-gray-700">
+                                                <li>
+                                                    <strong>Input Processing:</strong> Start with a set of <span class="font-bold">N</span> sentences or questions from domains like biology and cybersecurity. Feed these inputs into LLMs (e.g., Llama 1B, 3B, 8B) to ensure diversity in both input complexity and model capacity [1].
+                                                </li>
+                                                <li>
+                                                    <strong>Layer-Wise Activation Capture:</strong> Extract neural activations (hidden states) for each input at each layer <span class="font-bold">L</span>. This provides a layer-by-layer snapshot of how the model's internal representations evolve [2].
+                                                </li>
+                                                <li>
+                                                    <strong>Representation Processing:</strong>
+                                                    <ul class="list-disc list-inside ml-6 mt-1">
+                                                        <li><strong>Mean Pooling:</strong> Average token-level activations per input to produce a single vector representation [3].</li>
+                                                        <li><strong>Normalization:</strong> Optionally normalize these vectors to ensure that differences in vector magnitude do not unfairly influence similarity measurements.</li>
+                                                    </ul>
+                                                </li>
+                                                <li>
+                                                    <strong>RDM Generation:</strong> Compute pairwise similarities between the processed input vectors. Convert these similarities into dissimilarities (<code>RDM = 1 - similarity</code>) to form an <span class="font-bold">N×N</span> Representational Dissimilarity Matrix for each layer [4].
+                                                </li>
+                                                <li>
+                                                    <strong>Vectorizing RDMs:</strong> Extract the upper-triangular portion of each RDM and flatten it into a vector [5].
+                                                </li>
+                                                <li>
+                                                    <strong>Layer Similarity Analysis:</strong> Compare these RDM-derived vectors across layers (and across models) to identify patterns and trends [6].
+                                                </li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </details>
+                            </div>                        
                     </div>
                 </div>
 
@@ -194,62 +256,68 @@
                     </div>
                     
                 
-                <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h3 class="text-2xl font-bold mb-4">Layer Similarity Across the Model and Inter-Model</h3>
-                    <p class="text-gray-700">
-                        Representational Similarity Analysis (RSA) is a multivariate technique that compares diverse data types by examining shared patterns in their similarity matrices. Originally proposed by 
-                        <a href="https://www.frontiersin.org/journals/systems-neuroscience/articles/10.3389/neuro.06.004.2008/full?utm_source=FWEB&utm_medium=NBLOG&utm_campaign=ECO_10YA_top-research" target="_blank">Kriegeskorte et al.</a> 
-                        to link brain activity patterns to computational models and behavior, RSA works by subjecting the brain/model to different stimuli and extracting activity patterns. Pairwise correlations are computed to create a dissimilarity matrix (RDM), which captures the representational geometry of the data. This enables comparison across different data types and models.
-                    </p>
+                    <!-- RSA Experiments -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-2xl font-bold mb-4">How do representations evolve across layers and model sizes?</h3>
+                        <div class="space-y-6">
+                            <div>
+                                <h6 class="text-xl font-semibold mb-3">Layer-wise Similarity Analysis</h6>
+                                <div class="flex flex-row gap-4 w-full">
+                                    <div class="w-1/3 cursor-pointer" onclick="expandImage(this)">
+                                        <img src="images/1b.png" alt="Layer-wise RSA 1B" class="w-full rounded-lg hover:shadow-lg transition-shadow"/>
+                                        <p class="text-sm text-center mt-2">Llama 1.2B</p>
+                                    </div>
+                                    <div class="w-1/3 cursor-pointer" onclick="expandImage(this)">
+                                        <img src="images/3b.png" alt="Layer-wise RSA 3B" class="w-full rounded-lg hover:shadow-lg transition-shadow"/>
+                                        <p class="text-sm text-center mt-2">Llama 3.2B</p>
+                                    </div>
+                                    <div class="w-1/3 cursor-pointer" onclick="expandImage(this)">
+                                        <img src="images/8b.png" alt="Layer-wise RSA 8B" class="w-full rounded-lg hover:shadow-lg transition-shadow"/>
+                                        <p class="text-sm text-center mt-2">Llama 8B</p>
+                                    </div>
+                                </div>
+                            </div>
                     
-                    <div class="mt-4 flex flex-col items-center">
-                        <img src="images/computing_RDMs.png" 
-                             alt="RSA Computation Process" 
-                             class="w-1/2 rounded-lg mb-4"/>
-                        <p class="text-gray-600 text-sm italic text-center">
-                            Computation of the Representational Dissimilarity Matrix (RDM).
-                        </p>
+                            <div>
+                                <h6 class="text-xl font-semibold mb-3">Cross-Model Representation Comparison</h6>
+                                <div class="flex flex-row gap-4 w-full">
+                                    <div class="w-1/3 cursor-pointer" onclick="expandImage(this)">
+                                        <img src="images/8B_1B.png" alt="Cross-model RSA 8B vs 1B" class="w-full rounded-lg hover:shadow-lg transition-shadow"/>
+                                        <p class="text-sm text-center mt-2">8B vs 1B Comparison</p>
+                                    </div>
+                                    <div class="w-1/3 cursor-pointer" onclick="expandImage(this)">
+                                        <img src="images/8B_3B.png" alt="Cross-model RSA 8B vs 3B" class="w-full rounded-lg hover:shadow-lg transition-shadow"/>
+                                        <p class="text-sm text-center mt-2">8B vs 3B Comparison</p>
+                                    </div>
+                                    <div class="w-1/3 cursor-pointer" onclick="expandImage(this)">
+                                        <img src="images/3B_1B.png" alt="Cross-model RSA 3B vs 1B" class="w-full rounded-lg hover:shadow-lg transition-shadow"/>
+                                        <p class="text-sm text-center mt-2">3B vs 1B Comparison</p>
+                                    </div>
+                                </div>
+                            </div>
+                    
+                            <p class="text-gray-700">
+                                The RSA analysis reveals distinct processing stages across model sizes, with early layers showing high similarity, middle layers displaying diverse patterns, and later layers converging again. Cross-model comparisons demonstrate that different sized models develop analogous representations at similar relative depths, with stronger similarity between larger models.
+                            </p>
+                        </div>
                     </div>
                     
-                    <div class="mt-6">
-                        <h5 class="text-xl font-bold mb-3">How does RSA apply to LLMs?</h5>
-                        <p class="text-gray-700">
-                            <a href="https://arxiv.org/pdf/2306.01930v2" target="_blank">Li et al.</a> used RSA to study structural similarity between LLMs and neural responses. 
-                            <a href="https://arxiv.org/pdf/2306.01930v2" target="_blank">Yousefi et al.</a> used TSA to decode task-critical information from model representations without using parameterized probes. This technique helps compare representational geometry across LLM sizes and layers to reveal computational phases.
-                        </p>
-                    </div>
+                    <script>
+                    function expandImage(element) {
+                        const modal = document.createElement('div');
+                        modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+                        
+                        const img = element.querySelector('img').cloneNode(true);
+                        img.className = 'max-h-[90vh] max-w-[90vw] object-contain';
+                        
+                        modal.onclick = () => modal.remove();
+                        modal.appendChild(img);
+                        document.body.appendChild(modal);
+                    }
+                    </script>
                     
-                    <div class="mt-6">
-                        <h5 class="text-xl font-bold mb-3">Methodology for Layer-wise RSA in LLMs</h5>
-                        <p class="text-gray-700">
-                            The following methodology outlines a structured approach to analyze layer-wise representational structures in LLMs using RSA:
-                        </p>
-                        <ol class="list-decimal list-inside space-y-2 mt-2 text-gray-700">
-                            <li>
-                                <strong>Input Processing:</strong> Start with a set of <span class="font-bold">N</span> sentences or questions from domains like biology and cybersecurity. Feed these inputs into LLMs (e.g., Llama 1B, 3B, 8B) to ensure diversity in both input complexity and model capacity.
-                            </li>
-                            <li>
-                                <strong>Layer-Wise Activation Capture:</strong> Extract neural activations (hidden states) for each input at each layer <span class="font-bold">L</span>. This provides a layer-by-layer snapshot of how the model’s internal representations evolve.
-                            </li>
-                            <li>
-                                <strong>Representation Processing:</strong>
-                                <ul class="list-disc list-inside ml-6 mt-1">
-                                    <li><strong>Mean Pooling:</strong> Average token-level activations per input to produce a single vector representation. This simplifies the representation while retaining essential information.</li>
-                                    <li><strong>Normalization:</strong> Optionally normalize these vectors to ensure that differences in vector magnitude do not unfairly influence similarity measurements.</li>
-                                </ul>
-                            </li>
-                            <li>
-                                <strong>RDM Generation:</strong> Compute pairwise similarities (e.g., correlation) between the processed input vectors. Convert these similarities into dissimilarities (<code>RDM = 1 - similarity</code>) to form an <span class="font-bold">N×N</span> Representational Dissimilarity Matrix for each layer.
-                            </li>
-                            <li>
-                                <strong>Vectorizing RDMs:</strong> Extract the upper-triangular portion of each RDM and flatten it into a vector. This standard format allows direct comparisons between layers’ RDMs.
-                            </li>
-                            <li>
-                                <strong>Layer Similarity Analysis:</strong> Compare these RDM-derived vectors across layers (and across models) to identify patterns and trends. This helps reveal how representation changes throughout the network depth and how these changes scale with model size, shedding light on potential computational phases within the model.
-                            </li>
-                        </ol>
-                    </div>
-                </div>
+                    
+
                     </div>
             </section>
 
@@ -265,7 +333,6 @@
                 </div>
             </section>
 
-
             <section class="mb-12">
                 <h2 class="text-3xl font-bold text-gray-900 mb-6">Citations</h2>
                 <div class="bg-white rounded-lg shadow-sm p-6">
@@ -276,6 +343,9 @@
                         <li>Dubey, A., Jauhri, A., Pandey, A., Kadian, A., Al-Dahle, A., Letman, A., ... & Ganapathy, R. (2024). The llama 3 herd of models. arXiv preprint arXiv:2407.21783.</li>
                         <li>Team, G., Riviere, M., Pathak, S., Sessa, P. G., Hardin, C., Bhupatiraju, S., ... & Garg, S. (2024). Gemma 2: Improving open language models at a practical size. arXiv preprint arXiv:2408.00118.</li>
                         <li>NeelNanda/wiki-10k · Datasets at Hugging Face. (n.d.). https://huggingface.co/datasets/NeelNanda/wiki-10k</li>
+                        <li>Kriegeskorte, N., Mur, M., & Bandettini, P. (2008). Representational similarity analysis - connecting the branches of systems neuroscience. Frontiers in Systems Neuroscience, 2, 4.</li>
+                        <li>Li, J., Karamolegkou, A., Kementchedjhieva, Y., Abdou, M., Lehmann, S., & Søgaard, A. (2023). Structural similarities between language models and neural response measurements. arXiv. https://arxiv.org/pdf/2306.01930v2</li>
+                        <li>Yousefi, S., Betthauser, L., Hasanbeig, H., Millière, R., & Momennejad, I. (2023). Decoding in-context learning: Neuroscience-inspired analysis of representations in large language models. arXiv. https://arxiv.org/abs/2310.00313</li>
                     </ol>
                 </div>
             </section>
