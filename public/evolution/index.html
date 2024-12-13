@@ -113,12 +113,11 @@
                                                 <img src="images/computing_RDMs.png" 
                                                      alt="RSA Computation Process" 
                                                      class="w-full rounded-lg mb-4"/>
-                                                <p class="text-gray-600 text-sm italic text-center">
-                                                    Computation of the Representational Dissimilarity Matrix (RDM).
+                                                <p class="text-gray-700 text-sm italic text-center">
+                                                    Fig. Computation of the Representational Dissimilarity Matrix (RDM)[7]
                                                 </p>
                                             </div>
-                                        </div>
-                                        
+                                        </div>                                        
                                         
                                         <div class="mt-6">
                                             <h5 class="text-xl font-bold mb-3">How does RSA apply to LLMs?</h5>
@@ -127,6 +126,34 @@
                                                 <a href="https://arxiv.org/pdf/2306.01930v2" target="_blank">Yousefi et al. [9]</a> used TSA to decode task-critical information from model representations without using parameterized probes. This technique helps compare representational geometry across LLM sizes and layers to reveal computational phases.
                                             </p>
                                         </div>
+
+                                        <div class="mt-4">
+                                            <div class="w-1/2 mx-auto">
+                                                <div class="cursor-pointer" onclick="expandImage(this)">
+                                                    <img src="images/RSA_method.png" 
+                                                         alt="RSA Computation Process" 
+                                                         class="w-full rounded-lg mb-4 hover:shadow-lg transition-shadow"/>
+                                                    <p class="text-gray-700 text-sm italic text-center">
+                                                        Fig. RSA Methodology for Layer-wise Analysis in LLMs
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <script>
+                                        function expandImage(element) {
+                                            const modal = document.createElement('div');
+                                            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+                                            
+                                            const img = element.querySelector('img').cloneNode(true);
+                                            img.className = 'max-h-[90vh] max-w-[90vw] object-contain';
+                                            
+                                            modal.onclick = () => modal.remove();
+                                            modal.appendChild(img);
+                                            document.body.appendChild(modal);
+                                        }
+                                        </script>
+                                        
                                         
                                         <div class="mt-6">
                                             <h5 class="text-xl font-bold mb-3">Methodology for Layer-wise RSA in LLMs</h5>
@@ -135,26 +162,26 @@
                                             </p>
                                             <ol class="list-decimal list-inside space-y-2 mt-2 text-gray-700">
                                                 <li>
-                                                    <strong>Input Processing:</strong> Start with a set of <span class="font-bold">N</span> sentences or questions from domains like biology and cybersecurity. Feed these inputs into LLMs (e.g., Llama 1B, 3B, 8B) to ensure diversity in both input complexity and model capacity [1].
+                                                    <strong>Input Processing:</strong> Start with a set of <span class="font-bold">N</span> sentences or questions from domains like biology and cybersecurity. Feed these inputs into LLMs (e.g., Llama 1B, 3B, 8B) to ensure diversity in both input complexity and model capacity.
                                                 </li>
                                                 <li>
-                                                    <strong>Layer-Wise Activation Capture:</strong> Extract neural activations (hidden states) for each input at each layer <span class="font-bold">L</span>. This provides a layer-by-layer snapshot of how the model's internal representations evolve [2].
+                                                    <strong>Layer-Wise Activation Capture:</strong> Extract neural activations (hidden states) for each input at each layer <span class="font-bold">L</span>. This provides a layer-by-layer snapshot of how the model's internal representations evolve.
                                                 </li>
                                                 <li>
                                                     <strong>Representation Processing:</strong>
                                                     <ul class="list-disc list-inside ml-6 mt-1">
-                                                        <li><strong>Mean Pooling:</strong> Average token-level activations per input to produce a single vector representation [3].</li>
+                                                        <li><strong>Mean Pooling:</strong> Average token-level activations per input to produce a single vector representation.</li>
                                                         <li><strong>Normalization:</strong> Optionally normalize these vectors to ensure that differences in vector magnitude do not unfairly influence similarity measurements.</li>
                                                     </ul>
                                                 </li>
                                                 <li>
-                                                    <strong>RDM Generation:</strong> Compute pairwise similarities between the processed input vectors. Convert these similarities into dissimilarities (<code>RDM = 1 - similarity</code>) to form an <span class="font-bold">N×N</span> Representational Dissimilarity Matrix for each layer [4].
+                                                    <strong>RDM Generation:</strong> Compute pairwise similarities between the processed input vectors. Convert these similarities into dissimilarities (<code>RDM = 1 - similarity</code>) to form an <span class="font-bold">N×N</span> Representational Dissimilarity Matrix for each layer.
                                                 </li>
                                                 <li>
-                                                    <strong>Vectorizing RDMs:</strong> Extract the upper-triangular portion of each RDM and flatten it into a vector [5].
+                                                    <strong>Vectorizing RDMs:</strong> Extract the upper-triangular portion of each RDM and flatten it into a vector.
                                                 </li>
                                                 <li>
-                                                    <strong>Layer Similarity Analysis:</strong> Compare these RDM-derived vectors across layers (and across models) to identify patterns and trends [6].
+                                                    <strong>Layer Similarity Analysis:</strong> Compare these RDM-derived vectors across layers (and across models) to identify patterns and trends.
                                                 </li>
                                             </ol>
                                         </div>
