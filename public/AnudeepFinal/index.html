@@ -96,6 +96,24 @@ rel="stylesheet">
     </figcaption>
 </figure>
 
+<h2>Related Work</h2>
+
+<p>
+    Machine unlearning, a field dedicated to the removal of specific data from trained machine learning models, has gained significant attention due to increasing concerns over data privacy. 
+    Traditional machine unlearning approaches often focus on retraining the model entirely or applying specific updates to erase the influence of undesired data. 
+    Techniques like weight rewinding, selective fine-tuning, and gradient inversion aim to minimize the model's dependency on private data without compromising its overall performance. 
+    However, these methods face challenges in scalability, as retraining or fine-tuning large-scale models, such as language models, can be computationally expensive. 
+    Recent advancements leverage model distillation and pruning techniques to efficiently remove sensitive data while retaining the original model's knowledge to a significant extent.
+</p>
+<p>
+    In the context of language models, the unlearning of Personally Identifiable Information (PII) presents unique challenges. 
+    Unlike structured datasets, language models trained on massive text corpora may unintentionally encode PII in ways that are difficult to pinpoint or extract. 
+    Existing research on differential privacy and post-hoc removal mechanisms has explored strategies to reduce the inclusion of sensitive data during training or eliminate it afterward. 
+    For instance, privacy-preserving mechanisms like noise injection during training and deletion-aware fine-tuning have demonstrated promise in mitigating PII leakage. 
+    However, these approaches often struggle with balancing privacy and utility, particularly in generative models, where unintended memorization of training data can lead to accidental generation of PII. 
+    Addressing these challenges requires continued innovation in methods for targeted data removal and comprehensive evaluation metrics that account for privacy preservation without degrading the model's functional integrity.
+</p>
+
 <h2>Methodology</h2>
 <p>
     To unlearn specific sensitive information, REVS identifies the model parameters most responsible for generating it. 
@@ -196,6 +214,17 @@ hidden state vector his above a desired threshold rank \(r_h\).</ol>
         <td>12.112</td>
     </tr>
 </table>
+
+<h2>Takeaways from the results</h2>
+
+<p>
+    As shown in the table, REVS achieves strong results in terms of unlearning effectiveness and model integrity.
+    The difference in specificity between datasets can be attributed to the nature of the target token sequences. 
+    While the Emails dataset targets consist of unique tokens with low overlap, the SSN targets comprise only
+    numbers, leading to a high overlap with other instances within the specificity calculation. 
+    The high generalization score of REVS indicates its ability to comprehensively unlearn generating the target
+    tokens across different prompts, even when applied to a single prompt-target pair.
+</p>
 
 <h2>Conclusion</h2>
 
