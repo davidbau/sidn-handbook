@@ -1,4 +1,65 @@
-{header('Exploring Automated Weight Space Interpretability')}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Structure and Interpretation of Deep Networks</title>
+
+<!-- Bootstrap CSS Imports -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<!-- Google Font Imports -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+rel="stylesheet">
+
+<!-- Custom CSS Imports -->
+<link rel="stylesheet" href="/css/style.css">
+
+<!-- Mathjax -->
+<script sid="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" integrity="sha512-6FaAxxHuKuzaGHWnV00ftWqP3luSBRSopnNAA2RvQH1fOfnF/A1wOfiUWF7cLIOFcfb1dEhXwo5VG3DAisocRw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha256-3gQJhtmj7YnV1fmtbVcnAV6eI4ws0Tr48bVZCThtCGQ=" crossorigin="anonymous"></script>
+
+<!-- Auto Table of Contents -->
+<link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css"
+/>
+<script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script>
+
+</head>
+
+<body data-bs-spy="scroll" data-bs-target="#toc">
+<nav class="navbar navbar-dark bg-dark">
+<div class="container-fluid">
+<ul class="navbar-nav mr-auto">
+ <li class="nav-item active">
+  <a class="nav-link" href="/david_atkinson_project/index.html">Exploring Automated Weight Space Interpretability</a>
+ </li>
+</ul>
+<ul class="navbar-nav ml-auto">
+ <li class="nav-item">
+  <a class="navbar-brand" href="/">Structure and Interpretation of Deep Networks</a>
+ </li>
+</ul>
+</div>
+</nav>
+
+<div class="container">
+<div class="row">
+<div class="col-2 position-fixed pt-5">
+<nav id="toc" data-toggle="toc"></nav>
+</div>
+<div class="col-2"></div>
+<main class="col-8">
+<h1 class="mt-5">Exploring Automated Weight Space Interpretability</h1>
+
 <!--
 +1: [X] You have a good title and have identified the project team members as authors.
 +1: [X] Introduction poses the question
@@ -23,7 +84,7 @@
     Weight space interpretability (perhaps naively!) takes this question seriously. We would like to train a model, variously called a meta-model or hypernetwork, to predict some property of another model, here referred to as a base model. 
   </p>
 
-  <p>{img("img/schurholt-fig-1.png", 85)}</p>
+  <p><img src="img/schurholt-fig-1.png" style="max-width:85%; width:850px;" class="mx-auto d-block"></p>
 
   <p>
     Much of the work in this vein has focused on recovering training hyperparameters and test-time performance of base models, which are often small image models, or (even smaller) implicit neural representations (<a href="https://dl.acm.org/doi/abs/10.1145/3503250">Mildenhall et al., 2021</a>). Many of these target properties are included in the above figure from Schürholt et al. (<a href="https://arxiv.org/abs/2406.09997">2024</a>). A notable exception to these relatively simple tasks comes from Langosco et al., (<a href="https://openreview.net/forum?id=cmJiEqniEc">2023</a>) who leverage meta-models to detect trojans in image models, and generate RASP (<a href="https://arxiv.org/abs/2106.06981">Weiss et al., 2021</a>) code from compiled TRACR models (<a href="https://arxiv.org/pdf/2301.05062">Lindner et al., 2023</a>). The current work takes inspiration from those ambitious applications, and investigates spiritually similar settings. The most relevant difference is the focus here on different kinds of generalization, beyond the standard train-test split.</p>
@@ -38,7 +99,7 @@
   </p>
 
   <h2>Experiments and Methods</h2>
-  <p>{img("img/inet-diagram.png", 85)}</p>
+  <p><img src="img/inet-diagram.png" style="max-width:85%; width:850px;" class="mx-auto d-block"></p>
   <!-- "Your analysis is solid, and you use diagrams effectively to show your main methods or results visually." -->
   <!-- "The aspects that distinguish your work from previous work are described clearly." -->
   <h3>Imagenet Classifiers</h3>
@@ -78,7 +139,7 @@
   <p>Generalization over random seeds is encouraging, but if meta-models are to be useful, they will have to generalize over far more dimensions than that. One way to test this is to evaluate generalization over a small distributional shift. Here, we train a small number of base models to recognize two classes, rather than one. If our meta-model has learned a good representation of the base models, it should predict the two trained-on classes as most likely.</p>
 
   <p>To some extent, we see this in the figure and table below.</p>
-  <p>{img("img/inet-two-class-topk.png", 85)}</p>
+  <p><img src="img/inet-two-class-topk.png" style="max-width:85%; width:850px;" class="mx-auto d-block"></p>
   <table class="table">
     <thead>
       <tr>
@@ -115,7 +176,7 @@
   <h3>Testing Generalization: Neuron Permutations</h3>
   <p>Here, we perform a more demanding test of generalization. Especially with a small enough prediction range, a meta-model classifer might learn undesirable shortcuts, such as low-complexity weight statistics. We would prefer them to learn a richer representation of the base model's behavior. To test this, we take a pretrained meta-model, and test it on a set of base models which have had their neurons permuted without correspondingly permuting the neuron's associated weights. In behavior space, these models should be randomly distributed, even if, by weight distribution statistics, they remain close to their original, unpermuted parents. The meta-model's performance on these base models, then, serves as an indication of what it is doing when it predicts the training class.</p>
   
-  <p>{img("img/inet-scrambled.png", 75)}</p>
+  <p><img src="img/inet-scrambled.png" style="max-width:75%; width:750px;" class="mx-auto d-block"></p>
 
   <p>What we see suggests that the meta-model is doing something in-between these two hypothesized extremes. Permuting a single layer of neurons (i.e., moving from the blue to the orange line) results in much better than random performance for the meta-model, ruling out perfect behavioral sensitivity. But the performance does drop, and continues to drop as more layers are permuted, suggesting that the meta-model is sensitive to more than layer-wise weight statistics.</p>
 
@@ -161,4 +222,9 @@
 </div>
 
 
-{footer()}
+
+</main>
+</div>
+</div>
+</body>
+</html>
