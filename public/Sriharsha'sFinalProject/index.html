@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Structure and Interpretation of Deep Networks</title>
+
+<!-- Bootstrap CSS Imports -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<!-- Google Font Imports -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+rel="stylesheet">
+
+<!-- Custom CSS Imports -->
+<link rel="stylesheet" href="/css/style.css">
+
+<!-- Mathjax -->
+<script sid="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js" integrity="sha512-6FaAxxHuKuzaGHWnV00ftWqP3luSBRSopnNAA2RvQH1fOfnF/A1wOfiUWF7cLIOFcfb1dEhXwo5VG3DAisocRw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha256-3gQJhtmj7YnV1fmtbVcnAV6eI4ws0Tr48bVZCThtCGQ=" crossorigin="anonymous"></script>
+
+<!-- Auto Table of Contents -->
+<link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css"
+/>
+<script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script>
+
+</head>
+
+<body data-bs-spy="scroll" data-bs-target="#toc">
+<nav class="navbar navbar-dark bg-dark">
+<div class="container-fluid">
+<ul class="navbar-nav mr-auto">
+ <li class="nav-item active">
+  <a class="nav-link" href="/icl/index.html">LLMs Know more than they show</a>
+ </li>
+</ul>
+<ul class="navbar-nav ml-auto">
+ <li class="nav-item">
+  <a class="navbar-brand" href="/">Structure and Interpretation of Deep Networks</a>
+ </li>
+</ul>
+</div>
+</nav>
+
+<div class="container">
+<div class="row">
+<div class="col-2 position-fixed pt-5">
+<nav id="toc" data-toggle="toc"></nav>
+</div>
+<div class="col-2"></div>
+<main class="col-8">
+<h1 class="mt-5">LLMs Know more than they show</h1>
+
+
+<div>
+  <h5>December 11, 2024 • <em>Sri Harsha P.,Poornima</em></h5>
+
+  <h2>
+    Introduction
+  </h2>
+  <p>
+Large Language Models (LLMs) are powerful tools in natural language processing,
+yet they often produce "hallucinations," which refer to outputs that are
+factually incorrect, biased, or logically flawed. These hallucinations can be
+broadly categorized into several types: factual inaccuracies, where the model
+generates incorrect information; biases, reflecting prejudices present in the
+training data; and reasoning failures, where the model's logic is flawed. The
+internal mechanisms of LLMs encode signals about truthfulness, which can be used
+to detect and analyze these errors. However, these signals are not universal and
+vary across different tasks, indicating that LLMs have multiple ways of encoding
+truth. Understanding these hallucinations involves both examining how users
+perceive errors and analyzing the internal representations of LLMs. This dual
+approach helps in developing strategies to mitigate errors by leveraging the
+model's intrinsic knowledge.
+  </p>
+
+  <h2>
+    Realted work
+  </h2>
+
+
+<p>
+  Earlier studies primarily focused on behavioral analyses, examining how users
+  perceive errors like factual inaccuracies, biases, and reasoning failures
+  (<a href="https://arxiv.org/pdf/2302.02083">Bang et al., 2023</a>;
+  <a href="https://arxiv.org/pdf/2202.03629">Ji et al., 2023</a>;
+  <a href="https://arxiv.org/pdf/2311.05232">Ji et al., 2023</a>). These works often
+  adopted human-centric frameworks, defining hallucinations based on subjective
+  interpretations, which limited their ability to address the root causes of
+  such errors.
+  </p>
+
+  <p>
+  In contrast, recent research shifted towards examining internal
+  representations of LLMs. Studies by
+  <a href="https://arxiv.org/pdf/2207.05221">Kadavath et al. (2022)</a>, Li et al. (2024),
+  and <a href="https://openreview.net/forum?id=Zj12nzlQbz">Chen et al. (2024)</a>
+  demonstrated that LLMs encode signals of truthfulness
+  within their intermediate states. However, these efforts were largely confined
+  to error detection without exploring how these signals could be leveraged for
+  deeper understanding or mitigation strategies.
+  </p>
+
+  <p>
+  The paper builds on these insights by revealing that truthfulness information
+  is concentrated in specific tokens, such as exact answer tokens, which
+  significantly enhances error detection. It also challenges claims of universal
+  truthfulness encoding (<a href="https://arxiv.org/abs/2310.06824">Marks & Tegmark, 2023</a>;
+  <a href="https://arxiv.org/abs/2310.11877">Slobodkin et al., 2023</a>),
+  showing instead that LLMs encode task-specific notions of truth. Additionally,
+  it identifies discrepancies between internal knowledge and external outputs,
+  where models may encode correct answers but generate incorrect responses due
+  to biases in training objectives.
+</p>
+
+
+<h2>Paper categorizes hallucinations</h2>
+  <p>
+The paper LLMs know more than they show categorizes hallucinations in LLMs into
+several types based on their external behavior and internal representations:
+  </p>
+  <p>
+  1. Factual Inaccuracies: Errors where the model generates incorrect factual
+  information, often due to incomplete or incorrect knowledge.
+  </p>
+  <p>
+  2. Biases: Outputs that reflect prejudices or stereotypes present in the training
+  data, leading to skewed or discriminatory responses.
+  </p>
+  <p>
+  3. Reasoning Failures: Logical errors in the model's reasoning process, such as
+  drawing incorrect conclusions from given premises.
+  </p>
+  <p>
+  4. Common-Sense Failures: Errors where the model fails to apply basic
+  common-sense reasoning to its responses.
+  </p>
+
+<h2>Methodology</h2>
+
+<img src="images/exactAnswerToken.png" style="max-width:100%; width:600;" class="mx-auto d-block">
+<p>
+The methodology outlined in the paper focuses
+on analyzing the internal representations of large language models (LLMs) to
+understand and mitigate hallucinations. The researchers conducted experiments
+using various LLMs, including Mistral-7b and Llama3-8b, across multiple datasets
+such as TriviaQA and HotpotQA. Their approach involved training classifiers on
+the internal states of LLMs, specifically targeting "exact answer tokens," which
+are critical for encoding truthfulness information.
+</p>
+<img src="images/AUC.png" style="max-width:100%; width:600;" class="mx-auto d-block">
+<p>
+  The experiments were designed to evaluate error detection methods by comparing
+  traditional techniques with those leveraging exact answer tokens. The
+  researchers found that focusing on these specific tokens significantly
+  improved error detection performance. They also explored the generalization
+  of these methods across different tasks, revealing that truthfulness encoding
+  is task-specific rather than universal. Additionally, the study included a
+  taxonomy of error types, categorizing them based on model responses to
+  repeated prompts. This analysis allowed the researchers to predict error
+  patterns and develop tailored mitigation strategies
+</p>
+
+<h2>Results</h2>
+<img src="images/results.png" style="max-width:100%; width:600;" class="mx-auto d-block">
+<p>
+A key finding is that truthfulness signals are highly localized in specific
+tokens, particularly the "exact answer tokens." Probing these tokens
+significantly improved error detection performance across various tasks and
+datasets. For instance, using exact answer tokens enhanced the area under the
+ROC curve (AUC) for error detection methods compared to traditional approaches
+like logits-based uncertainty estimations.
+</p>
+
+<p>
+The study also revealed that these improvements are task-specific. Probing
+classifiers trained on one dataset often failed to generalize effectively to
+others unless the tasks required similar skills, such as factual retrieval or
+common-sense reasoning. This finding challenges prior claims of a universal
+truthfulness encoding in LLMs, suggesting instead that LLMs encode multiple,
+distinct notions of truthfulness depending on the task.
+</p>
+
+<p>
+  Additionally, the study explored error types by analyzing repeated model
+  outputs. It categorized errors into patterns such as "consistently incorrect,"
+  "two competing answers," and "many answers." The internal states of LLMs
+  were found to encode information about these error types, enabling their
+  prediction with reasonable accuracy.
+</p>
+
+
+<p>
+  Finally, a significant discrepancy was identified between LLMs' internal
+  truthfulness encoding and their external outputs. In some cases, models
+  internally encoded correct answers but consistently generated incorrect ones
+  due to biases in training objectives favoring plausible over accurate
+  responses. This highlights opportunities for leveraging internal signals
+  to align outputs with encoded knowledge, improving performance and
+  reliability.
+</p>
+
+<h2>Our extended experiment</h2>
+<p>
+  We adopted the code from the paper and experimented with medical dataset. We
+  entended the code to work with LLAMA 3.2 1B. We first performed LoRA fine
+  tuning on the model to encode medical information into the models. We then
+  continued the same experimentation.
+</p>
+
+<p>
+  MedQuAD: A dataset with 47,457 Q&A pairs from 12 National Institutes of
+  Health (NIH) websites, spanning 37 question types (e.g., treatments,
+  diagnoses, side effects) and enriched with annotations like medical IDs and
+  categories.
+</p>
+
+<img src="images/pipeline.png" style="max-width:100%; width:600;" class="mx-auto d-block">
+
+<h3>Our results</h3>
+<img src="images/ourResult.png" style="max-width:100%; width:600;" class="mx-auto d-block">
+
+<h2>Opinion and Takeaway</h2>
+<p>
+Hallucinations: Do the internal representations of LLMs encode much more
+information about truthfulness : (ex: error types) ? <b>Yes</b>
+</p>
+
+<p>
+Where are the truthfulness signals encoded in LLMs ? <b>Exact answer tokens</b>
+</p>
+
+<p>
+Are these internal representations generalizable across different tasks? <b>Not
+  all the time</b>
+</p>
+
+<p>
+Does the model’s internal encoding identify the correct answer–yet might
+  frequently generate an incorrect response? <b>Yes</b>
+</p>
+
+<p>
+<b>Opinion:</b> Train the LLMs tailored towards the errors – more than bigger
+models and data.
+</p>
+
+
+<h2>Code</h2>
+
+<p>Code from the paper <a href="https://github.com/technion-cs-nlp/LLMsKnow">repo link</a></p>
+
+<p>Our experimentation code <a href="https://github.com/sriharshapy/LLM-knows-more-than-they-show">Marks & Tegmark, 2023</a></p>
+</main>
+</div>
+</div>
+</body>
+</html>
+
+</div>
