@@ -1,0 +1,144 @@
+{header('Exploring Automated Weight Space Interpretability')}
+<!--
++1: [X] You have a good title and have identified the project team members as authors.
++1: [X] Introduction poses the question
++1: [X] Related work section properly cites and links and says a couple words about the paper(s) on which the work is based, and how your work relates.
++1: [ ] The methods you are using are described briefly and precisely.
++1: [X] The aspects that distinguish your work from previous work are described clearly.
++1: [ ] Your analysis is solid, and you use diagrams effectively to show your main methods or results visually.
++1: [X] You have created some code (link to github), demonstrating the methods.
++1: [X] You include a discussion with your own opinions, questions, or perspective on your findings.
+-->
+<div>
+  <h5>December 10, 2024 • <em>David Atkinson (work advised by David Bau)</em></h5>
+
+  <h1>Introduction and Related Work</h1>
+
+  <p>
+    When paired with an architecture, the weights of a neural network fully specify its behavior over all possible input distributions.
+    
+    Further, neural networks are themselves universal function approximators. Why, then, don't we simply <i>learn</i> a function from weights to interpretation? Why <a href="https://sidn.baulab.info/">all this</a> hard work?
+  </p>
+  <p>
+    Weight space interpretability (perhaps naively!) takes this question seriously. We would like to train a model, variously called a meta-model or hypernetwork, to predict some property of another model, here referred to as a base model. 
+  </p>
+
+  {img("img/schurholt-fig-1.png", 85)}
+
+  <p>
+    Much of the work in this vein has focused on recovering training hyperparameters and test-time performance of base models, which are often small image models, or (even smaller) implicit neural representations (<a href="https://dl.acm.org/doi/abs/10.1145/3503250">Mildenhall et al., 2021</a>). Many of these target properties are included in the above figure from Schürholt et al. (<a href="https://arxiv.org/abs/2406.09997">2024</a>). A notable exception to these relatively simple tasks comes from Langosco et al., (<a href="https://openreview.net/forum?id=cmJiEqniEc">2023</a>) who leverage meta-models to detect trojans in image models, and generate RASP (<a href="https://arxiv.org/abs/2106.06981">Weiss et al., 2021</a>) code from compiled TRACR models (<a href="https://arxiv.org/pdf/2301.05062">Lindner et al., 2023</a>). The current work takes inspiration from these applications, and investigates spiritually similar settings. The most relevant difference is the focus here on different kinds of generalization, beyond the standard train-test split.</p>
+    
+    <p>Every project in this "Weight Space Learning" space is forced to confront tremendously large number of hidden unit permutation symmetries (i.e., neurons can be swapped with each other without changing network behavior, as long as the associated weights are swapped as well). There are three broad responses:</p>
+
+  <ul>
+    <li><b>Graph Neural Networks</b> are naturally permutation equivariant. One simple architecture, used in eg Kofinas et al. (<a href="https://arxiv.org/pdf/2403.12143">2024</a>) represents bias weights as node features, and neuron weights as edge features. Intruigingly, Kalogeropoulos et al. (<a href="https://arxiv.org/abs/2406.10685">2024</a>) goes further and proposes an architecture which additionally encodes scaling symmetries. These architectures tend to be conceptually elegant, but slow and memory intensive.</li>
+    <li>Just as convolutional networks use <b>weight sharing</b> to achieve translation equivariance, some projects have proposed to do the same for permutation equivariance (e.g., Zhou et al. (<a href="https://arxiv.org/abs/2302.14040">2023</a>) and Navon et al. (<a href="https://arxiv.org/abs/2301.12780">2023</a>)).</li>
+    <li>More straightforwardly, <b>data augmentation</b> techniques can be used to encourage arbitrary equivariances (e.g., Shamsian et al. (<a href="https://arxiv.org/abs/2311.08851">2023</a>) and Shamsian et al. (<a href="https://arxiv.org/abs/2402.04081">2024</a>).) </li>
+  </ul>
+  </p>
+
+  <h2>Experiments and Methods</h2>
+  <p>{img("img/inet-diagram.png", 85)}</p>
+  <!-- "Your analysis is solid, and you use diagrams effectively to show your main methods or results visually." -->
+  <!-- "The aspects that distinguish your work from previous work are described clearly." -->
+  <h3>Imagenet Classifiers</h3>
+  <p>In our first setting, we ask whether a meta-model can recover the class a base model was trained to recognize.</p>
+
+  <p>To train our base models, we start with SqueezeNet 1.1 (TODO cite), a 1.2 million parameter pre-trained ImageNet model. After randomly reinitializing the 400 thousand weights following the <tt>fire8</tt> module, we train each base model to recognize a randomly selected ImageNet class. (TODO cite ImageNet). We train 60 thousand base models in this way.</p>
+
+  <p>Our first meta-model is simple: a 6 layer, 400 million parameter Transformer (TODO cite) encoder model with a model dimension of 1024 and 16 heads. To train it, we flatten each of the seven reinitialized weight matrices and transform them to a vector of dimension \(d_{\text{model}}\). After being fed to the transformer, the transformer's output is linearly mapped to a vector of dimension 1000 (the number of ImageNet classes). We use cross-entropy loss, AdamW, OneCycle learning rate scheduling, and a batch size of 1024. (Why this particular setup, in which we retrain a portion of an existing model instead of training a new model from scratch? The hope is that the retrained model will be forced to leverage a pre-existing set of semantically meaningful representations. Conjecturally, this encourages newly-learned weights to be distributionally similar across classes, removing a less interesting source of variation for the meta-model to discriminate on.)</p>
+
+
+  <h3>Augmentation</h3>
+  <p>One concern with the previous experiment is overfitting.</p>
+
+  <p>To address this, we leverage permutation equivariance of the base model neurons. We randomly permute the weights in such a way as to preserve the model's behavior. We then add those permuted weights to the base model dataset. This should encourage our meta-model to learn a representation of the base model's behavior that is invariant to any symmetry preserving permutation of its weights. And indeed, we see substantial improvements up augmentation levels which include 400 permutated base models for every one original base model.</p>
+
+  <h3>Testing Generalization: Two-class Classifiers</h3>
+  <p>Generalization over random seeds is encouraging, but if meta-models are to be useful, they will have to generalize over far more dimensions than that. One way to test this is to evaluate generalization over a small distributional shift. Here, we train a small number of base models to recognize two classes, rather than one. If our meta-model has learned a good representation of the base models, it should predict the two trained-on classes as most likely.</p>
+
+  <p>To some extent, we see this in the figure and table below.</p>
+  <p>{img("img/inet-two-class-topk.png", 75)}</p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>k</th>
+        <th>Top-k accuracy, either class present [random acc]</th>
+        <th>Top-k accuracy, both classes present [random acc]</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>2</td>
+        <td>28.8% [0.4%]</td>
+        <td>1.4% [0.0%]</td>
+      </tr>
+      <tr>
+        <td>10</td>
+        <td>56% [2.0%]</td>
+        <td>8.1% [0.0%]</td>
+      </tr>
+      <tr>
+        <td>100</td>
+        <td>93.2% [19.0%]</td>
+        <td>45.7% [1.0%]</td>
+      </tr>
+      <tr>
+        <td>500</td>
+        <td>99.9% [75.0%]</td>
+        <td>87.1% [25.0%]</td>
+      </tr>
+    </tbody>
+  </table>
+  <p></p>
+
+
+  <h3>Testing Generalization: Neuron Permutations</h3>
+  <p>Here, we perform a more demanding test of generalization. With a small enough prediction range, a meta-model classifer might learn undesirable shortcuts, such as low-complexity weight statistics. We would prefer them to learn a much richer representation of the base model's behavior. To test this, we take a pretrained meta-model, and test it on a set of base models which have had their neurons permuted, without similarly permuting the neuron's associated weights. In behavioral space, these models should be randomly distributed, even if, by weight distribution statistics, they remain close to their original, unpermuted parents. The meta-model's performance on these base models, then, serves as an indication of what it is doing when it predicts the training class.</p>
+  <p>{img("img/inet-scrambled.png", 75)}</p>
+
+  <p>What we see suggests that the meta-model is doing something in-between these two hypothesized extremes. Permuting a single layer of neurons (i.e., moving from the blue to the orange line) results in much better than random performance for the meta-model, ruling out perfect behavioral sensitivity. But the performance does drop, and continues to drop as more layers are permuted, suggesting that the meta-model is sensitive to more than layer-wise weight statistics.</p>
+
+  
+  <h2>Early Forays into Language</h2>
+  <h3>Regexes</h3>
+  <p>Here, we report a preliminary experiment in which our base models consist of two-layer, 5,000 parameter GRUs [TODO cite], trained to mimic the behavior of either the regex <tt>(aa)+</tt> or <tt>a+</tt>. Specifically, to train each base model, we randomly choose one the two regexes, instantiate a GRU, and train it as a binary classifier over strings of <tt>(a|b)*</tt>s, with lengths ranging from 0 to 10. (Note that we ensure a measure of balance in the training data: 1/3 of the input strings contain a <tt>b</tt>, making them trivially classifiable. The other two-thirds consist only of <tt>a</tt>s, making the task a parity one.) Given our previous experience image models, it's not surprising that, as we see in the table below, the meta-model (another transformer, with 3 million parameters) is able to successfully distinguish between the two classes of base models, with no data augmentation used.</p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Models Seen</th>
+        <th>MSE</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>60k</td>
+        <td>0.72</td>
+      </tr>
+      <tr>
+        <td>120k</td>
+        <td>0.08</td>
+      </tr>
+      <tr>
+        <td>640k</td>
+        <td>0.008</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>Against this encouraging sign, the (small, to be fair) meta-model does need more than 100,000 base models to achieve good performance.</p>
+
+
+  <h2>Discussion</h2>
+  <p>In practice, of course, model activations over a chosen dataset provide an enormous amount of information, and it would be foolish to throw that all away. But I do think think there's a more modest, albeit still ambitious role that weight space interpretablity could play, which is to serve as a complementary source of information to more traditional interpretation techniques.</p>
+  <p>You might worry, for example, that techniques like probing and SAEs depend on a particular data distribution, which leaves those techniques vulnerable to "unknown unknowns". Behavior that only responds to extremely conjunctive or sparse properties of the input distribution is currently difficult to find with traditional techniques. Weight space interpretability can in theory be helpful here.</p>
+  <p>Of course, a wealth of problems lie between that future and today. I highlight two very high-level ones:</p>
+
+  <p>First, ground truth labels are difficult to find. In practice, we are forced to try enforcing certain properties through training. There is a tension here, where, if we knew the ground truth for a particular property of interest, there would be no need for a meta-model. Right now, the hope is that the magic of ML generalization saves us here, but cleverer approaches would be helpful.</p>
+  <p>Second, every paper so far applies a medium-sized model to small-to-tiny model. It's not clear whether that relationship can be reversed, or whether large models can be successfully decomposed into smaller components without loss of fidelity.</p>
+  
+  <p>I've collected the code for the experiments described above <a href="https://github.com/diatkinson/sidn-weight-interp">here</a>.</p>
+
+</div>
+
+
+{footer()}
